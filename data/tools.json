@@ -1,0 +1,1392 @@
+{
+  "meta": { "version": 1, "updated": "2026-09-03" },
+
+  "categories": [
+    { "id": "chat-assistant", "label": "Chat Assistants" },
+    { "id": "writing", "label": "Writing & Editing" },
+    { "id": "coding", "label": "Coding" },
+    { "id": "research", "label": "Research & Study" },
+    { "id": "image", "label": "Image Generation" },
+    { "id": "design", "label": "Design & Graphics" },
+    { "id": "presentations", "label": "Presentations & Slides" },
+    { "id": "audio-video", "label": "Audio & Video" },
+    { "id": "productivity", "label": "Productivity & Notes" },
+    { "id": "meetings", "label": "Meeting Assistants" },
+    { "id": "learning", "label": "Learning & Tutoring" },
+    { "id": "career", "label": "Career & Job Search" },
+    { "id": "automation", "label": "Automation & Agents" }
+  ],
+
+  "tags": [
+    "free",
+    "freemium",
+    "paid",
+    "no-signup",
+    "beginner-friendly",
+    "advanced",
+    "team",
+    "api",
+    "browser-extension",
+    "mobile",
+    "student-discount"
+  ],
+
+  "tools": [
+    {
+      "id": "chatgpt",
+      "name": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "category": "chat-assistant",
+      "tagline": "General-purpose AI assistant for writing, coding, and research.",
+      "description": "A conversational assistant that handles drafting, explaining concepts, brainstorming, and light coding. The free tier covers most everyday student use.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "api"],
+      "useCases": [
+        "draft and edit essays",
+        "explain difficult concepts",
+        "brainstorm ideas",
+        "practice interview questions"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (with ads); Go $8/mo; Plus $20/mo; Pro $200/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "claude",
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "category": "chat-assistant",
+      "tagline": "AI assistant strong at long documents, careful writing, and analysis.",
+      "description": "A conversational assistant known for handling long context, nuanced writing, and step-by-step reasoning. Good for working through readings or large drafts.",
+      "tags": ["freemium", "beginner-friendly", "api"],
+      "useCases": [
+        "analyze long readings and reports",
+        "improve tone and clarity of writing",
+        "work through a problem step by step",
+        "summarize dense material"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Pro $20/mo ($17/mo annual); Max $100-200/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "perplexity",
+      "name": "Perplexity",
+      "url": "https://www.perplexity.ai",
+      "category": "research",
+      "tagline": "AI answer engine that cites its sources as you research.",
+      "description": "Ask a question and get a short synthesized answer with linked citations, so you can check where each claim came from. Useful for early-stage research.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "no-signup"],
+      "useCases": [
+        "find sources for a paper",
+        "get a quick briefing on a topic",
+        "compare options with citations",
+        "check a fact against sources"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (unlimited standard searches); Pro $20/mo; Education Pro $10/mo for verified students; Max $200/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "notebooklm",
+      "name": "NotebookLM",
+      "url": "https://notebooklm.google.com",
+      "category": "research",
+      "tagline": "Upload your sources and ask questions grounded only in them.",
+      "description": "A study tool that answers questions using only the documents you upload, with citations back to the exact passage. Can also generate summaries and audio overviews.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "study from lecture notes and readings",
+        "ask questions about a set of PDFs",
+        "generate a study guide from your materials",
+        "turn readings into an audio overview"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (100 notebooks, 50 chats/day); Plus $4.99/mo, Pro $19.99/mo via Google AI plans (now branded 'Gemini Notebook')" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "grammarly",
+      "name": "Grammarly",
+      "url": "https://www.grammarly.com",
+      "category": "writing",
+      "tagline": "Grammar, clarity, and tone checking as you type, anywhere.",
+      "description": "A writing assistant that flags grammar and spelling issues and suggests clarity and tone improvements, working inside your browser and most apps.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "catch grammar and spelling mistakes",
+        "make writing clearer and more concise",
+        "adjust tone for emails and cover letters",
+        "proofread before submitting"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Pro $12/mo billed annually ($30/mo monthly)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "quillbot",
+      "name": "QuillBot",
+      "url": "https://quillbot.com",
+      "category": "writing",
+      "tagline": "Paraphrasing and summarizing tool for reworking text.",
+      "description": "Rewrites sentences in different tones and lengths, summarizes passages, and checks grammar. Handy for tightening prose or rephrasing your own drafts.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "rephrase clunky sentences",
+        "shorten a long paragraph",
+        "summarize an article",
+        "vary tone in a draft"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Premium $8.33/mo billed annually ($19.95/mo monthly)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "github-copilot",
+      "name": "GitHub Copilot",
+      "url": "https://github.com/features/copilot",
+      "category": "coding",
+      "tagline": "AI autocomplete and chat inside your code editor.",
+      "description": "Suggests code as you type and answers questions about your codebase from within the editor. Free for verified students through the GitHub Student Pack.",
+      "tags": ["freemium", "student-discount", "advanced"],
+      "useCases": [
+        "autocomplete boilerplate code",
+        "explain unfamiliar code",
+        "write tests faster",
+        "get unstuck on a bug"
+      ],
+      "pricing": {
+        "model": "freemium",
+        "note": "Free tier (2,000 completions/mo); Pro $10/mo; Pro+ $39/mo; free Pro for verified students"
+      },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor",
+      "url": "https://cursor.com",
+      "category": "coding",
+      "tagline": "Code editor built around an AI pair programmer.",
+      "description": "A VS Code-style editor with AI deeply integrated — chat about your project, apply multi-file edits, and generate code with full-repo context.",
+      "tags": ["freemium", "advanced"],
+      "useCases": [
+        "build a project with AI assistance",
+        "make changes across many files at once",
+        "understand a new codebase",
+        "refactor with context"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Hobby tier; Pro $20/mo ($16/mo annual); Pro+ $60/mo; Ultra $200/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "canva-magic",
+      "name": "Canva (Magic Studio)",
+      "url": "https://www.canva.com/magic-studio/",
+      "category": "design",
+      "tagline": "Design tool with AI image generation and editing built in.",
+      "description": "Create slides, posters, and social graphics with drag-and-drop, plus AI features for generating images, removing backgrounds, and rewriting text.",
+      "tags": ["freemium", "beginner-friendly", "team", "student-discount"],
+      "useCases": [
+        "design slides for a presentation",
+        "make a poster or flyer",
+        "generate images for a project",
+        "create social media graphics"
+      ],
+      "pricing": {
+        "model": "freemium",
+        "note": "Free tier; Pro $18/mo ($144/yr); Business $25/user/mo; free via Canva for Education (K-12) or Campus"
+      },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "otter",
+      "name": "Otter.ai",
+      "url": "https://otter.ai",
+      "category": "meetings",
+      "tagline": "Live transcription and notes for lectures and meetings.",
+      "description": "Records and transcribes speech in real time, then generates summaries and lets you search the transcript. Useful for lectures, interviews, and group meetings.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "transcribe a lecture",
+        "take notes in a meeting",
+        "search back through what was said",
+        "summarize an interview"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (300 min/mo, 30 min/conversation); Pro $8.33/mo annually ($16.99 monthly, 1,200 min); Business $20/user/mo annually" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "gemini",
+      "name": "Google Gemini",
+      "url": "https://gemini.google.com",
+      "category": "chat-assistant",
+      "tagline": "Google's AI assistant, tied into Search, Docs, and Gmail.",
+      "description": "A conversational assistant with strong multimodal support and deep integration with Google Workspace. The free tier covers everyday questions, writing help, and image analysis.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "api", "student-discount"],
+      "useCases": [
+        "draft and revise documents in Google Docs",
+        "summarize emails and threads in Gmail",
+        "analyze images, PDFs, and charts",
+        "research a topic with follow-up questions"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Google AI Pro $19.99/mo (often free for students); Ultra from $99.99/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "microsoft-copilot",
+      "name": "Microsoft Copilot",
+      "url": "https://copilot.microsoft.com",
+      "category": "chat-assistant",
+      "tagline": "Microsoft's AI assistant, built into Windows and Office apps.",
+      "description": "A general assistant for writing, summarizing, and image generation, with a paid tier that adds AI features inside Word, Excel, PowerPoint, and Outlook.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "draft documents and emails in Office",
+        "summarize Word documents and PDFs",
+        "build formulas and analyze data in Excel",
+        "generate slide content in PowerPoint"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Microsoft 365 Premium ~$19.99/mo adds Office AI (replaced the retired standalone Copilot Pro)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "grok",
+      "name": "Grok",
+      "url": "https://grok.com",
+      "category": "chat-assistant",
+      "tagline": "xAI's assistant with real-time access to X and a casual tone.",
+      "description": "A conversational assistant known for up-to-the-minute knowledge from X, image generation, and a less filtered style. Available on the web, in apps, and inside X.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "api"],
+      "useCases": [
+        "check what's being said about a topic right now",
+        "draft posts and replies",
+        "generate images",
+        "get quick explanations with a casual tone"
+      ],
+      "pricing": { "model": "freemium", "note": "Limited free tier; SuperGrok Lite ~$10/mo, SuperGrok ~$30/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek",
+      "url": "https://chat.deepseek.com",
+      "category": "chat-assistant",
+      "tagline": "Free, capable AI chat with strong reasoning and coding.",
+      "description": "An open-weight assistant that performs well on math, reasoning, and code. The consumer chat app is free with no message caps; only the developer API is paid.",
+      "tags": ["free", "beginner-friendly", "mobile", "api", "advanced"],
+      "useCases": [
+        "work through math and logic problems",
+        "get help debugging code",
+        "draft and edit writing at no cost",
+        "reason step by step through a hard question"
+      ],
+      "pricing": { "model": "free", "note": "Chat app free with no message caps; API is pay-per-token (~$0.14/M input)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "wordtune",
+      "name": "Wordtune",
+      "url": "https://www.wordtune.com",
+      "category": "writing",
+      "tagline": "Rewrites your sentences for tone, length, and clarity.",
+      "description": "A browser extension and editor that suggests alternative phrasings for what you've written, plus summaries and grammar fixes. Aimed at making your own drafts read better.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "rephrase awkward sentences",
+        "make an email sound more professional",
+        "shorten or expand a passage",
+        "summarize an article or PDF"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (10 rewrites/day); Advanced ~$6.99/mo; Unlimited ~$19.99/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "jasper",
+      "name": "Jasper",
+      "url": "https://www.jasper.ai",
+      "category": "writing",
+      "tagline": "AI writing platform built for marketing and brand content.",
+      "description": "A content-generation tool with brand voice controls, templates, and campaign workflows. Geared toward marketing teams producing blog posts, ads, and social copy at volume.",
+      "tags": ["paid", "team", "advanced"],
+      "useCases": [
+        "write marketing blog posts and ads",
+        "keep content consistent with a brand voice",
+        "repurpose one piece into many formats",
+        "draft social media campaigns"
+      ],
+      "pricing": { "model": "paid", "note": "No free plan; 7-day trial; Pro ~$59-69/mo; Business is custom-priced" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "sudowrite",
+      "name": "Sudowrite",
+      "url": "https://www.sudowrite.com",
+      "category": "writing",
+      "tagline": "AI writing partner built specifically for fiction.",
+      "description": "A tool for novelists and short-story writers that helps with brainstorming, describing scenes, and continuing prose in your style. Not a general-purpose writing assistant.",
+      "tags": ["paid", "student-discount", "advanced"],
+      "useCases": [
+        "get unstuck on a scene",
+        "brainstorm plot and character ideas",
+        "expand a rough draft into full prose",
+        "rewrite a passage in a different style"
+      ],
+      "pricing": { "model": "paid", "note": "No permanent free plan; trial credits; Hobby & Student $19/mo, Professional $29/mo, Max $59/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "prowritingaid",
+      "name": "ProWritingAid",
+      "url": "https://prowritingaid.com",
+      "category": "writing",
+      "tagline": "In-depth style and grammar editor for long-form writing.",
+      "description": "A grammar and style checker with detailed reports on readability, pacing, overused words, and sentence structure. Popular with authors and thesis writers who want more than a quick proofread.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "run a deep style check on a long draft",
+        "find overused words and repeated sentence starts",
+        "improve readability and pacing",
+        "proofread a thesis or report chapter"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (limited); Premium ~$10-12/mo billed annually; lifetime ~$399" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "replit",
+      "name": "Replit",
+      "url": "https://replit.com",
+      "category": "coding",
+      "tagline": "Browser-based coding environment with an AI agent that builds apps.",
+      "description": "Write, run, and host code entirely in the browser in dozens of languages, with an AI Agent that can scaffold and edit whole projects from a prompt. Good for learning and quick prototypes.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "learn to code without installing anything",
+        "build and deploy a small web app",
+        "prototype an idea from a prompt",
+        "collaborate on code in real time"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Starter plan (limited agent credits); Core $20-25/mo including $20 usage credits" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "windsurf",
+      "name": "Windsurf",
+      "url": "https://windsurf.com",
+      "category": "coding",
+      "tagline": "AI code editor built around a multi-file agent (formerly Codeium).",
+      "description": "A VS Code-style editor with unlimited autocomplete on the free tier and an agent, Cascade, that plans and applies changes across files. Competes directly with Cursor.",
+      "tags": ["freemium", "advanced"],
+      "useCases": [
+        "make coordinated edits across many files",
+        "get unlimited inline code completions for free",
+        "understand and navigate a large codebase",
+        "build features with an AI agent"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (unlimited autocomplete, limited agent quota); Pro $20/mo; Teams $40/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "tabnine",
+      "name": "Tabnine",
+      "url": "https://www.tabnine.com",
+      "category": "coding",
+      "tagline": "Privacy-focused AI code completion for teams.",
+      "description": "An AI coding assistant that emphasizes code privacy, on-prem/self-hosted options, and not training on your code. Aimed at companies with compliance requirements.",
+      "tags": ["paid", "team", "advanced", "api"],
+      "useCases": [
+        "get code completions without sending code to third parties",
+        "self-host an AI assistant on company infrastructure",
+        "keep AI suggestions consistent with a team's codebase",
+        "meet compliance requirements for AI tooling"
+      ],
+      "pricing": { "model": "paid", "note": "No free plan since 2024; Dev $12/user/mo; Code Assistant $39/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "advanced"
+    },
+    {
+      "id": "v0",
+      "name": "v0 by Vercel",
+      "url": "https://v0.dev",
+      "category": "coding",
+      "tagline": "Generate React and Tailwind UI from a text prompt or screenshot.",
+      "description": "Describe a UI or paste a screenshot and v0 produces working React components styled with Tailwind and shadcn/ui, which you can iterate on and copy into a project.",
+      "tags": ["freemium", "advanced", "api"],
+      "useCases": [
+        "turn a design idea into React components",
+        "rebuild a UI from a screenshot",
+        "prototype a landing page quickly",
+        "generate a starting point for a frontend"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan ($5/mo credits); Premium $20/mo ($20 credits); Team $30/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "bolt-new",
+      "name": "Bolt.new",
+      "url": "https://bolt.new",
+      "category": "coding",
+      "tagline": "Prompt-to-app builder that runs a full dev environment in the browser.",
+      "description": "By StackBlitz. Describe an app and Bolt scaffolds a full-stack project you can edit, run, and deploy without leaving the browser. Bills by token usage rather than seats.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "build a working web app from a description",
+        "ship a prototype without local setup",
+        "iterate on a full-stack project in the browser",
+        "deploy a small app quickly"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (1M tokens/mo, 300K daily cap); Pro $25/mo (10M tokens); Teams $30/member" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "elicit",
+      "name": "Elicit",
+      "url": "https://elicit.com",
+      "category": "research",
+      "tagline": "AI research assistant that finds and summarizes academic papers.",
+      "description": "Search across 138M+ papers, extract data into tables, and generate structured research reports. Built for literature reviews and evidence synthesis rather than casual questions.",
+      "tags": ["freemium", "advanced"],
+      "useCases": [
+        "run a literature review",
+        "extract findings from many papers into a table",
+        "find papers relevant to a research question",
+        "generate a structured research report"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Basic (2 reports/mo); Plus $10-12/mo; Pro ~$49/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "consensus",
+      "name": "Consensus",
+      "url": "https://consensus.app",
+      "category": "research",
+      "tagline": "AI search engine that answers questions from peer-reviewed research.",
+      "description": "Ask a yes/no or open research question and get an answer synthesized from scientific papers, with a 'consensus meter' showing how much the literature agrees. Draws on 200M+ papers.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "check what research says about a claim",
+        "find evidence for both sides of a debate",
+        "get citations for a paper",
+        "gauge scientific consensus on a topic"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (limited); Pro ~$10/mo; Deep ~$45/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "scispace",
+      "name": "SciSpace",
+      "url": "https://scispace.com",
+      "category": "research",
+      "tagline": "Upload a paper and ask questions about it, with related-work discovery.",
+      "description": "An AI reading assistant for academic PDFs: highlight text for plain-language explanations, ask questions grounded in the paper, and follow citations to related work.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "understand a dense research paper",
+        "get plain-language explanations of jargon",
+        "find papers that cite or relate to one you have",
+        "summarize a PDF's methods and findings"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (100 credits/mo); Premium $12-20/mo; higher tiers to $200/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "researchrabbit",
+      "name": "ResearchRabbit",
+      "url": "https://www.researchrabbit.ai",
+      "category": "research",
+      "tagline": "Visual citation-mapping tool for exploring a research area.",
+      "description": "Add a few seed papers and ResearchRabbit builds interactive maps of related work, citations, and co-authors, so you can discover a field by following connections. Core features are free.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "map out the literature around a topic",
+        "discover related papers from a few you know",
+        "track a research area over time",
+        "visualize how papers cite each other"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Forever tier (most features); RR+ ~$10/mo, cheaper in many countries" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "wolfram-alpha",
+      "name": "Wolfram Alpha",
+      "url": "https://www.wolframalpha.com",
+      "category": "learning",
+      "tagline": "Computational engine for math, science, and data questions.",
+      "description": "Type a math problem, equation, or factual query and get a computed answer, often with step-by-step solutions on the Pro tier. Strong for calculus, algebra, chemistry, and unit conversions.",
+      "tags": ["freemium", "beginner-friendly", "student-discount", "mobile", "api"],
+      "useCases": [
+        "solve and check math homework",
+        "see step-by-step working for a problem",
+        "compute integrals, derivatives, and matrices",
+        "look up scientific and statistical data"
+      ],
+      "pricing": { "model": "freemium", "note": "Free for answers; Pro ~$5/mo (student) to ~$7/mo for step-by-step; 30% student discount" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "quizlet",
+      "name": "Quizlet",
+      "url": "https://quizlet.com",
+      "category": "learning",
+      "tagline": "Flashcards and study sets with AI-generated practice and explanations.",
+      "description": "Create or find flashcard sets and study them with spaced-repetition modes, practice tests, and AI features that generate cards from notes and explain answers.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "make flashcards from lecture notes",
+        "study with spaced repetition",
+        "generate practice tests before an exam",
+        "get step-by-step explanations for problems"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (with ads); Quizlet Plus ~$3/mo billed annually ($7.99/mo monthly)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "photomath",
+      "name": "Photomath",
+      "url": "https://photomath.com",
+      "category": "learning",
+      "tagline": "Point your phone camera at a math problem to get worked steps.",
+      "description": "Scan a handwritten or printed math problem and Photomath shows the solution with step-by-step explanations. Owned by Google. Covers arithmetic through calculus.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "check a math answer by scanning it",
+        "see how to solve a problem step by step",
+        "work through algebra and calculus practice",
+        "understand a worked example from a textbook"
+      ],
+      "pricing": { "model": "freemium", "note": "Free for basic steps; Photomath Plus $9.99/mo or $69.99/yr for animated tutorials" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "duolingo",
+      "name": "Duolingo",
+      "url": "https://www.duolingo.com",
+      "category": "learning",
+      "tagline": "Gamified language learning, with AI conversation practice on Max.",
+      "description": "Bite-sized lessons across 40+ languages with streaks and gamification. The Max tier adds GPT-powered features: roleplay conversations and AI video calls for speaking practice.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "learn a language in short daily sessions",
+        "practice speaking with an AI partner",
+        "review vocabulary with spaced repetition",
+        "get explanations for why an answer was wrong"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (with ads); Super ~$7/mo annually; Max $29.99/mo or ~$168/yr for AI features" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "khanmigo",
+      "name": "Khanmigo",
+      "url": "https://www.khanmigo.ai",
+      "category": "learning",
+      "tagline": "Khan Academy's AI tutor that guides instead of giving answers.",
+      "description": "An AI tutor built on Khan Academy's content that asks Socratic questions to help you reason to an answer, covers most K-12 and early-college subjects, and won't just hand over solutions.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "get tutoring help that makes you do the thinking",
+        "work through a concept you're stuck on",
+        "practice math and science with guidance",
+        "prepare for a test with a study coach"
+      ],
+      "pricing": { "model": "freemium", "note": "Khan Academy core is free; Khanmigo for learners $4/mo or $44/yr; free for teachers" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "midjourney",
+      "name": "Midjourney",
+      "url": "https://www.midjourney.com",
+      "category": "image",
+      "tagline": "High-quality AI image generation with a distinctive aesthetic.",
+      "description": "One of the best-known image generators, known for painterly, polished results. Runs on its website and in Discord. No free tier — every plan is paid.",
+      "tags": ["paid", "advanced"],
+      "useCases": [
+        "generate concept art and illustrations",
+        "create mood boards and visual references",
+        "produce polished images for a project or portfolio",
+        "explore visual styles for a brand"
+      ],
+      "pricing": { "model": "paid", "note": "No free tier; Basic $10/mo, Standard $30/mo, Pro $60/mo, Mega $120/mo (20% off annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "adobe-firefly",
+      "name": "Adobe Firefly",
+      "url": "https://firefly.adobe.com",
+      "category": "image",
+      "tagline": "Adobe's image and video generator, trained on licensed content.",
+      "description": "Generative image, video, and audio tools designed to be commercially safe, integrated across Photoshop and other Adobe apps. Useful when you need images you can use commercially without licensing worry.",
+      "tags": ["freemium", "beginner-friendly", "api"],
+      "useCases": [
+        "generate commercially safe images",
+        "expand or edit photos with generative fill",
+        "create text effects and graphics",
+        "make short generative video clips"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (25 credits/mo); Standard $9.99/mo, Pro $19.99/mo, higher tiers above" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "ideogram",
+      "name": "Ideogram",
+      "url": "https://ideogram.ai",
+      "category": "image",
+      "tagline": "AI image generator that's unusually good at rendering text.",
+      "description": "An image generator that reliably produces legible text in images — logos, posters, mockups, memes — where most models struggle. Has a usable free tier.",
+      "tags": ["freemium", "beginner-friendly", "api"],
+      "useCases": [
+        "make posters and graphics with readable text",
+        "generate logo and wordmark concepts",
+        "create social graphics with captions baked in",
+        "design mockups that need labels"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (10 slow credits/week); Basic ~$8/mo, Plus ~$15-20/mo, Pro ~$40/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "leonardo-ai",
+      "name": "Leonardo.ai",
+      "url": "https://leonardo.ai",
+      "category": "image",
+      "tagline": "Image generation with fine-grained control and game-art focus.",
+      "description": "An image platform with trained style models, image-guidance controls, and tools aimed at game assets and consistent characters. Generous daily free allowance.",
+      "tags": ["freemium", "beginner-friendly", "api"],
+      "useCases": [
+        "generate game and app assets",
+        "keep a character consistent across images",
+        "control composition with reference images",
+        "iterate on a visual style"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (150 tokens/day, outputs public); Essential ~$12/mo, Premium ~$30/mo, Ultimate ~$60/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "recraft",
+      "name": "Recraft",
+      "url": "https://www.recraft.ai",
+      "category": "image",
+      "tagline": "AI image generator that outputs true vector (SVG) graphics.",
+      "description": "Generates raster and, distinctively, editable vector art and icon sets with a consistent style, plus brand style controls. Popular with designers who need scalable assets.",
+      "tags": ["freemium", "advanced", "api"],
+      "useCases": [
+        "generate editable vector illustrations and icons",
+        "create a consistent icon set",
+        "produce scalable graphics for print",
+        "design brand assets in a set style"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (50 images/day, outputs public); Basic $12/mo, Pro from $20/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "figma",
+      "name": "Figma",
+      "url": "https://www.figma.com",
+      "category": "design",
+      "tagline": "Industry-standard collaborative interface design tool.",
+      "description": "Browser-based UI/UX design and prototyping with real-time collaboration, now with AI features for generating designs, editing, and prototyping. The free tier is enough for individual learning.",
+      "tags": ["freemium", "beginner-friendly", "team", "browser-extension"],
+      "useCases": [
+        "design app and website interfaces",
+        "build clickable prototypes",
+        "collaborate on designs with others in real time",
+        "learn UI design with free files and templates"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Starter (3 files, 500 AI credits/mo); Professional $16/user/mo annually ($20 monthly)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "framer",
+      "name": "Framer",
+      "url": "https://www.framer.com",
+      "category": "design",
+      "tagline": "Design and publish a real website without code.",
+      "description": "A visual website builder with AI-assisted layout and copy, a CMS, and fast hosting. You design like in a design tool and publish a live site directly.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "build and publish a portfolio site",
+        "launch a landing page fast",
+        "design a marketing site visually",
+        "prototype a site that's actually live"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (Framer subdomain); Basic ~$10/mo, Pro ~$30/mo (billed annually)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "microsoft-designer",
+      "name": "Microsoft Designer",
+      "url": "https://designer.microsoft.com",
+      "category": "design",
+      "tagline": "Free Canva-style design app with AI generation built in.",
+      "description": "A graphic design tool for social posts, invitations, and marketing graphics, using DALL·E 3 for image generation. Free with a Microsoft account, with monthly AI credit limits.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "design social media posts",
+        "make invitations and flyers",
+        "generate images for a graphic",
+        "create quick marketing visuals"
+      ],
+      "pricing": { "model": "freemium", "note": "Free with a Microsoft account (15 AI credits/mo; 60 for Microsoft 365 subscribers)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "photoroom",
+      "name": "Photoroom",
+      "url": "https://www.photoroom.com",
+      "category": "design",
+      "tagline": "AI photo editor for backgrounds, product shots, and cleanup.",
+      "description": "Remove and replace backgrounds, generate product scenes, and batch-edit images. Aimed at resellers and small businesses making listing and marketing photos.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "api"],
+      "useCases": [
+        "remove the background from a photo",
+        "create clean product shots for listings",
+        "generate a scene behind a product",
+        "batch-edit a set of images"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (watermark, 100 exports/mo, no commercial use); Pro ~$7.50/mo, Max ~$20.99/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "gamma",
+      "name": "Gamma",
+      "url": "https://gamma.app",
+      "category": "presentations",
+      "tagline": "Generate presentations, docs, and webpages from a prompt.",
+      "description": "Describe a topic or paste an outline and Gamma builds a formatted deck you can edit, with AI image generation and one-click restyling. The most popular AI slide tool.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "turn an outline into a slide deck",
+        "make a pitch or class presentation fast",
+        "restyle a deck without manual formatting",
+        "build a simple one-page website"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (400 one-time credits); Plus ~$8-9/mo, Pro ~$15-18/mo (billed annually)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "beautiful-ai",
+      "name": "Beautiful.ai",
+      "url": "https://www.beautiful.ai",
+      "category": "presentations",
+      "tagline": "Presentation tool where slides auto-arrange as you add content.",
+      "description": "Uses 'smart templates' that keep slides balanced and on-brand automatically, plus AI generation from a prompt. Aimed at business decks. No free tier beyond a trial.",
+      "tags": ["paid", "team"],
+      "useCases": [
+        "build a polished business deck quickly",
+        "keep slides consistent and on-brand",
+        "avoid manual alignment and layout work",
+        "generate a first-draft deck from a prompt"
+      ],
+      "pricing": { "model": "paid", "note": "14-day trial, no free tier; Pro $12/user/mo annually ($45 monthly); Team $40/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "plus-ai",
+      "name": "Plus AI",
+      "url": "https://plusai.com",
+      "category": "presentations",
+      "tagline": "AI presentation add-on for Google Slides and PowerPoint.",
+      "description": "Works inside Slides and PowerPoint rather than replacing them: generate a deck from a prompt or document, rewrite slides, and remix layouts without leaving the tool you already use.",
+      "tags": ["paid", "team"],
+      "useCases": [
+        "generate a deck directly in Google Slides",
+        "turn a Google Doc into slides",
+        "rewrite and reformat existing slides",
+        "keep working in PowerPoint with AI help"
+      ],
+      "pricing": { "model": "paid", "note": "No free plan; Basic $10/user/mo annually ($15 monthly); Pro $20/user/mo annually" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "url": "https://elevenlabs.io",
+      "category": "audio-video",
+      "tagline": "The leading AI text-to-speech and voice cloning tool.",
+      "description": "Generates natural-sounding speech in many languages and voices, with voice cloning, dubbing, and transcription. Widely used for narration, videos, and audiobooks.",
+      "tags": ["freemium", "beginner-friendly", "api"],
+      "useCases": [
+        "narrate a video or presentation",
+        "turn an article or script into audio",
+        "dub a video into another language",
+        "create a custom voice"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (~10 min/mo, no commercial use); Starter $6/mo, Creator ~$22/mo, Pro $99/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "descript",
+      "name": "Descript",
+      "url": "https://www.descript.com",
+      "category": "audio-video",
+      "tagline": "Edit audio and video by editing the transcript.",
+      "description": "Transcribes your recording, then lets you cut, rearrange, and fix it by editing text. Adds AI features like filler-word removal, studio sound, and voice cloning for corrections.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "edit a podcast by editing text",
+        "remove filler words and pauses automatically",
+        "clean up recorded audio",
+        "make a video from a screen recording"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (60 min/mo, watermarked); Hobbyist ~$16/mo, Creator ~$24/mo (billed annually)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "suno",
+      "name": "Suno",
+      "url": "https://suno.com",
+      "category": "audio-video",
+      "tagline": "Generate full songs with vocals from a text prompt.",
+      "description": "Describe a style and topic and Suno produces a complete song — melody, instrumentation, and sung lyrics. The most popular AI music generator.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "make a song for a project or video",
+        "generate background music",
+        "turn lyrics you wrote into a track",
+        "experiment with musical styles"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (~50 credits/day, non-commercial); Pro ~$8-10/mo, Premier ~$24-30/mo (commercial use)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "runway",
+      "name": "Runway",
+      "url": "https://runwayml.com",
+      "category": "audio-video",
+      "tagline": "AI video generation and editing for creators and filmmakers.",
+      "description": "Text-to-video and image-to-video generation plus AI editing tools like background removal and motion tracking. Aimed at more serious video and film work.",
+      "tags": ["freemium", "advanced", "api"],
+      "useCases": [
+        "generate short video clips from a prompt",
+        "animate a still image",
+        "remove or replace a video background",
+        "create effects shots without a full production"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (125 one-time credits); Standard $15/mo, Pro $35/mo (20% off annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "heygen",
+      "name": "HeyGen",
+      "url": "https://www.heygen.com",
+      "category": "audio-video",
+      "tagline": "Create talking-head videos with AI avatars from a script.",
+      "description": "Type a script and get a video of a realistic AI presenter speaking it, with avatar options, voice cloning, and video translation. Used for training, marketing, and localization.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "make an explainer video without filming",
+        "turn a script into a presenter video",
+        "translate a video into other languages",
+        "create a spokesperson avatar"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (~3 videos/mo, watermarked); Creator $29/mo, Pro $49/mo, Business $149/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "opus-clip",
+      "name": "OpusClip",
+      "url": "https://www.opus.pro",
+      "category": "audio-video",
+      "tagline": "Turn long videos into short clips for TikTok, Reels, and Shorts.",
+      "description": "Upload a long video or podcast and OpusClip finds the most engaging moments, cuts them into vertical clips, and adds captions and a virality score.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "cut a podcast into short-form clips",
+        "repurpose a long video for social media",
+        "auto-caption vertical clips",
+        "find the best moments in a recording"
+      ],
+      "pricing": { "model": "freemium", "note": "Free plan (60 min/mo, watermarked, 3-day expiry); Starter $15/mo, Pro $29/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "capcut",
+      "name": "CapCut",
+      "url": "https://www.capcut.com",
+      "category": "audio-video",
+      "tagline": "Popular video editor with a deep set of AI editing tools.",
+      "description": "A full video editor on mobile and desktop with auto-captions, background removal, text-to-speech, and AI effects. Widely used for social media video.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "edit a video for TikTok or Instagram",
+        "auto-generate captions",
+        "remove a background without a green screen",
+        "add effects and transitions quickly"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (1080p export, basic AI); Standard $9.99/mo; Pro $19.99/mo or $179.99/yr" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "notion-ai",
+      "name": "Notion AI",
+      "url": "https://www.notion.com/product/ai",
+      "category": "productivity",
+      "tagline": "AI writing, search, and agents inside the Notion workspace.",
+      "description": "Adds AI to Notion: draft and edit content in any page, ask questions across your whole workspace, generate meeting notes, and run multi-step agents. Only useful if you already use Notion.",
+      "tags": ["paid", "team"],
+      "useCases": [
+        "draft and summarize documents in your notes",
+        "search across your whole workspace with a question",
+        "generate and organize meeting notes",
+        "auto-fill database properties"
+      ],
+      "pricing": { "model": "paid", "note": "Limited trial on Free/Plus; full AI bundled into Business plan at $20/member/mo (annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "reclaim-ai",
+      "name": "Reclaim.ai",
+      "url": "https://reclaim.ai",
+      "category": "productivity",
+      "tagline": "AI calendar that auto-schedules tasks, habits, and focus time.",
+      "description": "Connects to your Google Calendar and automatically blocks time for your to-dos, recurring habits, and deep work, rescheduling around meetings as things change.",
+      "tags": ["freemium", "beginner-friendly", "team"],
+      "useCases": [
+        "automatically block focus time on your calendar",
+        "make sure recurring habits get scheduled",
+        "defend deep-work time from meetings",
+        "keep task deadlines realistic"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Lite plan (1 calendar, 1 week ahead); Starter $10/seat/mo, Business $15/seat/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "motion",
+      "name": "Motion",
+      "url": "https://www.usemotion.com",
+      "category": "productivity",
+      "tagline": "AI project and calendar manager that plans your day for you.",
+      "description": "Combines tasks, projects, and calendar, then uses AI to build and continuously rebuild your daily schedule based on priorities and deadlines. No free tier.",
+      "tags": ["paid", "team"],
+      "useCases": [
+        "auto-plan your day around priorities",
+        "manage projects and tasks in one place",
+        "reschedule automatically when plans slip",
+        "see whether deadlines are actually achievable"
+      ],
+      "pricing": { "model": "paid", "note": "No free plan; 7-day trial; Pro ~$19/seat/mo, Business ~$29/seat/mo (cheaper annually)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "fireflies",
+      "name": "Fireflies.ai",
+      "url": "https://fireflies.ai",
+      "category": "meetings",
+      "tagline": "Meeting bot that records, transcribes, and summarizes calls.",
+      "description": "Joins your Zoom, Meet, or Teams calls, produces a searchable transcript and summary, extracts action items, and pushes notes to your other tools. Team-oriented.",
+      "tags": ["freemium", "beginner-friendly", "team"],
+      "useCases": [
+        "get a transcript and summary of every meeting",
+        "extract action items from a call",
+        "search across past meetings by keyword",
+        "share meeting notes with people who missed it"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (unlimited transcription, 400 min storage/team); Pro $10/seat/mo, Business $19/seat/mo (annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "fathom",
+      "name": "Fathom",
+      "url": "https://fathom.video",
+      "category": "meetings",
+      "tagline": "Free AI notetaker with unlimited recording and transcription.",
+      "description": "Records and transcribes your calls with an unusually generous free plan — unlimited recordings and storage, with AI summaries capped monthly. Popular with individuals.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "record and transcribe meetings for free",
+        "get an AI summary and action items",
+        "clip and share key moments from a call",
+        "stop taking notes manually during meetings"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (unlimited recording, 5 AI summaries/mo); Premium ~$15-19/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "granola",
+      "name": "Granola",
+      "url": "https://www.granola.ai",
+      "category": "meetings",
+      "tagline": "Bot-free notetaker that enhances the notes you type yourself.",
+      "description": "Runs on your computer without joining calls as a bot: you jot rough notes during the meeting and Granola combines them with the transcript into a clean summary afterward.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "take meeting notes without a bot in the call",
+        "turn rough notes into a clean summary",
+        "keep a searchable record of every meeting",
+        "ask questions across past meeting notes"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Basic (25-note history cap); Business $14/user/mo (unlimited)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "tldv",
+      "name": "tl;dv",
+      "url": "https://tldv.io",
+      "category": "meetings",
+      "tagline": "Meeting recorder with unlimited free recordings and clips.",
+      "description": "Records and transcribes Zoom, Meet, and Teams calls with a free plan that allows unlimited meetings, plus timestamped highlights and clip sharing. AI notes are capped on free.",
+      "tags": ["freemium", "beginner-friendly", "team"],
+      "useCases": [
+        "record unlimited meetings for free",
+        "create shareable clips of key moments",
+        "transcribe calls in 30+ languages",
+        "review a call you couldn't attend"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (unlimited recordings, 10 AI notes/mo, 3 uploads/mo); Pro ~$18/seat/mo (annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "teal",
+      "name": "Teal",
+      "url": "https://www.tealhq.com",
+      "category": "career",
+      "tagline": "Job-search hub with a resume builder and application tracker.",
+      "description": "Track job applications in a pipeline, tailor your resume per posting with keyword matching, and generate bullet points and summaries. Core tracking is free; AI features are paid.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "track job applications in one place",
+        "tailor your resume to a specific posting",
+        "check how well your resume matches a job description",
+        "generate resume bullet points"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (tracking + basic builder); Teal+ ~$9/wk or ~$29/mo (unlimited AI)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "rezi",
+      "name": "Rezi",
+      "url": "https://www.rezi.ai",
+      "category": "career",
+      "tagline": "AI resume builder focused on passing ATS screening.",
+      "description": "Builds ATS-optimized resumes with AI-generated bullet points, keyword targeting, and a content analyzer that scores your resume against a job description.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "build a resume that gets through applicant tracking systems",
+        "generate achievement bullet points",
+        "match resume keywords to a job posting",
+        "write a targeted cover letter"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (1 resume, 3 PDF downloads); Pro $29/mo; Lifetime $149 one-time" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "jobscan",
+      "name": "Jobscan",
+      "url": "https://www.jobscan.co",
+      "category": "career",
+      "tagline": "Scores your resume against a job description for ATS match.",
+      "description": "Paste your resume and a job posting and Jobscan reports a match rate, missing keywords, and formatting issues that could trip up applicant tracking systems. Pricier than similar tools.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "check your resume's match rate for a specific job",
+        "find keywords missing from your resume",
+        "catch ATS formatting problems",
+        "optimize your LinkedIn profile"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (5 scans/mo); ~$49.95/mo or ~$89.95/quarter for unlimited + AI" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "final-round-ai",
+      "name": "Final Round AI",
+      "url": "https://www.finalroundai.com",
+      "category": "career",
+      "tagline": "Interview practice with real-time AI answer suggestions.",
+      "description": "Runs mock interviews and, controversially, can act as a live 'copilot' that transcribes a real interview and suggests answers on screen. Best used for practice, not live.",
+      "tags": ["freemium", "advanced"],
+      "useCases": [
+        "practice answering common interview questions",
+        "get feedback on your interview responses",
+        "rehearse for a specific role",
+        "prepare stories using the STAR method"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; paid from ~$99-149/mo (cheaper quarterly/annually)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "zapier",
+      "name": "Zapier",
+      "url": "https://zapier.com",
+      "category": "automation",
+      "tagline": "Connect apps and automate workflows without code.",
+      "description": "Links thousands of apps so an action in one triggers an action in another ('when I get an email with an attachment, save it to Drive'). Now includes AI steps and agents.",
+      "tags": ["freemium", "beginner-friendly", "team", "api"],
+      "useCases": [
+        "automatically save email attachments to cloud storage",
+        "post form responses to a spreadsheet or Slack",
+        "sync data between two apps",
+        "build a simple AI agent that runs on a trigger"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (100 tasks/mo, 2-step Zaps); Professional $29.99/mo; Team $103.50/mo (33% off annual)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "make",
+      "name": "Make",
+      "url": "https://www.make.com",
+      "category": "automation",
+      "tagline": "Visual automation builder with more power than Zapier at lower cost.",
+      "description": "Build multi-step automations on a visual canvas with branching, loops, and data transformation. Steeper learning curve than Zapier but cheaper and more flexible.",
+      "tags": ["freemium", "team", "api", "advanced"],
+      "useCases": [
+        "build a complex multi-step automation",
+        "transform and route data between apps",
+        "automate a workflow with conditional logic",
+        "connect an app that has no Zapier integration"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (1,000 credits/mo, 2 scenarios); Core ~$12/mo, Pro ~$21/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "n8n",
+      "name": "n8n",
+      "url": "https://n8n.io",
+      "category": "automation",
+      "tagline": "Open-source workflow automation you can self-host for free.",
+      "description": "A node-based automation tool similar to Make, with the key difference that you can run it on your own server at no software cost. Strong for developers and AI agent workflows.",
+      "tags": ["freemium", "api", "advanced", "team"],
+      "useCases": [
+        "self-host your automations to avoid per-task fees",
+        "build AI agent workflows with custom logic",
+        "connect internal tools and APIs",
+        "automate data pipelines"
+      ],
+      "pricing": { "model": "freemium", "note": "Self-hosted Community edition is free; Cloud from ~€20-24/mo (Starter), Pro ~€60/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "advanced"
+    },
+    {
+      "id": "gumloop",
+      "name": "Gumloop",
+      "url": "https://www.gumloop.com",
+      "category": "automation",
+      "tagline": "No-code builder for AI-heavy automation workflows.",
+      "description": "A visual canvas for chaining AI steps — scraping, summarizing, classifying, drafting — into repeatable workflows. Aimed at automating knowledge work rather than app-to-app plumbing.",
+      "tags": ["freemium", "team", "advanced"],
+      "useCases": [
+        "automate research and summarization tasks",
+        "build a workflow that processes a list of inputs with AI",
+        "scrape and enrich data at scale",
+        "draft content from a repeatable process"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (5k credits/mo, 1 seat, 1 trigger); Pro from $37/mo (scales with credits)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "lindy",
+      "name": "Lindy",
+      "url": "https://www.lindy.ai",
+      "category": "automation",
+      "tagline": "Build AI assistants that handle email, meetings, and workflows.",
+      "description": "Create AI agents ('Lindies') that act on triggers — reply to emails, take meeting notes, qualify leads, run multi-step tasks — using a library of templates. No permanent free plan.",
+      "tags": ["paid", "team", "advanced"],
+      "useCases": [
+        "auto-draft replies to routine emails",
+        "build an AI agent for a repetitive task",
+        "qualify and route inbound leads",
+        "automate a workflow that needs judgment"
+      ],
+      "pricing": { "model": "paid", "note": "No permanent free plan; 7-day trial; Plus $49.99/mo, Pro $99.99/mo (credit-metered)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "advanced"
+    },
+    {
+      "id": "todoist",
+      "name": "Todoist",
+      "url": "https://todoist.com",
+      "category": "productivity",
+      "tagline": "Popular task manager, now with AI task breakdown and voice capture.",
+      "description": "A cross-platform to-do app with natural-language input and projects. Paid tiers add AI Assist (breaks big tasks into steps, builds filters), voice-to-task, and email action extraction.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "team"],
+      "useCases": [
+        "capture and organize tasks across devices",
+        "break a large task into subtasks with AI",
+        "turn a voice note into structured tasks",
+        "pull action items out of a forwarded email"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Beginner (5 projects); Pro $5/mo annually ($7 monthly, adds AI); Business $8/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "taskade",
+      "name": "Taskade",
+      "url": "https://www.taskade.com",
+      "category": "productivity",
+      "tagline": "All-in-one workspace with generous free AI agents and automations.",
+      "description": "Combines outlines, tasks, mind maps, and docs with AI agents and automations. Notable for a free plan that includes real AI usage where competitors gate it entirely.",
+      "tags": ["freemium", "beginner-friendly", "team", "mobile"],
+      "useCases": [
+        "organize projects as outlines and task lists",
+        "use AI agents on a free plan",
+        "brainstorm with AI in a mind map",
+        "collaborate on docs and tasks in one place"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (unlimited projects, ~3,000 AI credits); Pro from ~$8-10/mo annually" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "sunsama",
+      "name": "Sunsama",
+      "url": "https://www.sunsama.com",
+      "category": "productivity",
+      "tagline": "Daily planner that pulls tasks from your other tools into a calm routine.",
+      "description": "A deliberately paced planner: each morning you pull in tasks from email, Todoist, Asana, etc., estimate time, and schedule them onto your calendar. One plan, no free tier.",
+      "tags": ["paid", "student-discount"],
+      "useCases": [
+        "plan your day with realistic time estimates",
+        "consolidate tasks from many tools into one list",
+        "build a shutdown-and-plan daily routine",
+        "time-box work onto your calendar"
+      ],
+      "pricing": { "model": "paid", "note": "No free tier; 14-day trial; ~$20/mo or ~$16-17/mo annually; student discount available" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "poe",
+      "name": "Poe",
+      "url": "https://poe.com",
+      "category": "chat-assistant",
+      "tagline": "One subscription to chat with many AI models side by side.",
+      "description": "By Quora. A single app and subscription that gives access to ChatGPT, Claude, Gemini, image models, and community-made bots, metered by a shared points system.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "compare answers from different models in one place",
+        "access multiple premium models for one fee",
+        "use community-built specialized bots",
+        "switch models without separate subscriptions"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier (limited daily); Starter $4.99/mo, Premium $19.99/mo (points-metered)" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "mistral-le-chat",
+      "name": "Le Chat (Mistral)",
+      "url": "https://chat.mistral.ai",
+      "category": "chat-assistant",
+      "tagline": "European AI assistant, the cheapest paid tier among major providers.",
+      "description": "Mistral AI's conversational assistant with web search, document upload, image generation, and in-chat coding. Pro is notably cheaper than ChatGPT Plus or Claude Pro.",
+      "tags": ["freemium", "beginner-friendly", "mobile", "api", "student-discount"],
+      "useCases": [
+        "get a capable assistant at a lower price",
+        "draft and edit writing with web context",
+        "analyze uploaded documents",
+        "write and run code in chat"
+      ],
+      "pricing": { "model": "freemium", "note": "Free tier; Pro $14.99/mo ($6.99 for verified students up to 12 months); Team $24.99/user/mo" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "presentations-ai",
+      "name": "Presentations.ai",
+      "url": "https://www.presentations.ai",
+      "category": "presentations",
+      "tagline": "Generate on-brand business decks from a prompt or document.",
+      "description": "An AI deck builder with template-locked styling so slides stay consistent, generation from a prompt or uploaded file, and export to PowerPoint. Business-focused.",
+      "tags": ["freemium", "beginner-friendly", "team"],
+      "useCases": [
+        "generate a business presentation from a brief",
+        "turn a document into slides",
+        "keep a deck visually consistent",
+        "export an AI deck to PowerPoint"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Starter (100 credits, 20 slides); Pro $20/mo annually; Gold $100/mo annually" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "looka",
+      "name": "Looka",
+      "url": "https://looka.com",
+      "category": "design",
+      "tagline": "AI logo maker and brand kit generator.",
+      "description": "Answer a few prompts about your style and Looka generates logo options you can customize, then buy as files or as part of a brand kit with matching marketing templates.",
+      "tags": ["paid", "beginner-friendly"],
+      "useCases": [
+        "create a logo for a project or side business",
+        "generate a matching brand color and font set",
+        "get business-card and social templates in one style",
+        "explore logo directions before hiring a designer"
+      ],
+      "pricing": { "model": "paid", "note": "Design free; downloads paid: Basic $20 one-time, Premium $65 one-time, Brand Kit $96/yr" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "semantic-scholar",
+      "name": "Semantic Scholar",
+      "url": "https://www.semanticscholar.org",
+      "category": "research",
+      "tagline": "Free academic search with AI summaries, from a nonprofit institute.",
+      "description": "A free search engine over 200M+ papers from the Allen Institute for AI, with one-sentence AI 'TLDR' summaries, citation context, and an AI reading tool. No paid tier.",
+      "tags": ["free", "beginner-friendly", "api"],
+      "useCases": [
+        "search academic literature for free",
+        "get a one-line summary of a paper before reading it",
+        "see how a paper is cited by others",
+        "build a reading list with a free API"
+      ],
+      "pricing": { "model": "free", "note": "Completely free; nonprofit (Allen Institute for AI); free API available" },
+      "pricingChecked": "2026-09-03",
+      "skillLevel": "beginner"
+    }
+  ]
+}

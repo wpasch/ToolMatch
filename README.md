@@ -1,0 +1,44 @@
+# ToolMatch
+
+Curation and recommendation site for AI tools, aimed at students and young
+professionals. Describe what you're trying to do and get a short list of tools
+that fit.
+
+Plain HTML/CSS/JS, no framework, no build step.
+
+## Run it locally
+
+`fetch()` needs the files served over HTTP (not opened as `file://`), so run a
+local server from this folder:
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open http://localhost:8000. (VS Code's Live Server extension works too.)
+
+## Structure
+
+```
+index.html        markup + page skeleton
+css/styles.css     styles (design tokens at the top)
+js/
+  app.js           entry point: boot + rendering
+  data.js          loads and caches data/tools.json
+  match.js         (next piece) query -> ranked tools
+data/tools.json    the tool catalog: categories, tags, tools
+```
+
+## Data shape
+
+`data/tools.json` has three parts:
+
+- `categories` — id + label registry (13 categories); each tool has one `category`
+- `tags` — allowed tag vocabulary; each tool has a subset in `tags`
+- `tools` — the catalog (75 tools). Match-relevant fields: `tags`, `useCases`,
+  `tagline`, `description`.
+
+Per-tool fields: `id`, `name`, `url`, `category`, `tagline`, `description`,
+`tags`, `useCases`, `pricing` (`model` = free/freemium/paid + `note`),
+`pricingChecked` (YYYY-MM-DD — pricing drifts, so this flags staleness),
+`skillLevel`.

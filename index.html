@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToolMatch — Find the right AI tool</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">ToolMatch</a>
+      <nav class="site-nav">
+        <a href="#directory">Browse all tools</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1 class="hero__title">Find the right AI tool for what you're actually doing.</h1>
+        <p class="hero__sub">
+          Describe your task and get a short list of tools that fit — curated for
+          students and young professionals.
+        </p>
+
+        <form id="search-form" class="search" role="search">
+          <label class="visually-hidden" for="search-input">
+            Describe what you're trying to do
+          </label>
+          <input
+            id="search-input"
+            name="q"
+            type="text"
+            class="search__input"
+            placeholder="e.g. summarize long readings for class"
+            autocomplete="off"
+          />
+          <button type="submit" class="search__button">Find tools</button>
+        </form>
+
+        <p class="hero__hint">or <a href="#directory">browse all tools</a></p>
+      </section>
+
+      <section id="results" class="results" hidden>
+        <h2 class="results__heading">Recommended for you</h2>
+        <ul id="results-list" class="tool-list"></ul>
+      </section>
+
+      <section id="directory" class="directory">
+        <h2 class="directory__heading">All tools</h2>
+        <ul id="directory-list" class="tool-list">
+          <li class="tool-list__loading">Loading tools…</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>ToolMatch — a personal project.</p>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+  </body>
+</html>
