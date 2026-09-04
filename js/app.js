@@ -5,6 +5,10 @@ import { loadData } from "./data.js";
 
 const directoryList = document.getElementById("directory-list");
 
+// Card entrance animations stagger by list position (see --i in
+// css/styles.css), capped so a 75-card grid doesn't take seconds to settle.
+const MAX_STAGGER_INDEX = 16;
+
 // A handful of tools whose live favicon (fetched via the service below)
 // turned out to be wrong or a generic placeholder when checked against the
 // product's real logo — served locally instead so they render correctly.
@@ -42,9 +46,10 @@ function logoUrl(tool) {
 }
 
 // Build one <li> card for a tool.
-function renderToolCard(tool, categoryLabel) {
+function renderToolCard(tool, categoryLabel, index) {
   const li = document.createElement("li");
   li.className = "tool-card";
+  li.style.setProperty("--i", Math.min(index, MAX_STAGGER_INDEX));
   const initial = tool.name.trim().charAt(0).toUpperCase();
   li.innerHTML = `
     <div class="tool-card__head">
@@ -80,18 +85,121 @@ function renderDirectory(data) {
   }
 
   directoryList.innerHTML = "";
-  for (const tool of data.tools) {
+  data.tools.forEach((tool, index) => {
     const label = categoryLabels[tool.category] ?? tool.category;
-    directoryList.appendChild(renderToolCard(tool, label));
+    directoryList.appendChild(renderToolCard(tool, label, index));
+  });
+  directoryList.removeAttribute("aria-busy");
+  directoryList.removeAttribute("aria-label");
+}
+
+// One skeleton card: a logo-sized block, a title-width block, and two
+// tagline-width lines, shown while data/tools.json is still loading.
+function renderSkeletonCard(index) {
+  const li = document.createElement("li");
+  li.className = "tool-card tool-card--skeleton";
+  li.style.setProperty("--i", Math.min(index, MAX_STAGGER_INDEX));
+  li.setAttribute("aria-hidden", "true");
+  li.innerHTML = `
+    <div class="tool-card__head">
+      <span class="skeleton-block skeleton-block--logo"></span>
+      <span class="skeleton-block skeleton-block--title"></span>
+    </div>
+    <span class="skeleton-block skeleton-block--line"></span>
+    <span class="skeleton-block skeleton-block--line short"></span>
+  `;
+  return li;
+}
+
+function renderSkeleton(count) {
+  directoryList.innerHTML = "";
+  for (let i = 0; i < count; i++) {
+    directoryList.appendChild(renderSkeletonCard(i));
   }
 }
 
+// ---------- Theme toggle ----------
+// Defaults to the OS preference (handled purely in CSS); an explicit choice
+// here is saved and takes over from then on. The inline script in
+// index.html's <head> applies a saved choice before first paint so there's
+// no flash of the wrong theme.
+function initThemeToggle() {
+  const button = document.getElementById("theme-toggle");
+  const sunIcon = button?.querySelector(".icon-sun");
+  const moonIcon = button?.querySelector(".icon-moon");
+  if (!button) return;
+
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+  function currentTheme() {
+    const explicit = document.documentElement.getAttribute("data-theme");
+    if (explicit === "light" || explicit === "dark") return explicit;
+    return prefersDark.matches ? "dark" : "light";
+  }
+
+  function updateButton() {
+    const isDark = currentTheme() === "dark";
+    button.setAttribute("aria-pressed", String(isDark));
+    button.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
+    sunIcon.hidden = isDark;
+    moonIcon.hidden = !isDark;
+  }
+
+  button.addEventListener("click", () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {
+      /* localStorage unavailable (private mode, etc.) — theme still applies for this page view */
+    }
+    updateButton();
+  });
+
+  // Keep the icon in sync if the OS theme changes while no explicit choice
+  // has been made on this page.
+  prefersDark.addEventListener("change", updateButton);
+
+  updateButton();
+}
+
+// ---------- Sticky header shadow ----------
+// Adds a hairline shadow once the page has scrolled, so the header reads as
+// a distinct layer instead of floating with a hard edge from the top.
+function initHeaderScrollShadow() {
+  const header = document.querySelector(".site-header");
+  if (!header) return;
+
+  let ticking = false;
+  function update() {
+    header.classList.toggle("site-header--scrolled", window.scrollY > 4);
+    ticking = false;
+  }
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    },
+    { passive: true }
+  );
+
+  update();
+}
+
 async function init() {
+  initThemeToggle();
+  initHeaderScrollShadow();
+
+  renderSkeleton(9);
   try {
     const data = await loadData();
     renderDirectory(data);
   } catch (error) {
     directoryList.innerHTML = `<li class="tool-list__loading">Couldn't load tools: ${error.message}</li>`;
+    directoryList.removeAttribute("aria-busy");
   }
 }
 

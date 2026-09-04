@@ -5,13 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ToolMatch — Find the right AI tool</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script>
+      // Runs before first paint so a saved theme choice never flashes the
+      // wrong palette. Falls back to the OS preference (handled by CSS)
+      // when nothing's been saved.
+      try {
+        var saved = localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") {
+          document.documentElement.setAttribute("data-theme", saved);
+        }
+      } catch (e) {
+        /* localStorage unavailable (private mode, etc.) — OS preference still applies */
+      }
+    </script>
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="/">ToolMatch</a>
-      <nav class="site-nav">
-        <a href="#directory">Browse all tools</a>
-      </nav>
+      <div class="site-header__right">
+        <nav class="site-nav">
+          <a href="#directory">Browse all tools</a>
+        </nav>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch to dark theme"
+          aria-pressed="false"
+        >
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </div>
     </header>
 
     <main>
@@ -47,8 +77,9 @@
 
       <section id="directory" class="directory">
         <h2 class="directory__heading">All tools</h2>
-        <ul id="directory-list" class="tool-list">
-          <li class="tool-list__loading">Loading tools…</li>
+        <ul id="directory-list" class="tool-list" aria-busy="true" aria-label="Loading tools">
+          <!-- Skeleton placeholders; js/app.js replaces this markup once
+               data/tools.json has loaded. -->
         </ul>
       </section>
     </main>
