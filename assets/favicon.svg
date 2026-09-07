@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Tab icon. Same four-point plane as the site mark, sitting on a sky
+       tile so it stays visible against both light and dark browser chrome —
+       a bare outline disappears at 16px on a dark toolbar. Source of truth
+       for the PNG sizes beside it. -->
+  <rect width="64" height="64" rx="14" fill="#3d6ec2"/>
+  <path d="M73 0 L0 38.5 L35 41 L48 76 Z"
+        fill="#ffffff"
+        transform="translate(15.7 15) scale(0.447)"/>
+</svg>

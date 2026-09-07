@@ -8,6 +8,15 @@
       name="description"
       content="A hand-checked directory of 75 AI tools for students and early-career work. Describe your task, get a short list worth trying."
     />
+    <!-- SVG first for browsers that take it; the PNG and .ico cover the
+         rest. Declared explicitly because the site is served from a
+         subpath, so a bare /favicon.ico request never reaches this repo. -->
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="icon" href="assets/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <meta name="theme-color" content="#3d6ec2" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
