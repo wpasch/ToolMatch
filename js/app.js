@@ -35,13 +35,35 @@ const LOGO_OVERRIDES = {
   windsurf: "assets/logos/windsurf.png",
 };
 
+// data/tools.json is a public repository file, so a pull request can put
+// anything in it. Every value below is treated as untrusted: nothing from a
+// tool entry is ever concatenated into markup.
+
+// Only http(s) survives. A `javascript:` or `data:` URL in a catalog entry
+// would otherwise turn a card into a script trigger the moment someone
+// clicks it.
+const SAFE_PROTOCOLS = new Set(["http:", "https:"]);
+
+function safeUrl(raw) {
+  try {
+    const url = new URL(String(raw), window.location.href);
+    return SAFE_PROTOCOLS.has(url.protocol) ? url.href : null;
+  } catch {
+    return null;
+  }
+}
+
 // Favicon service used to fetch the rest of the tools' logos without hosting
 // 75 image files ourselves. Falls back to a lettermark if a given domain has
 // none.
 function logoUrl(tool) {
   if (LOGO_OVERRIDES[tool.id]) return LOGO_OVERRIDES[tool.id];
-  const domain = new URL(tool.url).hostname;
-  return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+  const site = safeUrl(tool.url);
+  if (!site) return null;
+  const url = new URL("https://www.google.com/s2/favicons");
+  url.searchParams.set("domain", new URL(site).hostname);
+  url.searchParams.set("sz", "64");
+  return url.href;
 }
 
 function escapeHtml(value) {
@@ -52,38 +74,75 @@ function escapeHtml(value) {
   );
 }
 
+// Small DOM builders. textContent never parses markup, so these are safe to
+// hand arbitrary strings.
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text != null) node.textContent = text;
+  return node;
+}
+
+function lettermark(name) {
+  const initial = String(name).trim().charAt(0).toUpperCase() || "?";
+  return el("span", "tool-card__logo tool-card__logo--fallback", initial);
+}
+
+// A real error listener rather than an inline onerror attribute: that
+// attribute was a JavaScript string nested inside HTML, so it needed two
+// different escapes to be safe and had neither.
+function toolLogo(tool) {
+  const src = safeUrl(logoUrl(tool));
+  if (!src) return lettermark(tool.name);
+
+  const img = el("img", "tool-card__logo");
+  img.src = src;
+  img.alt = "";
+  img.width = 32;
+  img.height = 32;
+  img.loading = "lazy";
+  img.addEventListener("error", () => img.replaceWith(lettermark(tool.name)), {
+    once: true,
+  });
+  return img;
+}
+
 // ---------- Tool cards ----------
 function renderToolCard(tool, categoryLabel) {
-  const li = document.createElement("li");
-  li.className = "tool-card";
-  const initial = tool.name.trim().charAt(0).toUpperCase();
-  li.innerHTML = `
-    <div class="tool-card__head">
-      <img
-        class="tool-card__logo"
-        src="${logoUrl(tool)}"
-        alt=""
-        width="32"
-        height="32"
-        loading="lazy"
-        onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'tool-card__logo tool-card__logo--fallback',textContent:'${initial}'}))"
-      />
-      <div class="tool-card__title">
-        <h3 class="tool-card__name">${escapeHtml(tool.name)}</h3>
-        <span class="tool-card__cat">${escapeHtml(categoryLabel)}</span>
-      </div>
-    </div>
-    <p class="tool-card__tagline">${escapeHtml(tool.tagline)}</p>
-    <p class="tool-card__meta">${escapeHtml(tool.pricing.note)}</p>
-    <a class="tool-card__link" href="${tool.url}" target="_blank" rel="noopener">
-      Open ${escapeHtml(tool.name)}
-    </a>
-  `;
+  const li = el("li", "tool-card");
+
+  const title = el("div", "tool-card__title");
+  title.append(
+    el("h3", "tool-card__name", tool.name),
+    el("span", "tool-card__cat", categoryLabel)
+  );
+
+  const head = el("div", "tool-card__head");
+  head.append(toolLogo(tool), title);
+
+  li.append(
+    head,
+    el("p", "tool-card__tagline", tool.tagline),
+    el("p", "tool-card__meta", tool.pricing?.note ?? "")
+  );
+
+  // A card whose link failed validation still renders — minus the link.
+  const href = safeUrl(tool.url);
+  if (href) {
+    const link = el("a", "tool-card__link", `Open ${tool.name}`);
+    link.href = href;
+    link.target = "_blank";
+    // noreferrer as well as noopener: these are third-party sites and they
+    // do not need to be told where the visitor came from.
+    link.rel = "noopener noreferrer";
+    li.append(link);
+  }
+
   return li;
 }
 
 function renderInto(list, tools, labels) {
-  list.innerHTML = "";
+  list.replaceChildren();
   for (const tool of tools) {
     list.appendChild(renderToolCard(tool, labels[tool.category] ?? tool.category));
   }
@@ -118,17 +177,27 @@ function renderMarquee(tools) {
   const track = document.getElementById("hero-marquee");
   if (!track) return;
 
-  const picks = tools.slice(0, 22);
-  const chips = picks
-    .map(
-      (tool) => `
-        <span class="marquee__chip">
-          <img src="${logoUrl(tool)}" alt="" width="28" height="28" loading="lazy" />
-        </span>`
-    )
-    .join("");
+  function chip(tool, size) {
+    const span = el("span", "marquee__chip");
+    const src = safeUrl(logoUrl(tool));
+    if (src) {
+      const img = el("img");
+      img.src = src;
+      img.alt = "";
+      img.width = size;
+      img.height = size;
+      img.loading = "lazy";
+      span.append(img);
+    }
+    return span;
+  }
 
-  track.innerHTML = chips + chips;
+  const picks = tools.slice(0, 22);
+  track.replaceChildren();
+  // Two runs, so the -50% translate lands on an identical frame.
+  for (let pass = 0; pass < 2; pass++) {
+    for (const tool of picks) track.appendChild(chip(tool, 28));
+  }
 }
 
 // ---------- Category cluster ----------
@@ -165,13 +234,25 @@ function renderCluster(tools) {
   // rather than the first dozen chat assistants.
   const step = Math.floor(tools.length / CLUSTER_POSITIONS.length) || 1;
 
-  cluster.innerHTML = CLUSTER_POSITIONS.map(([left, top], i) => {
+  cluster.replaceChildren();
+  CLUSTER_POSITIONS.forEach(([left, top], i) => {
     const tool = tools[(i * step) % tools.length];
-    return `
-      <span class="cluster__chip" style="left:${left}%;top:${top}%;${driftStyle(i)}">
-        <img src="${logoUrl(tool)}" alt="" width="29" height="29" loading="lazy" />
-      </span>`;
-  }).join("");
+    const span = el("span", "cluster__chip");
+    // Numbers only — nothing from the catalog reaches the style attribute.
+    span.style.cssText = `left:${left}%;top:${top}%;${driftStyle(i)}`;
+
+    const src = safeUrl(logoUrl(tool));
+    if (src) {
+      const img = el("img");
+      img.src = src;
+      img.alt = "";
+      img.width = 29;
+      img.height = 29;
+      img.loading = "lazy";
+      span.append(img);
+    }
+    cluster.appendChild(span);
+  });
 }
 
 // ---------- Category chips ----------
@@ -184,24 +265,28 @@ function renderCategories(data) {
     counts[tool.category] = (counts[tool.category] ?? 0) + 1;
   }
 
-  list.innerHTML = data.categories
-    .map(
-      (category) => `
-        <li>
-          <a href="#directory" data-category="${category.id}">
-            ${escapeHtml(category.label)}
-            <span>${counts[category.id] ?? 0}</span>
-          </a>
-        </li>`
-    )
-    .join("");
+  list.replaceChildren();
+  for (const category of data.categories) {
+    const link = el("a", null, category.label);
+    link.href = "#directory";
+    // dataset assigns a property, so an id containing quotes cannot escape
+    // into the surrounding markup the way string concatenation allowed.
+    link.dataset.category = category.id;
+    link.append(el("span", null, String(counts[category.id] ?? 0)));
+
+    const item = document.createElement("li");
+    item.append(link);
+    list.appendChild(item);
+  }
 
   // Jumping from a category chip pre-selects that filter in the directory.
   list.addEventListener("click", (event) => {
     const link = event.target.closest("a[data-category]");
     if (!link) return;
-    const button = document.querySelector(
-      `.filter[data-category="${link.dataset.category}"]`
+    // Matched by comparing values rather than building a selector string:
+    // a category id with a quote in it would break the selector.
+    const button = [...document.querySelectorAll(".filter")].find(
+      (candidate) => candidate.dataset.category === link.dataset.category
     );
     button?.click();
   });
@@ -225,17 +310,14 @@ function initFilters(data, labels) {
     })),
   ];
 
-  bar.innerHTML = options
-    .map(
-      (option, i) => `
-        <button
-          type="button"
-          class="filter"
-          data-category="${option.id}"
-          aria-pressed="${i === 0}"
-        >${escapeHtml(option.label)}</button>`
-    )
-    .join("");
+  bar.replaceChildren();
+  options.forEach((option, i) => {
+    const button = el("button", "filter", option.label);
+    button.type = "button";
+    button.dataset.category = option.id;
+    button.setAttribute("aria-pressed", String(i === 0));
+    bar.appendChild(button);
+  });
 
   bar.addEventListener("click", (event) => {
     const button = event.target.closest(".filter");
