@@ -69,6 +69,27 @@ for (const tool of data.tools) {
   );
 }
 
+// ---------- Composition ----------
+// A directory goes lopsided one accepted tool at a time. Nothing about a
+// category with three entries in it looks broken — the chip is there, the
+// filter works, the count is quietly small — so the shape of the catalog is
+// asserted rather than eyeballed.
+//
+// MIN_PER_CATEGORY is a floor, not a target. It sits below where the thinnest
+// categories are today, so it catches a category being hollowed out rather
+// than nagging about one that is merely smaller than the rest.
+const MIN_PER_CATEGORY = 5;
+const perCategory = new Map(data.categories.map(({ id }) => [id, 0]));
+for (const tool of data.tools) {
+  perCategory.set(tool.category, perCategory.get(tool.category) + 1);
+}
+for (const [id, count] of perCategory) {
+  assert.ok(
+    count >= MIN_PER_CATEGORY,
+    `category "${id}" has only ${count} tools; a category thinner than ${MIN_PER_CATEGORY} reads as an empty room`
+  );
+}
+
 const logosDirectory = new URL("assets/logos/", root);
 const logoFiles = (await readdir(logosDirectory)).filter((file) => file.endsWith(".png"));
 const logoIds = new Set(logoFiles.map((file) => path.basename(file, ".png")));
@@ -150,7 +171,19 @@ const ogWidth = ogBytes.readUInt32BE(16);
 const ogHeight = ogBytes.readUInt32BE(20);
 assert.equal(`${ogWidth}x${ogHeight}`, "1200x630", "assets/og.png must be 1200x630; run: npm run og");
 
+// The composition, printed on every run. The site's premise is that these
+// tools are usable with no budget, and that claim is a ratio — worth seeing
+// each time the catalog changes rather than the day someone questions it.
+const paidCount = data.tools.length - freeCount;
+const thinnest = [...perCategory.entries()].sort((a, b) => a[1] - b[1]).slice(0, 3);
+
 console.log(
   `Validated ${data.tools.length} tools, ${data.categories.length} categories, ` +
     `${logoFiles.length} logos, and the generated metadata.`
+);
+console.log(
+  `  ${freeCount} free or freemium · ${paidCount} paid · ${beginnerCount} beginner-level`
+);
+console.log(
+  `  thinnest categories: ${thinnest.map(([id, n]) => `${id} (${n})`).join(", ")}`
 );
