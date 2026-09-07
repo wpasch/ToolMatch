@@ -419,7 +419,7 @@
     {
       "id": "v0",
       "name": "v0 by Vercel",
-      "url": "https://v0.dev",
+      "url": "https://v0.app",
       "category": "coding",
       "tagline": "Generate React and Tailwind UI from a text prompt or screenshot.",
       "description": "Describe a UI or paste a screenshot and v0 produces working React components styled with Tailwind and shadcn/ui, which you can iterate on and copy into a project.",
@@ -887,7 +887,7 @@
     {
       "id": "runway",
       "name": "Runway",
-      "url": "https://runwayml.com",
+      "url": "https://runway.com",
       "category": "audio-video",
       "tagline": "AI video generation and editing for creators and filmmakers.",
       "description": "Text-to-video and image-to-video generation plus AI editing tools like background removal and motion tracking. Aimed at more serious video and film work.",
@@ -1031,7 +1031,7 @@
     {
       "id": "fathom",
       "name": "Fathom",
-      "url": "https://fathom.video",
+      "url": "https://www.fathom.ai",
       "category": "meetings",
       "tagline": "Free AI notetaker with unlimited recording and transcription.",
       "description": "Records and transcribes your calls with an unusually generous free plan — unlimited recordings and storage, with AI summaries capped monthly. Popular with individuals.",

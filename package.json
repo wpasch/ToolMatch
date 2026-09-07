@@ -5,6 +5,8 @@
   "scripts": {
     "check": "for f in js/*.js; do node --check \"$f\" || exit 1; done",
     "validate": "node scripts/validate-data.js",
-    "test": "npm run check && npm run validate && node --test"
+    "test": "npm run check && npm run validate && node --test",
+    "stale": "node scripts/stale-report.js",
+    "links": "node --max-http-header-size=65536 scripts/check-links.js"
   }
 }

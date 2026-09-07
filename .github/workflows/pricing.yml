@@ -1,0 +1,26 @@
+name: Warn on stale pricing
+
+# validate-data.js fails the build the day a listing passes 120 days. This
+# runs three weeks ahead of that so the re-check is a scheduled chore rather
+# than a surprise red build on an unrelated pull request.
+on:
+  schedule:
+    - cron: "0 7 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: List anything within three weeks of failing validation
+        run: |
+          npm run stale -- 99
+          # `stale` only reports; validation is what actually draws the line.
+          npm run validate

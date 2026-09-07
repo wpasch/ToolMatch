@@ -65,3 +65,16 @@ npm test
 Validation checks the schema, published catalog counts, logo/font assets, and
 pricing dates. Pricing older than 120 days fails the check so stale listings do
 not quietly remain published.
+
+Two more checks need the network, so they run on a schedule rather than on
+every change — a publisher's outage should not fail a pull request that only
+touched CSS:
+
+```bash
+npm run stale        # listings by age, oldest first; `-- 90` to filter
+npm run links        # every catalog URL: dead, moved, or behind bot protection
+```
+
+`stale` exists because every tool was checked in the same week, so without it
+the 120-day rule expires the whole catalog at once. Working the top of that
+list keeps re-checking a rolling chore.

@@ -1,0 +1,23 @@
+name: Check catalog links
+
+# Weekly, and on demand. Deliberately not part of the pull-request checks:
+# it needs the network and a publisher's outage would otherwise fail a pull
+# request that only touched CSS. A failure here is a chore for a human, not
+# a broken build.
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run links
