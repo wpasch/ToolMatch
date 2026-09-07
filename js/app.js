@@ -27,13 +27,8 @@ const directoryEmpty = document.getElementById("directory-empty");
 //     actual ChatGPT app icon, which matches the product being listed.
 //   - windsurf: service returned an unrelated hexagon icon — fetched
 //     directly from windsurf.com/favicon.ico instead.
-const LOGO_OVERRIDES = {
-  notebooklm: "assets/logos/notebooklm.png",
-  "microsoft-copilot": "assets/logos/microsoft-copilot.png",
-  "github-copilot": "assets/logos/github-copilot.png",
-  chatgpt: "assets/logos/chatgpt.png",
-  windsurf: "assets/logos/windsurf.png",
-};
+// Those five sit in assets/logos/ alongside the rest, named by tool id like
+// every other icon, so no special case is needed to serve them.
 
 // data/tools.json is a public repository file, so a pull request can put
 // anything in it. Every value below is treated as untrusted: nothing from a
@@ -53,17 +48,19 @@ function safeUrl(raw) {
   }
 }
 
-// Favicon service used to fetch the rest of the tools' logos without hosting
-// 75 image files ourselves. Falls back to a lettermark if a given domain has
-// none.
+// Logos are served from this repository rather than fetched from a favicon
+// service at page load. A runtime call would have told that third party the
+// domain of every tool a visitor was looking at, on every visit; the icons
+// were collected once instead.
+//
+// The id becomes a filename, so it is checked against a strict pattern
+// first. Anything else — a path separator, a leading dot, an id that could
+// climb out of the directory — falls back to a lettermark.
+const SAFE_LOGO_ID = /^[a-z0-9][a-z0-9-]*$/;
+
 function logoUrl(tool) {
-  if (LOGO_OVERRIDES[tool.id]) return LOGO_OVERRIDES[tool.id];
-  const site = safeUrl(tool.url);
-  if (!site) return null;
-  const url = new URL("https://www.google.com/s2/favicons");
-  url.searchParams.set("domain", new URL(site).hostname);
-  url.searchParams.set("sz", "64");
-  return url.href;
+  const id = String(tool?.id ?? "");
+  return SAFE_LOGO_ID.test(id) ? `assets/logos/${id}.png` : null;
 }
 
 function escapeHtml(value) {
