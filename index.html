@@ -17,11 +17,19 @@
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <meta name="theme-color" content="#3d6ec2" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="assets/fonts/figtree-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/instrument-serif-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
     <link rel="stylesheet" href="css/styles.css" />
     <script>
@@ -52,7 +60,7 @@
     </svg>
 
     <header class="nav" id="nav">
-      <a class="nav__brand" href="/">
+      <a class="nav__brand" href="./">
         <svg class="mark" viewBox="0 0 73 76" aria-hidden="true">
           <use href="#tm-plane" />
         </svg>
@@ -320,9 +328,17 @@
 
       <!-- ---------- Results (revealed after a search) ---------- -->
       <section id="results" class="section results" hidden>
+        <p
+          id="search-status"
+          class="visually-hidden"
+          role="status"
+          aria-live="polite"
+        ></p>
         <div class="section__head">
           <span class="pill">Matches</span>
-          <h2 class="section__title results__heading">Recommended for you</h2>
+          <h2 class="section__title results__heading" tabindex="-1">
+            Recommended for you
+          </h2>
         </div>
         <ul id="results-list" class="tool-list"></ul>
       </section>
@@ -399,7 +415,7 @@
           </article>
 
           <article class="fact">
-            <p class="fact__n">54</p>
+            <p class="fact__n">60</p>
             <p class="fact__label">rated beginner-friendly</p>
           </article>
 
@@ -503,8 +519,10 @@
           <details class="faq__item">
             <summary class="faq__q">Can I suggest something?</summary>
             <p class="faq__a">
-              Please do. Issues and pull requests on the repo are the fastest
-              route, especially if you've spotted a price that's gone stale.
+              Please do. Issues and pull requests on the
+              <a href="https://github.com/wpasch/ToolMatch">ToolMatch repository</a>
+              are the fastest route, especially if you've spotted a price that's
+              gone stale.
             </p>
           </details>
         </div>
@@ -514,7 +532,7 @@
     <footer class="footer">
       <div class="footer__top">
         <div class="footer__intro">
-          <a class="nav__brand" href="/">
+          <a class="nav__brand" href="./">
             <svg class="mark" viewBox="0 0 73 76" aria-hidden="true">
               <use href="#tm-plane" />
             </svg>

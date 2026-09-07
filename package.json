@@ -1,0 +1,10 @@
+{
+  "name": "toolmatch",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check js/app.js && node --check js/data.js && node --check js/search.js",
+    "validate": "node scripts/validate-data.js",
+    "test": "npm run check && npm run validate && node --test"
+  }
+}

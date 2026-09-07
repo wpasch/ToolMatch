@@ -22,10 +22,11 @@ Then open http://localhost:8000. (VS Code's Live Server extension works too.)
 ```
 index.html        markup + page skeleton
 css/styles.css     styles (design tokens at the top)
+assets/fonts/      self-hosted webfonts and their licenses
 js/
   app.js           entry point: boot + rendering
   data.js          loads and caches data/tools.json
-  match.js         (next piece) query -> ranked tools
+  search.js        query -> ranked tools
 data/tools.json    the tool catalog: categories, tags, tools
 ```
 
@@ -42,3 +43,15 @@ Per-tool fields: `id`, `name`, `url`, `category`, `tagline`, `description`,
 `tags`, `useCases`, `pricing` (`model` = free/freemium/paid + `note`),
 `pricingChecked` (YYYY-MM-DD — pricing drifts, so this flags staleness),
 `skillLevel`.
+
+## Verify changes
+
+Run the dependency-free test and catalog validation suite with:
+
+```bash
+npm test
+```
+
+Validation checks the schema, published catalog counts, logo/font assets, and
+pricing dates. Pricing older than 120 days fails the check so stale listings do
+not quietly remain published.

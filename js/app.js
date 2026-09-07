@@ -85,6 +85,25 @@ function lettermark(name) {
   return el("span", "tool-card__logo tool-card__logo--fallback", initial);
 }
 
+function titleCase(value) {
+  const text = String(value ?? "").replaceAll("-", " ");
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
+}
+
+function formatCheckedDate(value) {
+  // Parse date-only values as local calendar dates. `new Date("YYYY-MM-DD")`
+  // is UTC and can display as the previous day west of Greenwich.
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(value ?? ""));
+  if (!match) return null;
+  const [, year, month, day] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
 // A real error listener rather than an inline onerror attribute: that
 // attribute was a JavaScript string nested inside HTML, so it needed two
 // different escapes to be safe and had neither.
@@ -120,8 +139,20 @@ function renderToolCard(tool, categoryLabel) {
   li.append(
     head,
     el("p", "tool-card__tagline", tool.tagline),
-    el("p", "tool-card__meta", tool.pricing?.note ?? "")
+    el("p", "tool-card__description", tool.description)
   );
+
+  const badges = el("div", "tool-card__badges");
+  badges.append(
+    el("span", "tool-card__badge", titleCase(tool.pricing?.model)),
+    el("span", "tool-card__badge", `${titleCase(tool.skillLevel)} level`)
+  );
+  li.append(badges, el("p", "tool-card__meta", tool.pricing?.note ?? ""));
+
+  const checked = formatCheckedDate(tool.pricingChecked);
+  if (checked) {
+    li.append(el("p", "tool-card__checked", `Pricing checked ${checked}`));
+  }
 
   // A card whose link failed validation still renders — minus the link.
   const href = safeUrl(tool.url);
@@ -343,14 +374,21 @@ function initSearch(data, labels) {
   const results = document.getElementById("results");
   const resultsList = document.getElementById("results-list");
   const heading = results?.querySelector(".results__heading");
-  if (!form) return;
+  const status = document.getElementById("search-status");
+  if (!form || !input || !results || !resultsList || !heading) return;
 
   const index = buildIndex(data.tools, labels);
 
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
+  function syncQuery(value) {
+    const url = new URL(window.location.href);
+    if (value.trim()) url.searchParams.set("q", value.trim());
+    else url.searchParams.delete("q");
+    history.replaceState(null, "", url);
+  }
 
+  function showResults() {
     const ranked = search(index, input.value);
+    syncQuery(input.value);
 
     // Nothing usable typed at all — send them to the directory rather than
     // showing an empty results panel.
@@ -363,14 +401,40 @@ function initSearch(data, labels) {
 
     if (ranked.length === 0) {
       heading.textContent = "No match for that yet";
-      resultsList.innerHTML = `<li class="tool-list__empty">Try describing the task differently, or browse the full directory below.</li>`;
+      resultsList.replaceChildren(
+        el(
+          "li",
+          "tool-list__empty",
+          "Try describing the task differently, or browse the full directory below."
+        )
+      );
+      if (status) status.textContent = "No matching tools found.";
     } else {
       heading.textContent = `${ranked.length} tools for that`;
       renderInto(resultsList, ranked, labels);
+      if (status) status.textContent = `${ranked.length} matching tools found.`;
     }
 
-    results.scrollIntoView({ behavior: "smooth", block: "start" });
+    heading.focus({ preventScroll: true });
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    results.scrollIntoView({
+      behavior: reducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    showResults();
   });
+
+  const initialQuery = new URL(window.location.href).searchParams.get("q");
+  if (initialQuery) {
+    input.value = initialQuery;
+    showResults();
+  }
 }
 
 // ---------- Theme toggle ----------
@@ -456,7 +520,11 @@ function initThemeToggle() {
 
   // Keep the dial in sync if the OS theme changes while no explicit choice
   // has been made on this page.
-  prefersDark.addEventListener("change", updateButton);
+  if (prefersDark.addEventListener) {
+    prefersDark.addEventListener("change", updateButton);
+  } else {
+    prefersDark.addListener(updateButton);
+  }
   updateButton();
 }
 
@@ -467,6 +535,15 @@ function initNav() {
   const nav = document.getElementById("nav");
   const hero = document.querySelector(".hero");
   if (!nav || !hero) return;
+
+  if (!("IntersectionObserver" in window)) {
+    const update = () => {
+      nav.classList.toggle("nav--solid", hero.getBoundingClientRect().bottom <= 72);
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return;
+  }
 
   const observer = new IntersectionObserver(
     ([entry]) => nav.classList.toggle("nav--solid", !entry.isIntersecting),
@@ -513,6 +590,7 @@ function initSkyParallax() {
 function initReveal() {
   const targets = document.querySelectorAll(".section__head");
   if (!targets.length) return;
+  if (!("IntersectionObserver" in window)) return;
 
   const observer = new IntersectionObserver(
     (entries) => {

@@ -11,7 +11,8 @@
 
 const STOPWORDS = new Set([
   "a", "about", "an", "and", "any", "are", "as", "at", "be", "best",
-  "can", "do", "does", "for", "from", "get", "good", "help", "how", "i",
+  "build", "can", "create", "do", "does", "for", "from", "get", "good",
+  "help", "how", "i",
   "in", "is", "it", "me", "my", "need", "of", "on", "or", "some", "that",
   "the", "there", "to", "want", "was", "what", "which", "with", "you",
   "your",
@@ -35,6 +36,11 @@ const CONCEPTS = [
     also: ["slide", "deck", "presentation"],
   },
   {
+    when: ["spreadsheet", "excel"],
+    categories: [],
+    also: ["spreadsheet", "excel", "formula", "data"],
+  },
+  {
     when: ["cite", "citation", "source", "reference", "bibliography",
       "research", "study", "reading", "literature", "review", "journal",
       "academic"],
@@ -50,7 +56,7 @@ const CONCEPTS = [
   },
   {
     when: ["image", "picture", "photo", "art", "illustration", "logo",
-      "graphic", "poster", "flyer", "visual", "thumbnail", "mockup",
+      "graphic", "infographic", "poster", "flyer", "visual", "thumbnail", "mockup",
       "design", "brand"],
     categories: ["image", "design"],
     also: ["image", "design", "generate", "graphic"],
@@ -69,7 +75,7 @@ const CONCEPTS = [
   },
   {
     when: ["note", "organize", "organise", "task", "todo", "project",
-      "workspace", "document", "summarize", "summarise", "summary",
+      "workspace", "summarize", "summarise", "summary",
       "recap", "condense", "shorten"],
     categories: ["productivity", "research"],
     also: ["note", "summarize", "organize", "document"],
@@ -125,11 +131,11 @@ function tokenSet(text) {
   return new Set(tokenize(text));
 }
 
-// Weighted highest to lowest by how directly the field answers "what am I
-// trying to do" — which is what people actually type.
+// A product name is the strongest intentional signal. After that, fields are
+// weighted by how directly they answer "what am I trying to do."
 const FIELDS = [
+  ["name", 12],
   ["useCases", 6],
-  ["name", 5],
   ["tagline", 3],
   ["category", 3],
   ["tags", 2],
@@ -163,6 +169,11 @@ const INFERRED_WEIGHT = 0.4;
 
 // How much a single supporting word is worth when it points at a category.
 const CATEGORY_WEIGHT = 4;
+
+// A single incidental mention in a long description is not enough to call
+// something a recommendation. Names, categories, tags, and use cases all clear
+// this bar; a description needs corroborating evidence from another field.
+const MIN_SCORE = 3;
 
 // Turn what someone typed into the terms to match on, plus how strongly the
 // phrasing points at each category.
@@ -230,7 +241,7 @@ export function search(index, query, limit = 6) {
       entry,
       score: scoreEntry(entry, typed, inferred, categoryScore),
     }))
-    .filter((row) => row.score > 0)
+    .filter((row) => row.score >= MIN_SCORE)
     .sort(
       (a, b) =>
         b.score - a.score ||

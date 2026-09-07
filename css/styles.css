@@ -1,3 +1,36 @@
+/* ---------- Local fonts ---------- */
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../assets/fonts/figtree-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: italic;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../assets/fonts/figtree-italic-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-serif-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-serif-italic-latin.woff2") format("woff2");
+}
+
 /* ---------- Design tokens ---------- */
 /* Each color is light-dark(), so the palette is defined once and follows
    `color-scheme` automatically: "light dark" on :root tracks the OS by
@@ -1092,15 +1125,43 @@ ol {
 
 .tool-card__tagline {
   font-size: 0.9375rem;
+  color: var(--ink);
+  margin-bottom: 0.55rem;
+}
+
+.tool-card__description {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
   color: var(--muted);
-  margin-bottom: 0.9rem;
+}
+
+.tool-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: auto;
+  margin-bottom: 0.85rem;
+}
+
+.tool-card__badge {
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--coral-wash);
+  color: var(--coral);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .tool-card__meta {
-  margin-top: auto;
   padding-top: 0.9rem;
   border-top: 1px solid var(--line);
   font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+.tool-card__checked {
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
   color: var(--muted);
 }
 
