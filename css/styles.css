@@ -2,91 +2,145 @@
 /* Each color is light-dark(), so the palette is defined once and follows
    `color-scheme` automatically: "light dark" on :root tracks the OS by
    default, and the theme toggle (js/app.js) narrows it to a single value
-   to force a side, in either direction, with no separate token block. */
+   to force a side, in either direction, with no separate token block.
+   The dark side reads the hero as dusk rather than noon. */
 :root {
   color-scheme: light dark;
 }
-
 :root[data-theme="light"] {
   color-scheme: light;
 }
-
 :root[data-theme="dark"] {
   color-scheme: dark;
 }
 
 :root {
-  --color-bg: light-dark(#fbfbfa, #16181c);
-  --color-surface: light-dark(#ffffff, #1e2126);
-  --color-text: light-dark(#1a1a1a, #f1f1ee);
-  --color-text-muted: light-dark(#6b6b6b, #9a9da3);
-  --color-border: light-dark(#e4e4e1, #2c3036);
-  --color-accent: light-dark(#2f6f4f, #4bbd88);
-  --color-accent-hover: light-dark(#275c41, #5fcc98);
-  --color-accent-text: light-dark(#ffffff, #0b140f);
-  --color-skeleton: light-dark(#ececea, #262a30);
+  --paper: light-dark(#f4f4f2, #101216);
+  --surface: light-dark(#ffffff, #191c22);
+  --surface-2: light-dark(#fafaf9, #14171c);
+  --ink: light-dark(#16181d, #f2f2ef);
+  --muted: light-dark(#6a6f78, #969ba4);
+  --line: light-dark(#e6e6e2, #262a31);
 
-  --shadow-sm: light-dark(0 1px 2px rgba(20, 20, 15, 0.04), 0 1px 2px rgba(0, 0, 0, 0.3)),
-    light-dark(0 1px 1px rgba(20, 20, 15, 0.03), 0 1px 1px rgba(0, 0, 0, 0.2));
-  --shadow-md: light-dark(0 8px 20px rgba(20, 20, 15, 0.08), 0 10px 24px rgba(0, 0, 0, 0.45)),
-    light-dark(0 2px 6px rgba(20, 20, 15, 0.04), 0 2px 8px rgba(0, 0, 0, 0.3));
+  --coral: light-dark(#dd5540, #ff7d67);
+  --coral-wash: light-dark(#fbe8e4, #2e1c1a);
 
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
-    Arial, sans-serif;
+  /* Pulled from the hero sky, so the accent and the masthead agree. */
+  --sky-deep: light-dark(#3d6ec2, #24305c);
+  --sky-mid: light-dark(#7fa9dd, #3a3f77);
+  /* Deliberately not washed out at the foot: white hero copy has to stay
+     legible where the gradient meets the cloud bank. */
+  --sky-pale: light-dark(#a3c1e4, #171a2c);
+  --link: light-dark(#2f5eae, #8fb4ec);
 
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 1rem;
-  --space-4: 1.5rem;
-  --space-5: 2.5rem;
-  --space-6: 4rem;
+  --dark-card: light-dark(#16181d, #05070a);
+  --on-dark: #f4f4f2;
 
-  --radius: 10px;
-  --max-width: 900px;
+  /* light-dark() resolves to a *colour*, so it can only appear where a
+     colour is expected. Wrapping a whole shadow in it makes the
+     declaration invalid and the shadow silently disappears — so the
+     geometry is fixed here and only the tint switches. */
+  --shadow-tint: light-dark(rgba(20, 22, 29, 0.05), rgba(0, 0, 0, 0.4));
+  --shadow-tint-2: light-dark(rgba(20, 22, 29, 0.1), rgba(0, 0, 0, 0.55));
+
+  --shadow-card: 0 1px 2px var(--shadow-tint);
+  --shadow-lift: 0 14px 34px var(--shadow-tint-2), 0 2px 6px var(--shadow-tint);
+  --shadow-nav: 0 6px 24px var(--shadow-tint-2);
+
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --wrap: 1120px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 28px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 150ms;
-  --duration-base: 300ms;
+  --fast: 160ms;
+  --base: 320ms;
+}
+
+/* Non-colour values can't go through light-dark(), so they're switched
+   the long way: a light default, the OS preference when no explicit
+   choice has been made, then the explicit choice winning in either
+   direction. Custom properties hold any token, so `opacity` and
+   `display` end up valid at the point of use. */
+:root {
+  --cloud-far-o: 0.42;
+  --cloud-near-o: 0.97;
+  --stars-on: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cloud-far-o: 0.34;
+    --cloud-near-o: 0.76;
+    --stars-on: block;
+  }
+}
+:root[data-theme="dark"] {
+  --cloud-far-o: 0.34;
+  --cloud-near-o: 0.76;
+  --stars-on: block;
 }
 
 /* ---------- Base ---------- */
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-    scroll-behavior: auto !important;
-  }
 }
 
 html {
   color-scheme: light dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
 }
 
 body {
   margin: 0;
-  font-family: var(--font-sans);
-  color: var(--color-text);
-  background: var(--color-bg);
-  line-height: 1.55;
-  transition: background var(--duration-base) var(--ease), color var(--duration-base) var(--ease);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3 {
-  line-height: 1.2;
-  margin: 0 0 var(--space-3);
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.06;
+}
+
+p {
+  margin: 0;
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--link);
+  text-underline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
 .visually-hidden {
@@ -101,394 +155,1273 @@ a {
   border: 0;
 }
 
-/* ---------- Header / footer ---------- */
-.site-header,
-.site-footer {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: var(--space-3);
+/* Holds the <symbol> only; never painted itself. */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 0 0 var(--r-sm) var(--r-sm);
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.35rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform var(--fast) var(--ease),
+    background var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.btn--dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn--dark:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* ---------- Floating pill nav ---------- */
+.nav {
+  position: fixed;
+  z-index: 50;
+  top: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--wrap), calc(100vw - 2 * var(--gutter)));
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.65rem 0.55rem 1.35rem;
+  border-radius: 999px;
+  background: light-dark(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.1));
+  border: 1px solid light-dark(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.14));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: background var(--base) var(--ease),
+    box-shadow var(--base) var(--ease), border-color var(--base) var(--ease);
 }
 
-.site-header {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--color-bg);
-  box-shadow: 0 1px 0 transparent;
-  transition: box-shadow var(--duration-base) var(--ease), background var(--duration-base) var(--ease);
+/* Over the sky the bar is glass and its text is white; once the page
+   scrolls past the hero it becomes an opaque surface with normal ink. */
+.nav__brand,
+.nav__links a {
+  color: var(--on-dark);
+  text-decoration: none;
+  transition: color var(--base) var(--ease);
 }
 
-.site-header--scrolled {
-  box-shadow: 0 1px 0 var(--color-border), var(--shadow-sm);
+.nav--solid {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: var(--shadow-nav);
+}
+.nav--solid .nav__brand,
+.nav--solid .nav__links a {
+  color: var(--ink);
 }
 
-.site-header__right {
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* currentColor means the plane follows whatever the brand text is doing —
+   white over the sky, ink once the bar goes solid — with no second rule. */
+.mark {
+  width: 1.2rem;
+  height: 1.25rem;
+  flex: none;
+  fill: currentColor;
+  overflow: visible;
+}
+
+/* A short launch on hover: the plane darts along its own axis and glides
+   back. Motion that answers the pointer, so it earns itself. */
+.nav__brand .mark {
+  transition: transform 260ms var(--ease);
+}
+.nav__brand:hover .mark {
+  transform: translate(3px, -3px);
+}
+
+.nav__links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.nav__links a:hover {
+  opacity: 0.72;
+}
+
+.nav__actions {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: 0.5rem;
 }
 
-.brand {
-  font-weight: 700;
-  font-size: 1.15rem;
-  text-decoration: none;
-  color: var(--color-text);
-}
-
-.site-nav a {
-  text-decoration: none;
-  font-size: 0.95rem;
-}
-
+/* A porthole onto the dial: the disc inside is twice as tall as this, so
+   whichever body is on the far half sits outside the clip. */
 .theme-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 34px;
-  height: 34px;
-  padding: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  background: var(--color-surface);
-  color: var(--color-text);
-  cursor: pointer;
-  transition: transform var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease),
-    box-shadow var(--duration-fast) var(--ease);
-}
-
-.theme-toggle:hover {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-sm);
-}
-
-.theme-toggle:active {
-  transform: scale(0.92);
-}
-
-.theme-toggle svg {
-  width: 17px;
-  height: 17px;
-}
-
-/* Which icon is showing is decided in JS (it already tracks the resolved
-   theme for the button's aria state) via the [hidden] attribute. */
-
-.site-footer {
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-  margin-top: var(--space-6);
-}
-
-/* ---------- Layout ---------- */
-main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--space-3);
-}
-
-/* ---------- Hero + search ---------- */
-.hero {
-  padding: var(--space-6) 0 var(--space-5);
-  text-align: center;
   position: relative;
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid light-dark(rgba(28, 45, 80, 0.12), rgba(255, 255, 255, 0.16));
+  background: light-dark(#bfd9f4, #1b1f3a);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--base) var(--ease),
+    background var(--base) var(--ease), transform var(--fast) var(--ease);
+}
+.theme-toggle:hover {
+  transform: translateY(-1px);
+}
+.nav:not(.nav--solid) .theme-toggle {
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
-.hero::before {
+/* Rotating about its own centre puts that centre on the button's bottom
+   edge, so a half-turn carries the top body down and out of sight. */
+.dial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  transition: transform 760ms cubic-bezier(0.62, -0.28, 0.38, 1.3);
+}
+.theme-toggle[aria-pressed="true"] .dial {
+  transform: rotate(180deg);
+}
+
+.dial__sun,
+.dial__moon {
+  position: absolute;
+  left: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+}
+
+.dial__sun {
+  top: 0.72rem;
+  transform: translateX(-50%);
+  background: #ffc94d;
+  box-shadow: 0 0 0 2px rgba(255, 201, 77, 0.32), 0 0 9px 2px rgba(255, 190, 60, 0.6);
+}
+
+/* Pre-turned a half-turn so the crescent arrives upright rather than
+   inverted at the end of the rotation. */
+.dial__moon {
+  bottom: 0.72rem;
+  transform: translateX(-50%) rotate(180deg);
+  box-shadow: inset -4px 2px 0 0 #e9edff;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(94vh, 860px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 9rem var(--gutter) 0;
+  margin: 0.75rem 0.75rem 0;
+  border-radius: clamp(20px, 3vw, 34px);
+  overflow: hidden;
+  text-align: center;
+}
+
+.hero__sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    var(--sky-deep) 0%,
+    var(--sky-mid) 52%,
+    var(--sky-pale) 100%
+  );
+}
+
+/* Cumulus banks, drawn as SVG in index.html so the hero needs no
+   photograph. The silhouette does the work: a turbulence displacement
+   filter chews the circles' edges into puffs.
+
+   Each band is twice the hero's width and holds two copies of the same
+   tile, so translating it -50% moves exactly one tile and loops with no
+   jump. The transform lives on this div rather than inside the SVG:
+   the filter then rasterises once and the browser just slides the
+   finished layer, instead of re-running turbulence every frame. */
+.sky__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.band {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  will-change: transform;
+}
+.band svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.band--far {
+  height: clamp(11rem, 50%, 29rem);
+  animation: drift 190s linear infinite;
+  /* Lags the scroll, so the sky has depth on the way down. */
+  translate: 0 calc(var(--sky-shift, 0px) * 0.4);
+}
+.band--near {
+  height: clamp(13rem, 58%, 34rem);
+  animation: drift 105s linear infinite;
+  translate: 0 calc(var(--sky-shift, 0px) * 0.85);
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Sun high and slightly off-centre, breathing. At dusk it cools into a
+   moon glow rather than disappearing. */
+.sky__bloom {
+  position: absolute;
+  top: -26%;
+  left: 58%;
+  width: min(130vw, 68rem);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  translate: 0 calc(var(--sky-shift, 0px) * 0.25);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    light-dark(rgba(255, 250, 232, 0.62), rgba(150, 158, 220, 0.2)) 0%,
+    light-dark(rgba(255, 248, 226, 0.22), rgba(130, 138, 205, 0.08)) 38%,
+    transparent 66%
+  );
+  animation: breathe 19s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1.11);
+  }
+}
+
+/* Only ever visible at dusk. Two sets on different timings so the
+   twinkle doesn't pulse in unison. */
+.sky__stars {
+  position: absolute;
+  inset: 0 0 42% 0;
+  display: var(--stars-on);
+  background-image: radial-gradient(1.6px 1.6px at 8% 24%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 17% 9%, #dfe4ff, transparent),
+    radial-gradient(1.7px 1.7px at 26% 38%, #fff, transparent),
+    radial-gradient(1.3px 1.3px at 34% 15%, #cfd6ff, transparent),
+    radial-gradient(1.8px 1.8px at 45% 30%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 52% 7%, #e6eaff, transparent),
+    radial-gradient(1.6px 1.6px at 61% 34%, #fff, transparent),
+    radial-gradient(1.3px 1.3px at 70% 18%, #d6dcff, transparent),
+    radial-gradient(1.9px 1.9px at 79% 27%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 88% 12%, #e2e7ff, transparent),
+    radial-gradient(1.6px 1.6px at 95% 36%, #fff, transparent);
+  animation: twinkle 8s ease-in-out infinite;
+}
+.sky__stars::after {
   content: "";
   position: absolute;
-  inset: -2rem -1rem auto -1rem;
-  height: 320px;
-  background: radial-gradient(60% 100% at 50% 0%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 70%);
-  pointer-events: none;
-  z-index: -1;
+  inset: 0;
+  background-image: radial-gradient(1.3px 1.3px at 12% 46%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 22% 20%, #e9ecff, transparent),
+    radial-gradient(1.2px 1.2px at 31% 52%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 41% 41%, #dbe1ff, transparent),
+    radial-gradient(1.3px 1.3px at 49% 19%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 58% 48%, #e4e9ff, transparent),
+    radial-gradient(1.2px 1.2px at 67% 6%, #fff, transparent),
+    radial-gradient(1.7px 1.7px at 75% 44%, #d9dfff, transparent),
+    radial-gradient(1.3px 1.3px at 84% 22%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 92% 50%, #e7ebff, transparent);
+  animation: twinkle 13s ease-in-out infinite reverse;
 }
 
-@keyframes fade-up {
+@keyframes twinkle {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* stop-color is a CSS property, so the gradients theme like everything
+   else: sunlit white by day, a dim violet-grey at dusk. */
+.cloud-body-1 {
+  stop-color: light-dark(#f2f8ff, #4c517e);
+}
+.cloud-body-2 {
+  stop-color: light-dark(#dfecfa, #3d4269);
+}
+.cloud-body-3 {
+  stop-color: light-dark(#bcd5ed, #2d3252);
+}
+
+.cloud-lit-1 {
+  stop-color: light-dark(#ffffff, #868bbc);
+}
+.cloud-lit-2 {
+  stop-color: light-dark(#f0f7ff, #6b70a2);
+}
+
+/* The far bank sits back in the haze; the near one reads solid. */
+.clouds__far {
+  opacity: var(--cloud-far-o);
+}
+.clouds__near {
+  opacity: var(--cloud-near-o);
+}
+
+.hero__inner {
+  max-width: 46rem;
+  width: 100%;
+}
+
+/* Fixed pixel size on purpose: offset-path takes raw CSS pixels, so the
+   flight path only lines up with the trail's viewBox while the box stays
+   180x80. Scaled as a whole on small screens rather than resized. */
+.planemark {
+  position: relative;
+  width: 180px;
+  height: 80px;
+  margin: 0 auto 1.1rem;
+}
+
+.planemark__trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.planemark__trail path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 3 9;
+  /* Drawn on by animating the offset of a second, solid dash pattern. */
+  animation: trail-draw 1500ms var(--ease) 200ms backwards;
+}
+
+.planemark__craft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 35px;
+  offset-path: path("M14 66 C 52 66, 78 50, 118 21");
+  /* The artwork already points up-right, so following the tangent as well
+     would stand it nearly vertical. It holds its own angle instead and the
+     bank comes from the glide keyframes. */
+  offset-rotate: 0deg;
+  offset-anchor: 50% 50%;
+  offset-distance: 100%;
+  color: #fff;
+  filter: drop-shadow(0 6px 14px rgba(10, 20, 45, 0.4));
+  animation: fly-in 1500ms var(--ease) 200ms backwards, glide 5s ease-in-out 1700ms infinite;
+}
+.planemark__craft svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+@keyframes trail-draw {
   from {
+    stroke-dashoffset: 150;
     opacity: 0;
-    transform: translateY(14px);
   }
-  to {
+  30% {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-.hero__title,
-.hero__sub,
-.search,
-.hero__hint {
-  animation: fade-up var(--duration-base) var(--ease) both;
+@keyframes fly-in {
+  from {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+}
+
+/* Holds station at the end of the trail and breathes, so the plane reads
+   as gliding rather than parked. */
+@keyframes glide {
+  50% {
+    offset-distance: 96%;
+    translate: 0 -5px;
+    rotate: -5deg;
+  }
 }
 
 .hero__title {
-  font-size: 2.1rem;
-  letter-spacing: -0.02em;
-  max-width: 22ch;
-  margin-inline: auto;
-  animation-delay: 40ms;
+  font-family: var(--serif);
+  font-size: clamp(2.9rem, 7.2vw, 5.1rem);
+  letter-spacing: -0.015em;
+  color: #fff;
+  text-wrap: balance;
 }
 
 .hero__sub {
-  color: var(--color-text-muted);
-  max-width: 48ch;
-  margin: 0 auto var(--space-4);
-  animation-delay: 120ms;
+  max-width: 33rem;
+  margin: 1.3rem auto 0;
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-wrap: balance;
 }
 
+/* The search bar is the product's real front door, so it carries the hero
+   rather than a pair of decorative buttons. */
 .search {
   display: flex;
-  gap: var(--space-2);
-  max-width: 520px;
-  margin: 0 auto;
-  animation-delay: 200ms;
+  gap: 0.4rem;
+  max-width: 34rem;
+  margin: 2rem auto 0;
+  padding: 0.4rem;
+  background: var(--surface);
+  border-radius: 999px;
+  box-shadow: 0 12px 34px rgba(10, 20, 45, 0.22);
 }
 
 .search__input {
   flex: 1;
-  padding: var(--space-3);
+  min-width: 0;
+  padding: 0.75rem 0.5rem 0.75rem 1.1rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
   font-size: 1rem;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease),
-    transform var(--duration-fast) var(--ease);
+  color: var(--ink);
 }
-
-.search__input:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+.search__input::placeholder {
+  color: var(--muted);
 }
-
 .search__input:focus {
   outline: none;
-  border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 20%, transparent), var(--shadow-sm);
+}
+.search:focus-within {
+  box-shadow: 0 12px 34px rgba(10, 20, 45, 0.22), 0 0 0 3px var(--coral);
 }
 
 .search__button {
-  padding: var(--space-3) var(--space-4);
-  font-size: 1rem;
+  flex: none;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
   font-weight: 600;
-  color: var(--color-accent-text);
-  background: var(--color-accent);
-  border: none;
-  border-radius: var(--radius);
   cursor: pointer;
-  transition: background var(--duration-fast) var(--ease), transform var(--duration-fast) var(--ease),
-    box-shadow var(--duration-fast) var(--ease);
+  transition: opacity var(--fast) var(--ease);
 }
-
 .search__button:hover {
-  background: var(--color-accent-hover);
-  box-shadow: var(--shadow-sm);
-}
-
-.search__button:active {
-  transform: scale(0.97);
+  opacity: 0.85;
 }
 
 .hero__hint {
-  margin-top: var(--space-3);
-  color: var(--color-text-muted);
-  font-size: 0.95rem;
-  animation-delay: 260ms;
+  margin-top: 1.1rem;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+.hero__hint a {
+  color: #fff;
 }
 
-/* ---------- Tool lists ---------- */
-.results {
-  margin-bottom: var(--space-5);
+/* Logo strip drifting along the bottom edge, in place of Applio's phones. */
+.hero__strip {
+  width: 100%;
+  margin-top: auto;
+  padding-bottom: 2.2rem;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
 }
 
-.tool-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.marquee {
+  display: flex;
+  gap: 0.85rem;
+  width: max-content;
+  animation: drift 46s linear infinite;
+}
+.hero__strip:hover .marquee {
+  animation-play-state: paused;
+}
+
+/* The chips land on the brightest part of the cloud bank, so they carry a
+   hairline and a tighter shadow to keep their edges rather than dissolving
+   into it. */
+.marquee__chip {
   display: grid;
-  gap: var(--space-3);
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  place-items: center;
+  width: 3.3rem;
+  height: 3.3rem;
+  flex: none;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid rgba(28, 45, 80, 0.09);
+  box-shadow: 0 2px 5px rgba(10, 20, 45, 0.1), 0 8px 20px rgba(10, 20, 45, 0.1);
+}
+.marquee__chip img {
+  width: 1.7rem;
+  height: 1.7rem;
 }
 
-.tool-list__loading {
-  color: var(--color-text-muted);
-}
-
-@keyframes card-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+@keyframes drift {
   to {
-    opacity: 1;
-    transform: translateY(0);
+    transform: translateX(-50%);
   }
 }
 
-.tool-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-3);
+/* ---------- Section scaffolding ---------- */
+.section {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: clamp(4.5rem, 9vw, 7.5rem) var(--gutter) 0;
+}
+.section:last-of-type {
+  padding-bottom: clamp(4.5rem, 9vw, 7.5rem);
+}
+
+.section__head {
+  margin-bottom: 2.75rem;
+}
+.section__head--center {
+  text-align: center;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.section__head--row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 1.1rem;
+  border-radius: 999px;
+  background: var(--coral-wash);
+  color: var(--coral);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.section__title {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.section__sub {
+  margin-top: 1rem;
+  max-width: 34rem;
+  color: var(--muted);
+}
+.section__head--center .section__sub {
+  margin-inline: auto;
+}
+.section__sub--tight {
+  margin-top: 0;
+  max-width: 20rem;
+}
+
+/* ---------- How it works ---------- */
+/* Ruled rows rather than cards: this is a sequence, so the numbers and the
+   rules carry the order without another set of boxes. */
+.steps {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step__n {
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--coral);
+}
+
+.step__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.step__body {
+  grid-column: 2;
+  margin-top: 0.4rem;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+/* ---------- Categories ---------- */
+.section--cluster {
+  position: relative;
+  isolation: isolate;
+  padding-top: clamp(7rem, 13vw, 11rem);
+}
+
+/* Real product logos floating in a band above the heading — never behind
+   it, so nothing lands on top of a sentence. The band bleeds past the
+   content column and dissolves downward into the type. Positions come
+   from js/app.js. */
+.cluster {
+  position: absolute;
+  top: clamp(2.5rem, 6vw, 4.5rem);
+  left: -6vw;
+  right: -6vw;
+  height: 13rem;
+  z-index: -1;
+  -webkit-mask-image: linear-gradient(180deg, #000 25%, transparent 88%);
+  mask-image: linear-gradient(180deg, #000 25%, transparent 88%);
+}
+
+/* Each chip drifts on its own clock — js/app.js hands every one a
+   different duration, delay and tilt, so the cluster never pulses in
+   unison the way a single shared animation would. */
+.cluster__chip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  animation: chip-float var(--t, 8s) ease-in-out var(--d, 0s) infinite;
+}
+
+@keyframes chip-float {
+  50% {
+    transform: translate(var(--dx, 0px), var(--dy, -16px)) rotate(var(--r, 4deg));
+  }
+}
+.cluster__chip img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.cats a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+.cats a:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+.cats span {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- What's inside ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.fact {
+  padding: 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.fact--tall {
+  grid-row: span 2;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
-  box-shadow: var(--shadow-sm);
-  animation: card-in var(--duration-base) var(--ease) both;
-  animation-delay: calc(var(--i, 0) * 18ms);
-  transition: transform var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease),
-    border-color var(--duration-fast) var(--ease), background var(--duration-base) var(--ease);
+}
+.fact--wide {
+  grid-column: span 2;
+}
+/* Closes the row instead of leaving a hole in the last column; the split
+   interior keeps a two-line card from looking stranded at full width. */
+.fact--full {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 1rem 2.5rem;
+  align-items: baseline;
+}
+.fact--full .fact__body {
+  margin-top: 0;
+  max-width: none;
+}
+.fact--tint {
+  background: linear-gradient(
+    165deg,
+    var(--coral-wash) 0%,
+    var(--surface) 62%
+  );
+  border-color: transparent;
+}
+.fact--dark {
+  background: var(--dark-card);
+  border-color: transparent;
+  color: var(--on-dark);
 }
 
+.fact__n {
+  font-family: var(--serif);
+  font-size: clamp(3.2rem, 6vw, 4.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+.fact--dark .fact__n {
+  color: var(--on-dark);
+}
+
+.fact__label {
+  margin-top: 0.6rem;
+  max-width: 15rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.fact--dark .fact__label {
+  color: rgba(244, 244, 242, 0.66);
+}
+
+.fact__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.fact__body {
+  margin-top: 0.7rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  max-width: 32rem;
+}
+.fact--tall .fact__body {
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+/* ---------- Filters ---------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.filter {
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color var(--fast) var(--ease),
+    border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+.filter:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+.filter[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+/* ---------- Tool cards ---------- */
+.tool-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+}
+
+/* Tighter radius than the feature cards, so scale reads as hierarchy. */
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease), border-color var(--fast) var(--ease);
+}
 .tool-card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+  border-color: transparent;
+  box-shadow: var(--shadow-lift);
 }
 
 .tool-card__head {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 0.75rem;
+  margin-bottom: 0.9rem;
 }
 
 .tool-card__logo {
+  width: 2.25rem;
+  height: 2.25rem;
   flex: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  border-radius: 9px;
   object-fit: contain;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  transition: transform var(--duration-fast) var(--ease);
+  background: var(--surface-2);
+  padding: 3px;
 }
-
-.tool-card:hover .tool-card__logo {
-  transform: scale(1.08);
-}
-
 .tool-card__logo--fallback {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.9rem;
+  display: grid;
+  place-items: center;
   font-weight: 700;
-  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  color: var(--muted);
+  padding: 0;
 }
 
 .tool-card__title {
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .tool-card__name {
-  margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
 
 .tool-card__cat {
-  font-size: 0.75rem;
-  color: var(--color-text-muted);
-  white-space: nowrap;
+  font-size: 0.8125rem;
+  color: var(--muted);
 }
 
 .tool-card__tagline {
-  margin: 0;
-  font-size: 0.92rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  margin-bottom: 0.9rem;
 }
 
 .tool-card__meta {
-  margin: 0;
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
+  margin-top: auto;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.8125rem;
+  color: var(--muted);
 }
 
 .tool-card__link {
-  margin-top: auto;
-  font-size: 0.9rem;
+  margin-top: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 600;
+  color: var(--ink);
   text-decoration: none;
-  width: fit-content;
+}
+.tool-card__link:hover {
+  color: var(--coral);
 }
 
-.tool-card__link::after {
-  content: "";
-  display: block;
-  width: 0;
-  height: 1px;
-  background: currentColor;
-  transition: width var(--duration-fast) var(--ease);
-}
-
-.tool-card__link:hover::after {
-  width: 100%;
-}
-
-.directory__heading {
-  margin-top: var(--space-5);
+.tool-list__loading,
+.tool-list__empty {
+  grid-column: 1 / -1;
+  padding: 2.5rem 0;
+  color: var(--muted);
 }
 
 /* ---------- Skeleton loading state ---------- */
-@keyframes skeleton-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.55;
-  }
-}
-
 .tool-card--skeleton {
-  animation: card-in var(--duration-base) var(--ease) both, skeleton-pulse 1.4s ease-in-out infinite;
-  animation-delay: calc(var(--i, 0) * 18ms), 0s;
+  pointer-events: none;
 }
-
 .skeleton-block {
-  background: var(--color-skeleton);
+  display: block;
   border-radius: 6px;
+  background: var(--line);
+  animation: pulse 1.4s ease-in-out infinite;
 }
-
 .skeleton-block--logo {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 2.25rem;
+  height: 2.25rem;
   flex: none;
+  border-radius: 9px;
 }
-
 .skeleton-block--title {
-  height: 14px;
-  width: 60%;
-  border-radius: 4px;
+  width: 55%;
+  height: 0.95rem;
 }
-
 .skeleton-block--line {
-  height: 11px;
   width: 100%;
-  border-radius: 4px;
+  height: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.skeleton-block--line.short {
+  width: 65%;
 }
 
-.skeleton-block--line.short {
-  width: 70%;
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- FAQ ---------- */
+.faq {
+  max-width: 46rem;
+  border-top: 1px solid var(--line);
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.4rem 0;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  list-style: none;
+}
+.faq__q::-webkit-details-marker {
+  display: none;
+}
+
+/* A plus that rotates into a minus — motion that reports what changed. */
+.faq__q::after {
+  content: "";
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: none;
+  background: linear-gradient(var(--ink), var(--ink)) center / 100% 1.5px
+      no-repeat,
+    linear-gradient(var(--ink), var(--ink)) center / 1.5px 100% no-repeat;
+  transition: transform var(--base) var(--ease);
+}
+.faq__item[open] .faq__q::after {
+  transform: rotate(135deg);
+}
+
+.faq__a {
+  padding-bottom: 1.5rem;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 1rem;
+  overflow: hidden;
+}
+
+.footer__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.footer__intro .nav__brand {
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+}
+.footer__intro p {
+  max-width: 22rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.9375rem;
+}
+.footer__col a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer__col a:hover {
+  color: var(--ink);
+}
+.footer__col p {
+  color: var(--muted);
+}
+
+.footer__h {
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+
+.footer__wordmark {
+  margin: 1.25rem 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(5rem, 21vw, 17rem);
+  line-height: 0.92;
+  text-align: center;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--ink) 8%, transparent 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  user-select: none;
+}
+
+/* ---------- Motion ---------- */
+/* One reveal, used on section headings only — cards and list items stay
+   still so the page doesn't shimmer on every scroll. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 750ms var(--ease), transform 750ms var(--ease),
+    filter 750ms var(--ease);
+}
+
+/* Hero load sequence: the one orchestrated moment on the page. The plane
+   is left out — it has its own entrance along the contrail. */
+.hero__title,
+.hero__sub,
+.search,
+.hero__hint {
+  animation: rise 900ms var(--ease) backwards;
+}
+.hero__title {
+  animation-delay: 160ms;
+}
+.hero__sub {
+  animation-delay: 300ms;
+}
+.search {
+  animation-delay: 400ms;
+}
+.hero__hint {
+  animation-delay: 500ms;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(8px);
+  }
+}
+
+/* ---------- Theme change ---------- */
+/* The new theme is revealed by a circle growing out of the toggle instead
+   of the page cutting over. Both snapshots are held still here; the only
+   moving part is the clip-path, animated in js/app.js because it needs the
+   button's position on screen, which CSS can't see. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+::view-transition-new(root) {
+  z-index: 1;
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 560px) {
-  .hero {
-    padding-top: var(--space-5);
+@media (max-width: 940px) {
+  .facts {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .hero__title {
-    font-size: 1.6rem;
+  .fact--tall {
+    grid-row: auto;
+  }
+  .nav__links {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .hero {
+    min-height: 0;
+    padding-top: 7.5rem;
+  }
+  /* Scaled whole rather than resized — the flight path is in fixed pixels
+     and would drift out of register with the trail otherwise. */
+  .planemark {
+    transform: scale(0.82);
+    margin-bottom: 0.5rem;
+  }
+  /* The hero is content-height here, so `margin-top: auto` collapses and
+     the strip crowds the hint underneath it. */
+  .hero__strip {
+    margin-top: 3rem;
+  }
+  /* Kept low on a phone so the banks never rise under the hero copy —
+     `slice` crops the width, which keeps the puffs at a believable size
+     rather than squashing a whole bank into the viewport. */
+  .band--near {
+    height: 9.5rem;
+  }
+  .band--far {
+    height: 8rem;
+  }
+  /* The hero carries its own search; a second CTA in the bar only makes
+     the pill wrap. */
+  .nav__cta {
+    display: none;
   }
   .search {
     flex-direction: column;
+    border-radius: var(--r-lg);
+    padding: 0.6rem;
   }
-  .site-header__right {
-    gap: var(--space-2);
+  .search__input {
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+  }
+  .search__button {
+    width: 100%;
+  }
+  .facts,
+  .footer__top {
+    grid-template-columns: 1fr;
+  }
+  .fact--wide,
+  .fact--full {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+  .step {
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 1rem;
+  }
+  .section__head--row {
+    align-items: flex-start;
+  }
+  .cluster {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }

@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ToolMatch — Find the right AI tool</title>
+    <meta
+      name="description"
+      content="A hand-checked directory of 75 AI tools for students and early-career work. Describe your task, get a short list worth trying."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/styles.css" />
     <script>
       // Runs before first paint so a saved theme choice never flashes the
@@ -20,12 +30,36 @@
     </script>
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/">ToolMatch</a>
-      <div class="site-header__right">
-        <nav class="site-nav">
-          <a href="#directory">Browse all tools</a>
-        </nav>
+    <a class="skip-link" href="#directory">Skip to the directory</a>
+
+    <!-- The mark, traced from assets/logo-source.png as vector so it stays
+         crisp at any size, takes currentColor (white over the sky, ink in
+         the footer) and can be animated. Four points: nose top-right, wing
+         tip left, the fold notch, and the tail below. -->
+    <svg class="sprite" aria-hidden="true">
+      <symbol id="tm-plane" viewBox="0 0 73 76">
+        <path d="M73 0 L0 38.5 L35 41 L48 76 Z" />
+      </symbol>
+    </svg>
+
+    <header class="nav" id="nav">
+      <a class="nav__brand" href="/">
+        <svg class="mark" viewBox="0 0 73 76" aria-hidden="true">
+          <use href="#tm-plane" />
+        </svg>
+        ToolMatch
+      </a>
+      <nav class="nav__links" aria-label="Sections">
+        <a href="#how">How it works</a>
+        <a href="#categories">Categories</a>
+        <a href="#inside">What's inside</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="nav__actions">
+        <!-- A day/night dial rather than two swapped icons: the disc is
+             twice the button's height and rotates about its own centre,
+             so the sun sets below the rim as the moon rises. Only the top
+             half is ever visible. -->
         <button
           id="theme-toggle"
           class="theme-toggle"
@@ -33,59 +67,474 @@
           aria-label="Switch to dark theme"
           aria-pressed="false"
         >
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
+          <span class="dial" aria-hidden="true">
+            <span class="dial__sun"></span>
+            <span class="dial__moon"></span>
+          </span>
         </button>
+        <a class="btn btn--dark nav__cta" href="#directory">Browse tools</a>
       </div>
     </header>
 
     <main>
+      <!-- ---------- Hero ---------- -->
       <section class="hero">
-        <h1 class="hero__title">Find the right AI tool for what you're actually doing.</h1>
-        <p class="hero__sub">
-          Describe your task and get a short list of tools that fit — curated for
-          students and young professionals.
-        </p>
+        <div class="hero__sky" aria-hidden="true">
+          <span class="sky__bloom"></span>
+          <span class="sky__stars"></span>
 
-        <form id="search-form" class="search" role="search">
-          <label class="visually-hidden" for="search-input">
-            Describe what you're trying to do
-          </label>
-          <input
-            id="search-input"
-            name="q"
-            type="text"
-            class="search__input"
-            placeholder="e.g. summarize long readings for class"
-            autocomplete="off"
-          />
-          <button type="submit" class="search__button">Find tools</button>
-        </form>
+          <!-- Cumulus. The shapes are plain overlapping circles; the
+               turbulence filter displaces their edges into irregular
+               puffs, which is what separates a cloud from a blurred
+               ellipse. Two banks drift at different speeds for parallax.
 
-        <p class="hero__hint">or <a href="#directory">browse all tools</a></p>
+               Each band is 2880 units wide — the same 1440-unit bank
+               drawn twice — so translating its wrapper by -50% lands
+               exactly one bank along and the loop is seamless. The
+               filter sits *inside* each `use`, so both copies are
+               displaced by identical noise and the seam doesn't show.
+               Shapes crossing x=0 have a partner at x=1440 for the
+               same reason. -->
+          <svg class="sky__defs" aria-hidden="true">
+            <defs>
+              <filter id="puff-far" x="-15%" y="-30%" width="130%" height="160%">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.008"
+                  numOctaves="4"
+                  seed="11"
+                  result="n"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="n"
+                  scale="88"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+                <feGaussianBlur stdDeviation="10" />
+              </filter>
+
+              <filter id="puff-near" x="-15%" y="-30%" width="130%" height="160%">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.014"
+                  numOctaves="5"
+                  seed="4"
+                  result="n"
+                />
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="n"
+                  scale="54"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+                <feGaussianBlur stdDeviation="2.5" />
+              </filter>
+
+              <!-- The bank's own mid-tone. Clouds are not white all
+                   through; only the tops that face the sun are. -->
+              <linearGradient id="cloud-body" x1="0" y1="0" x2="0" y2="1">
+                <stop class="cloud-body-1" offset="0" />
+                <stop class="cloud-body-2" offset="0.55" />
+                <stop class="cloud-body-3" offset="1" />
+              </linearGradient>
+
+              <!-- Sunlit caps. -->
+              <linearGradient id="cloud-lit" x1="0" y1="0" x2="0" y2="1">
+                <stop class="cloud-lit-1" offset="0" />
+                <stop class="cloud-lit-2" offset="1" />
+              </linearGradient>
+
+              <!-- Tall mass left, open sky through the middle, a second
+                   rise on the right: the uneven skyline is what stops it
+                   reading as fog. The last two circles are wrap partners
+                   of the first and second-to-last, 1440 apart, so the
+                   bank tiles. -->
+              <g id="bank">
+                <circle cx="40" cy="500" r="145" />
+                <circle cx="150" cy="448" r="135" />
+                <circle cx="250" cy="392" r="112" />
+                <circle cx="330" cy="338" r="84" />
+                <circle cx="398" cy="302" r="56" />
+                <circle cx="395" cy="425" r="120" />
+                <circle cx="490" cy="478" r="105" />
+
+                <circle cx="610" cy="512" r="95" />
+                <circle cx="720" cy="500" r="88" />
+                <circle cx="820" cy="508" r="100" />
+
+                <circle cx="940" cy="458" r="118" />
+                <circle cx="1040" cy="402" r="92" />
+                <circle cx="1120" cy="440" r="110" />
+
+                <circle cx="1250" cy="420" r="132" />
+                <circle cx="1362" cy="358" r="94" />
+                <circle cx="1444" cy="430" r="140" />
+
+                <circle cx="1480" cy="500" r="145" />
+                <circle cx="4" cy="430" r="140" />
+
+                <rect x="-40" y="498" width="1560" height="110" />
+              </g>
+
+              <!-- A flatter, lower bank for the distance. Also tiles at
+                   1440; the pair at x=-40 / x=1400 are the wrap. -->
+              <g id="bank-far">
+                <circle cx="-40" cy="470" r="130" />
+                <circle cx="120" cy="440" r="115" />
+                <circle cx="300" cy="408" r="128" />
+                <circle cx="470" cy="452" r="112" />
+                <circle cx="640" cy="416" r="135" />
+                <circle cx="820" cy="446" r="118" />
+                <circle cx="1000" cy="406" r="130" />
+                <circle cx="1180" cy="450" r="120" />
+                <circle cx="1340" cy="420" r="126" />
+                <circle cx="1400" cy="470" r="130" />
+                <rect x="-40" y="466" width="1560" height="140" />
+              </g>
+
+              <!-- Only the upper lobes, pulled up and in. Because these
+                   don't merge into the same silhouette as the body, the
+                   mid-tone survives in the gaps between them — which is
+                   where the sense of separate billows comes from. -->
+              <g id="caps">
+                <circle cx="44" cy="478" r="116" />
+                <circle cx="152" cy="426" r="108" />
+                <circle cx="250" cy="372" r="89" />
+                <circle cx="330" cy="320" r="66" />
+                <circle cx="398" cy="286" r="43" />
+                <circle cx="396" cy="406" r="95" />
+                <circle cx="490" cy="458" r="83" />
+
+                <circle cx="610" cy="494" r="75" />
+                <circle cx="720" cy="482" r="69" />
+                <circle cx="820" cy="490" r="79" />
+
+                <circle cx="940" cy="438" r="94" />
+                <circle cx="1040" cy="384" r="73" />
+                <circle cx="1120" cy="422" r="87" />
+
+                <circle cx="1250" cy="400" r="105" />
+                <circle cx="1362" cy="340" r="75" />
+                <circle cx="1444" cy="410" r="111" />
+
+                <circle cx="1484" cy="478" r="116" />
+                <circle cx="4" cy="410" r="111" />
+              </g>
+
+              <!-- One tile of each band: body plus sunlit caps, filtered
+                   here so every copy gets the same displacement. -->
+              <g id="tile-near">
+                <g filter="url(#puff-near)" fill="url(#cloud-body)">
+                  <use href="#bank" />
+                </g>
+                <g filter="url(#puff-near)" fill="url(#cloud-lit)">
+                  <use href="#caps" />
+                </g>
+              </g>
+
+              <g id="tile-far">
+                <g filter="url(#puff-far)" fill="url(#cloud-body)">
+                  <use href="#bank-far" />
+                </g>
+              </g>
+            </defs>
+          </svg>
+
+          <div class="band band--far">
+            <svg viewBox="0 0 2880 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+              <g class="clouds__far">
+                <use href="#tile-far" />
+                <use href="#tile-far" x="1440" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="band band--near">
+            <svg viewBox="0 0 2880 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+              <g class="clouds__near">
+                <use href="#tile-near" />
+                <use href="#tile-near" x="1440" />
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="hero__inner">
+          <!-- The plane flies in along the contrail on load, then holds a
+               slow glide. Fixed 180x80 so the offset-path coordinates and
+               the trail's viewBox stay in step. -->
+          <div class="planemark" aria-hidden="true">
+            <svg class="planemark__trail" viewBox="0 0 180 80">
+              <path d="M14 66 C 52 66, 78 50, 118 21" />
+            </svg>
+            <span class="planemark__craft">
+              <svg viewBox="0 0 73 76"><use href="#tm-plane" /></svg>
+            </span>
+          </div>
+          <h1 class="hero__title">
+            Describe the task.<br />Get the tools worth trying.
+          </h1>
+          <p class="hero__sub">
+            A hand-checked directory of 75 AI tools for coursework and
+            early-career work. Real pricing, no affiliate links.
+          </p>
+
+          <form id="search-form" class="search" role="search">
+            <label class="visually-hidden" for="search-input">
+              Describe what you're trying to do
+            </label>
+            <input
+              id="search-input"
+              name="q"
+              type="text"
+              class="search__input"
+              placeholder="summarize long readings for class"
+              autocomplete="off"
+            />
+            <button type="submit" class="search__button">Match me</button>
+          </form>
+
+          <p class="hero__hint">
+            or <a href="#directory">browse all 75 tools</a>
+          </p>
+        </div>
+
+        <!-- Real product logos, drifting along the bottom edge. Populated
+             from data/tools.json by js/app.js. -->
+        <div class="hero__strip" aria-hidden="true">
+          <div class="marquee" id="hero-marquee"></div>
+        </div>
       </section>
 
-      <section id="results" class="results" hidden>
-        <h2 class="results__heading">Recommended for you</h2>
+      <!-- ---------- Results (revealed after a search) ---------- -->
+      <section id="results" class="section results" hidden>
+        <div class="section__head">
+          <span class="pill">Matches</span>
+          <h2 class="section__title results__heading">Recommended for you</h2>
+        </div>
         <ul id="results-list" class="tool-list"></ul>
       </section>
 
-      <section id="directory" class="directory">
-        <h2 class="directory__heading">All tools</h2>
+      <!-- ---------- How it works ---------- -->
+      <section id="how" class="section">
+        <div class="section__head">
+          <span class="pill">How it works</span>
+          <h2 class="section__title">Three steps, no account.</h2>
+        </div>
+
+        <ol class="steps">
+          <li class="step">
+            <span class="step__n">1</span>
+            <h3 class="step__title">Say what you're doing</h3>
+            <p class="step__body">
+              Plain language works best. &ldquo;Cite sources for a lit
+              review,&rdquo; not a pile of keywords.
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__n">2</span>
+            <h3 class="step__title">See what fits</h3>
+            <p class="step__body">
+              Results are ranked by the task, the skill level it assumes, and
+              whether you can start without paying.
+            </p>
+          </li>
+          <li class="step">
+            <span class="step__n">3</span>
+            <h3 class="step__title">Compare and go</h3>
+            <p class="step__body">
+              Every result carries its real price, so you know the cost before
+              you hand over an email address.
+            </p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ---------- Categories ---------- -->
+      <section id="categories" class="section section--cluster">
+        <div class="cluster" id="logo-cluster" aria-hidden="true"></div>
+
+        <div class="section__head section__head--center">
+          <span class="pill">Categories</span>
+          <h2 class="section__title">
+            Thirteen categories,<br />seventy-five tools.
+          </h2>
+          <p class="section__sub">
+            Everything is sorted by what it's actually good for &mdash; not by
+            who paid to be near the top.
+          </p>
+        </div>
+
+        <ul class="cats" id="category-list"></ul>
+      </section>
+
+      <!-- ---------- What's inside ---------- -->
+      <section id="inside" class="section">
+        <div class="section__head">
+          <span class="pill">What's inside</span>
+          <h2 class="section__title">Checked by hand, not scraped.</h2>
+        </div>
+
+        <div class="facts">
+          <article class="fact fact--tint fact--tall">
+            <p class="fact__n">64</p>
+            <p class="fact__label">tools with a genuine free tier</p>
+            <p class="fact__body">
+              The bar for being listed is that a student with no budget can get
+              real work done on day one. Eleven paid-only tools made it in
+              anyway, because nothing free comes close.
+            </p>
+          </article>
+
+          <article class="fact">
+            <p class="fact__n">54</p>
+            <p class="fact__label">rated beginner-friendly</p>
+          </article>
+
+          <article class="fact fact--dark">
+            <p class="fact__n">13</p>
+            <p class="fact__label">categories, from coding to job hunting</p>
+          </article>
+
+          <article class="fact fact--wide">
+            <h3 class="fact__title">Prices re-checked 3 September 2026</h3>
+            <p class="fact__body">
+              AI pricing moves fast and free tiers quietly disappear. Every
+              listing carries the date it was last verified, so you can tell
+              how much to trust it.
+            </p>
+          </article>
+
+          <article class="fact fact--full">
+            <h3 class="fact__title">Nobody paid to be here</h3>
+            <p class="fact__body">
+              No affiliate links, no sponsored placements, no ranking for sale.
+              If a tool is listed, it's because it earned the slot.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ---------- Directory ---------- -->
+      <section id="directory" class="section">
+        <div class="section__head section__head--row">
+          <div>
+            <span class="pill">Directory</span>
+            <h2 class="section__title">All 75 tools.</h2>
+          </div>
+          <p class="section__sub section__sub--tight">
+            Filter by category, then open anything that looks right.
+          </p>
+        </div>
+
+        <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+
         <ul id="directory-list" class="tool-list" aria-busy="true" aria-label="Loading tools">
           <!-- Skeleton placeholders; js/app.js replaces this markup once
                data/tools.json has loaded. -->
         </ul>
+        <p class="tool-list__empty" id="directory-empty" hidden>
+          No tools in that category yet.
+        </p>
+      </section>
+
+      <!-- ---------- FAQ ---------- -->
+      <section id="faq" class="section">
+        <div class="section__head">
+          <span class="pill">FAQ</span>
+          <h2 class="section__title">Reasonable questions.</h2>
+        </div>
+
+        <div class="faq">
+          <details class="faq__item">
+            <summary class="faq__q">Is ToolMatch free?</summary>
+            <p class="faq__a">
+              Yes. It's a personal project rather than a business &mdash; no
+              account, no paywall, nothing to cancel.
+            </p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">How does a tool get listed?</summary>
+            <p class="faq__a">
+              By hand, one at a time. The test is whether someone with no
+              budget and no prior setup can get something useful out of it,
+              which is why 64 of the 75 have a real free tier.
+            </p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">Do the listed tools pay you?</summary>
+            <p class="faq__a">
+              No. There are no affiliate links, no sponsored slots, and no way
+              to buy a better position. Ordering is based on fit alone.
+            </p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">How current is the pricing?</summary>
+            <p class="faq__a">
+              Every listing was re-checked on 3 September 2026. Treat anything
+              much older than that as a starting point and confirm on the
+              tool's own site before you commit.
+            </p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">Why only 75 tools?</summary>
+            <p class="faq__a">
+              Because a list of five hundred is a search problem, not an
+              answer. A short list you can act on is the whole point.
+            </p>
+          </details>
+
+          <details class="faq__item">
+            <summary class="faq__q">Can I suggest something?</summary>
+            <p class="faq__a">
+              Please do. Issues and pull requests on the repo are the fastest
+              route, especially if you've spotted a price that's gone stale.
+            </p>
+          </details>
+        </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <p>ToolMatch — a personal project.</p>
+    <footer class="footer">
+      <div class="footer__top">
+        <div class="footer__intro">
+          <a class="nav__brand" href="/">
+            <svg class="mark" viewBox="0 0 73 76" aria-hidden="true">
+              <use href="#tm-plane" />
+            </svg>
+            ToolMatch
+          </a>
+          <p>
+            A hand-checked directory of AI tools for students and
+            early-career work.
+          </p>
+        </div>
+
+        <nav class="footer__col" aria-label="Sections">
+          <h2 class="footer__h">Sections</h2>
+          <a href="#how">How it works</a>
+          <a href="#categories">Categories</a>
+          <a href="#inside">What's inside</a>
+          <a href="#directory">Directory</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="footer__col">
+          <h2 class="footer__h">Catalog</h2>
+          <p>75 tools</p>
+          <p>13 categories</p>
+          <p>Prices checked 3 Sep 2026</p>
+        </div>
+      </div>
+
+      <p class="footer__wordmark" aria-hidden="true">ToolMatch</p>
     </footer>
 
     <script type="module" src="js/app.js"></script>
