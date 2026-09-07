@@ -1376,23 +1376,6 @@ ol {
   }
 }
 
-/* ---------- Theme change ---------- */
-/* The new theme is revealed by a circle growing out of the toggle instead
-   of the page cutting over. Both snapshots are held still here; the only
-   moving part is the clip-path, animated in js/app.js because it needs the
-   button's position on screen, which CSS can't see. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation: none;
-  mix-blend-mode: normal;
-}
-::view-transition-old(root) {
-  z-index: 0;
-}
-::view-transition-new(root) {
-  z-index: 1;
-}
-
 /* ---------- Responsive ---------- */
 @media (max-width: 940px) {
   .facts {

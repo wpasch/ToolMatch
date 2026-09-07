@@ -447,7 +447,6 @@ function initThemeToggle() {
   if (!button) return;
 
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   function currentTheme() {
     const explicit = document.documentElement.getAttribute("data-theme");
@@ -476,46 +475,7 @@ function initThemeToggle() {
 
   button.addEventListener("click", () => {
     const next = currentTheme() === "dark" ? "light" : "dark";
-
-    // Not every browser ships View Transitions, and anyone asking for less
-    // motion does not want a full-screen wipe.
-    if (!document.startViewTransition || reduceMotion.matches) {
-      applyTheme(next);
-      return;
-    }
-
-    // Turn the dial before the transition starts. Inside the callback the
-    // page is already being captured, and a snapshot is a still frame — the
-    // rotation would be frozen out of the animation entirely.
-    button.setAttribute("aria-pressed", String(next === "dark"));
-
-    const box = button.getBoundingClientRect();
-    const x = box.left + box.width / 2;
-    const y = box.top + box.height / 2;
-    // Far enough to clear the corner furthest from the button, so the
-    // reveal always finishes covering the viewport.
-    const radius = Math.hypot(
-      Math.max(x, window.innerWidth - x),
-      Math.max(y, window.innerHeight - y)
-    );
-
-    const transition = document.startViewTransition(() => applyTheme(next));
-
-    transition.ready.then(() => {
-      document.documentElement.animate(
-        {
-          clipPath: [
-            `circle(0px at ${x}px ${y}px)`,
-            `circle(${radius}px at ${x}px ${y}px)`,
-          ],
-        },
-        {
-          duration: 620,
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-          pseudoElement: "::view-transition-new(root)",
-        }
-      );
-    });
+    applyTheme(next);
   });
 
   // Keep the dial in sync if the OS theme changes while no explicit choice
