@@ -6,7 +6,7 @@
     <title>ToolMatch — Find the right AI tool</title>
     <meta
       name="description"
-      content="A hand-checked directory of 75 AI tools for students and early-career work. Describe your task, get a short list worth trying."
+      content="A hand-checked directory of 100 AI tools for students and early-career work. Describe your task, get a short list worth trying."
     />
     <!-- SVG first for browsers that take it; the PNG and .ico cover the
          rest. Declared explicitly because the site is served from a
@@ -31,7 +31,16 @@
       type="font/woff2"
       crossorigin
     />
-    <link rel="stylesheet" href="css/styles.css" />
+    <!-- The stylesheet is split by concern rather than shipped as one
+         file. These are loaded in cascade order and each expects the ones
+         above it: base defines the tokens everything else reads, and
+         motion.css is last because its breakpoints and the
+         prefers-reduced-motion block exist to override what came before. -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/hero.css" />
+    <link rel="stylesheet" href="css/sections.css" />
+    <link rel="stylesheet" href="css/directory.css" />
+    <link rel="stylesheet" href="css/motion.css" />
     <script>
       // Runs before first paint so a saved theme choice never flashes the
       // wrong palette. Falls back to the OS preference (handled by CSS)
@@ -56,6 +65,15 @@
     <svg class="sprite" aria-hidden="true">
       <symbol id="tm-plane" viewBox="0 0 73 76">
         <path d="M73 0 L0 38.5 L35 41 L48 76 Z" />
+      </symbol>
+      <!-- Stroked, not filled: both take currentColor and the `icon` class
+           in css/base.css supplies the stroke. -->
+      <symbol id="tm-arrow" viewBox="0 0 16 16">
+        <path d="M4.6 11.4 11.4 4.6M6.1 4.6h5.3v5.3" />
+      </symbol>
+      <symbol id="tm-search" viewBox="0 0 16 16">
+        <circle cx="7" cy="7" r="4.6" />
+        <path d="m10.4 10.4 3.1 3.1" />
       </symbol>
     </svg>
 
@@ -100,165 +118,13 @@
           <span class="sky__bloom"></span>
           <span class="sky__stars"></span>
 
-          <!-- Cumulus. The shapes are plain overlapping circles; the
-               turbulence filter displaces their edges into irregular
-               puffs, which is what separates a cloud from a blurred
-               ellipse. Two banks drift at different speeds for parallax.
-
-               Each band is 2880 units wide — the same 1440-unit bank
-               drawn twice — so translating its wrapper by -50% lands
-               exactly one bank along and the loop is seamless. The
-               filter sits *inside* each `use`, so both copies are
-               displaced by identical noise and the seam doesn't show.
-               Shapes crossing x=0 have a partner at x=1440 for the
-               same reason. -->
-          <svg class="sky__defs" aria-hidden="true">
-            <defs>
-              <filter id="puff-far" x="-15%" y="-30%" width="130%" height="160%">
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.008"
-                  numOctaves="4"
-                  seed="11"
-                  result="n"
-                />
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  in2="n"
-                  scale="88"
-                  xChannelSelector="R"
-                  yChannelSelector="G"
-                />
-                <feGaussianBlur stdDeviation="10" />
-              </filter>
-
-              <filter id="puff-near" x="-15%" y="-30%" width="130%" height="160%">
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.014"
-                  numOctaves="5"
-                  seed="4"
-                  result="n"
-                />
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  in2="n"
-                  scale="54"
-                  xChannelSelector="R"
-                  yChannelSelector="G"
-                />
-                <feGaussianBlur stdDeviation="2.5" />
-              </filter>
-
-              <!-- The bank's own mid-tone. Clouds are not white all
-                   through; only the tops that face the sun are. -->
-              <linearGradient id="cloud-body" x1="0" y1="0" x2="0" y2="1">
-                <stop class="cloud-body-1" offset="0" />
-                <stop class="cloud-body-2" offset="0.55" />
-                <stop class="cloud-body-3" offset="1" />
-              </linearGradient>
-
-              <!-- Sunlit caps. -->
-              <linearGradient id="cloud-lit" x1="0" y1="0" x2="0" y2="1">
-                <stop class="cloud-lit-1" offset="0" />
-                <stop class="cloud-lit-2" offset="1" />
-              </linearGradient>
-
-              <!-- Tall mass left, open sky through the middle, a second
-                   rise on the right: the uneven skyline is what stops it
-                   reading as fog. The last two circles are wrap partners
-                   of the first and second-to-last, 1440 apart, so the
-                   bank tiles. -->
-              <g id="bank">
-                <circle cx="40" cy="500" r="145" />
-                <circle cx="150" cy="448" r="135" />
-                <circle cx="250" cy="392" r="112" />
-                <circle cx="330" cy="338" r="84" />
-                <circle cx="398" cy="302" r="56" />
-                <circle cx="395" cy="425" r="120" />
-                <circle cx="490" cy="478" r="105" />
-
-                <circle cx="610" cy="512" r="95" />
-                <circle cx="720" cy="500" r="88" />
-                <circle cx="820" cy="508" r="100" />
-
-                <circle cx="940" cy="458" r="118" />
-                <circle cx="1040" cy="402" r="92" />
-                <circle cx="1120" cy="440" r="110" />
-
-                <circle cx="1250" cy="420" r="132" />
-                <circle cx="1362" cy="358" r="94" />
-                <circle cx="1444" cy="430" r="140" />
-
-                <circle cx="1480" cy="500" r="145" />
-                <circle cx="4" cy="430" r="140" />
-
-                <rect x="-40" y="498" width="1560" height="110" />
-              </g>
-
-              <!-- A flatter, lower bank for the distance. Also tiles at
-                   1440; the pair at x=-40 / x=1400 are the wrap. -->
-              <g id="bank-far">
-                <circle cx="-40" cy="470" r="130" />
-                <circle cx="120" cy="440" r="115" />
-                <circle cx="300" cy="408" r="128" />
-                <circle cx="470" cy="452" r="112" />
-                <circle cx="640" cy="416" r="135" />
-                <circle cx="820" cy="446" r="118" />
-                <circle cx="1000" cy="406" r="130" />
-                <circle cx="1180" cy="450" r="120" />
-                <circle cx="1340" cy="420" r="126" />
-                <circle cx="1400" cy="470" r="130" />
-                <rect x="-40" y="466" width="1560" height="140" />
-              </g>
-
-              <!-- Only the upper lobes, pulled up and in. Because these
-                   don't merge into the same silhouette as the body, the
-                   mid-tone survives in the gaps between them — which is
-                   where the sense of separate billows comes from. -->
-              <g id="caps">
-                <circle cx="44" cy="478" r="116" />
-                <circle cx="152" cy="426" r="108" />
-                <circle cx="250" cy="372" r="89" />
-                <circle cx="330" cy="320" r="66" />
-                <circle cx="398" cy="286" r="43" />
-                <circle cx="396" cy="406" r="95" />
-                <circle cx="490" cy="458" r="83" />
-
-                <circle cx="610" cy="494" r="75" />
-                <circle cx="720" cy="482" r="69" />
-                <circle cx="820" cy="490" r="79" />
-
-                <circle cx="940" cy="438" r="94" />
-                <circle cx="1040" cy="384" r="73" />
-                <circle cx="1120" cy="422" r="87" />
-
-                <circle cx="1250" cy="400" r="105" />
-                <circle cx="1362" cy="340" r="75" />
-                <circle cx="1444" cy="410" r="111" />
-
-                <circle cx="1484" cy="478" r="116" />
-                <circle cx="4" cy="410" r="111" />
-              </g>
-
-              <!-- One tile of each band: body plus sunlit caps, filtered
-                   here so every copy gets the same displacement. -->
-              <g id="tile-near">
-                <g filter="url(#puff-near)" fill="url(#cloud-body)">
-                  <use href="#bank" />
-                </g>
-                <g filter="url(#puff-near)" fill="url(#cloud-lit)">
-                  <use href="#caps" />
-                </g>
-              </g>
-
-              <g id="tile-far">
-                <g filter="url(#puff-far)" fill="url(#cloud-body)">
-                  <use href="#bank-far" />
-                </g>
-              </g>
-            </defs>
-          </svg>
+          <!-- Cumulus. Two banks of overlapping circles, chewed into puffs
+               by a turbulence filter and drifting at different speeds for
+               parallax. The geometry is three lists of numbers, so it is
+               built by js/sky.js rather than written out here; it has to
+               land in this document rather than load as an external .svg
+               because the gradient stops are themed from hero.css. -->
+          <svg class="sky__defs" aria-hidden="true"></svg>
 
           <div class="band band--far">
             <svg viewBox="0 0 2880 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
@@ -295,7 +161,7 @@
             Describe the task.<br />Get the tools worth trying.
           </h1>
           <p class="hero__sub">
-            A hand-checked directory of 75 AI tools for coursework and
+            A hand-checked directory of 100 AI tools for coursework and
             early-career work. Real pricing, no affiliate links.
           </p>
 
@@ -315,13 +181,17 @@
           </form>
 
           <p class="hero__hint">
-            or <a href="#directory">browse all 75 tools</a>
+            or <a href="#directory">browse all 100 tools</a>
           </p>
         </div>
 
         <!-- Real product logos, drifting along the bottom edge. Populated
              from data/tools.json by js/app.js. -->
         <div class="hero__strip" aria-hidden="true">
+          <!-- The line the floating nav switches on. Observing the whole
+               hero flipped the bar far too late, so the marquee spent the
+               last stretch of the scroll drifting behind glass. -->
+          <span class="hero__sentinel"></span>
           <div class="marquee" id="hero-marquee"></div>
         </div>
       </section>
@@ -385,7 +255,7 @@
         <div class="section__head section__head--center">
           <span class="pill">Categories</span>
           <h2 class="section__title">
-            Thirteen categories,<br />seventy-five tools.
+            Thirteen categories,<br />one hundred tools.
           </h2>
           <p class="section__sub">
             Everything is sorted by what it's actually good for &mdash; not by
@@ -405,7 +275,7 @@
 
         <div class="facts">
           <article class="fact fact--tint fact--tall">
-            <p class="fact__n">64</p>
+            <p class="fact__n">89</p>
             <p class="fact__label">tools with a genuine free tier</p>
             <p class="fact__body">
               The bar for being listed is that a student with no budget can get
@@ -415,7 +285,7 @@
           </article>
 
           <article class="fact">
-            <p class="fact__n">60</p>
+            <p class="fact__n">79</p>
             <p class="fact__label">rated beginner-friendly</p>
           </article>
 
@@ -425,7 +295,7 @@
           </article>
 
           <article class="fact fact--wide">
-            <h3 class="fact__title">Prices re-checked 3 September 2026</h3>
+            <h3 class="fact__title">Every price re-checked since 3 September 2026</h3>
             <p class="fact__body">
               AI pricing moves fast and free tiers quietly disappear. Every
               listing carries the date it was last verified, so you can tell
@@ -448,14 +318,36 @@
         <div class="section__head section__head--row">
           <div>
             <span class="pill">Directory</span>
-            <h2 class="section__title">All 75 tools.</h2>
+            <h2 class="section__title">All 100 tools.</h2>
           </div>
           <p class="section__sub section__sub--tight">
             Filter by category, then open anything that looks right.
           </p>
         </div>
 
-        <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+        <div class="filters-bar">
+          <!-- Saves a trip back to the hero once you're deep in the list.
+               This narrows what's already on screen; the hero search is the
+               one that interprets a task. -->
+          <form class="dirsearch" id="directory-search-form" role="search">
+            <label class="visually-hidden" for="directory-search">
+              Filter the directory by name or keyword
+            </label>
+            <svg class="icon dirsearch__icon" aria-hidden="true">
+              <use href="#tm-search" />
+            </svg>
+            <input
+              id="directory-search"
+              name="filter"
+              type="search"
+              class="dirsearch__input"
+              placeholder="Filter by name or keyword"
+              autocomplete="off"
+            />
+          </form>
+
+          <div class="filters" id="filters" role="group" aria-label="Filter by category"></div>
+        </div>
 
         <ul id="directory-list" class="tool-list" aria-busy="true" aria-label="Loading tools">
           <!-- Skeleton placeholders; js/app.js replaces this markup once
@@ -487,7 +379,7 @@
             <p class="faq__a">
               By hand, one at a time. The test is whether someone with no
               budget and no prior setup can get something useful out of it,
-              which is why 64 of the 75 have a real free tier.
+              which is why 89 of the 100 have a real free tier.
             </p>
           </details>
 
@@ -502,14 +394,15 @@
           <details class="faq__item">
             <summary class="faq__q">How current is the pricing?</summary>
             <p class="faq__a">
-              Every listing was re-checked on 3 September 2026. Treat anything
+              Every listing was re-checked on or after 3 September 2026, and
+              each card carries its own date. Treat anything
               much older than that as a starting point and confirm on the
               tool's own site before you commit.
             </p>
           </details>
 
           <details class="faq__item">
-            <summary class="faq__q">Why only 75 tools?</summary>
+            <summary class="faq__q">Why only 100 tools?</summary>
             <p class="faq__a">
               Because a list of five hundred is a search problem, not an
               answer. A short list you can act on is the whole point.
@@ -555,9 +448,9 @@
 
         <div class="footer__col">
           <h2 class="footer__h">Catalog</h2>
-          <p>75 tools</p>
+          <p>100 tools</p>
           <p>13 categories</p>
-          <p>Prices checked 3 Sep 2026</p>
+          <p>Prices checked since 3 Sep 2026</p>
         </div>
       </div>
 

@@ -1,0 +1,395 @@
+/* Sections — the shared section frame and the editorial blocks.
+   Section scaffolding and headings, the numbered How-it-works rows, the
+   floating category cluster and its chips, the What's-inside fact grid,
+   the FAQ list, and the footer.
+
+   Part of the stylesheet split described in index.html; the <link> order
+   there is the cascade order, so this file expects everything above it to
+   have loaded first. */
+
+/* ---------- Section scaffolding ---------- */
+.section {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: var(--section-pad) var(--gutter) 0;
+}
+.section:last-of-type {
+  padding-bottom: var(--section-pad);
+}
+
+.section__head {
+  margin-bottom: 2.75rem;
+}
+.section__head--center {
+  text-align: center;
+  max-width: 34rem;
+  margin-inline: auto;
+}
+.section__head--row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.85rem;
+  margin-bottom: 1.1rem;
+  border-radius: 999px;
+  background: var(--coral-wash);
+  color: var(--coral);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.section__title {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+
+.section__sub {
+  margin-top: 1rem;
+  max-width: 34rem;
+  color: var(--muted);
+}
+.section__head--center .section__sub {
+  margin-inline: auto;
+}
+.section__sub--tight {
+  margin-top: 0;
+  max-width: 20rem;
+}
+
+/* ---------- How it works ---------- */
+/* Ruled rows rather than cards: this is a sequence, so the numbers and the
+   rules carry the order without another set of boxes. */
+.steps {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0 1.5rem;
+  align-items: baseline;
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.step__n {
+  font-family: var(--serif);
+  font-size: 2.6rem;
+  line-height: 1;
+  color: var(--coral);
+}
+
+.step__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.step__body {
+  grid-column: 2;
+  margin-top: 0.4rem;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+/* ---------- Categories ---------- */
+.section--cluster {
+  position: relative;
+  isolation: isolate;
+  /* Extra room above for the floating chips to occupy. */
+  padding-top: calc(var(--section-pad) + clamp(1.5rem, 4vw, 3.5rem));
+}
+
+/* Real product logos floating in a band above the heading — never behind
+   it, so nothing lands on top of a sentence. The band bleeds past the
+   content column. Positions come from js/app.js. */
+.cluster {
+  position: absolute;
+  top: clamp(2.5rem, 6vw, 4.5rem);
+  left: -6vw;
+  right: -6vw;
+  height: 13rem;
+  z-index: -1;
+}
+
+/* Each chip drifts on its own clock — js/app.js hands every one a
+   different duration, delay and tilt, so the cluster never pulses in
+   unison the way a single shared animation would.
+   
+   Depth comes from the chip itself: the ones hanging lower are further
+   away, so they are drawn smaller and fainter as whole objects. This layer
+   used to carry a gradient mask instead, which faded chips across their own
+   middles — a hard-edged disc cut halfway down reads as a rendering fault
+   rather than as distance, and in the dark theme the remaining half turned
+   into a grey smear. `scale` is its own property, so it composes with the
+   translate/rotate the float keyframe owns. */
+.cluster__chip {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--chip-face);
+  box-shadow: var(--shadow-card);
+  opacity: var(--o, 1);
+  scale: var(--s, 1);
+  animation: chip-float var(--t, 8s) ease-in-out var(--d, 0s) infinite;
+}
+
+@keyframes chip-float {
+  50% {
+    transform: translate(var(--dx, 0px), var(--dy, -16px)) rotate(var(--r, 4deg));
+  }
+}
+.cluster__chip img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.cats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+
+.cats a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color var(--fast) var(--ease),
+    transform var(--fast) var(--ease);
+}
+.cats a:hover {
+  border-color: var(--ink);
+  transform: translateY(-2px);
+}
+.cats span {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- What's inside ---------- */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.fact {
+  padding: 1.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.fact--tall {
+  grid-row: span 2;
+  display: flex;
+  flex-direction: column;
+}
+.fact--wide {
+  grid-column: span 2;
+}
+/* Closes the row instead of leaving a hole in the last column; the split
+   interior keeps a two-line card from looking stranded at full width. */
+.fact--full {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 1rem 2.5rem;
+  align-items: baseline;
+}
+.fact--full .fact__body {
+  margin-top: 0;
+  max-width: none;
+}
+.fact--tint {
+  background: linear-gradient(
+    165deg,
+    var(--coral-wash) 0%,
+    var(--surface) 62%
+  );
+  border-color: transparent;
+}
+.fact--dark {
+  background: var(--dark-card);
+  border-color: transparent;
+  color: var(--on-dark);
+}
+
+.fact__n {
+  font-family: var(--serif);
+  font-size: clamp(3.2rem, 6vw, 4.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+.fact--dark .fact__n {
+  color: var(--on-dark);
+}
+
+.fact__label {
+  margin-top: 0.6rem;
+  max-width: 15rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+}
+.fact--dark .fact__label {
+  color: rgba(244, 244, 242, 0.66);
+}
+
+.fact__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.fact__body {
+  margin-top: 0.7rem;
+  font-size: 0.9375rem;
+  color: var(--muted);
+  max-width: 32rem;
+}
+.fact--tall .fact__body {
+  margin-top: auto;
+  padding-top: 1.5rem;
+  /* A rule rather than bare space. The note is pushed to the foot of a
+     double-height card on purpose, but with nothing marking the join it
+     reads as a card that failed to fill. */
+  border-top: 1px solid light-dark(rgba(22, 24, 29, 0.12), rgba(242, 242, 239, 0.14));
+}
+
+/* ---------- FAQ ---------- */
+.faq {
+  max-width: 46rem;
+  border-top: 1px solid var(--line);
+}
+
+.faq__item {
+  border-bottom: 1px solid var(--line);
+}
+
+.faq__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.4rem 0;
+  font-size: 1.1875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  list-style: none;
+}
+.faq__q::-webkit-details-marker {
+  display: none;
+}
+
+/* A plus that rotates into a minus — motion that reports what changed. */
+.faq__q::after {
+  content: "";
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: none;
+  background: linear-gradient(var(--ink), var(--ink)) center / 100% 1.5px
+      no-repeat,
+    linear-gradient(var(--ink), var(--ink)) center / 1.5px 100% no-repeat;
+  transition: transform var(--base) var(--ease);
+}
+.faq__item[open] .faq__q::after {
+  transform: rotate(135deg);
+}
+
+.faq__a {
+  padding-bottom: 1.5rem;
+  max-width: 38rem;
+  color: var(--muted);
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 1rem;
+  overflow: hidden;
+}
+
+.footer__top {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2.5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--line);
+}
+
+.footer__intro .nav__brand {
+  color: var(--ink);
+  margin-bottom: 0.9rem;
+}
+.footer__intro p {
+  max-width: 22rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.footer__col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  font-size: 0.9375rem;
+}
+.footer__col a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.footer__col a:hover {
+  color: var(--ink);
+}
+.footer__col p {
+  color: var(--muted);
+}
+
+.footer__h {
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+
+.footer__wordmark {
+  margin: 1.25rem 0 0;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(5rem, 21vw, 17rem);
+  line-height: 0.92;
+  text-align: center;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--ink) 8%, transparent 88%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  user-select: none;
+}

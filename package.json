@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check js/app.js && node --check js/data.js && node --check js/search.js",
+    "check": "for f in js/*.js; do node --check \"$f\" || exit 1; done",
     "validate": "node scripts/validate-data.js",
     "test": "npm run check && npm run validate && node --test"
   }

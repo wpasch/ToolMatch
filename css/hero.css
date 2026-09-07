@@ -1,0 +1,403 @@
+/* Hero — the sky, the cloud banks, the search, and the logo strip.
+   The drawn sky (gradient, sun bloom, stars, two turbulence-displaced
+   cumulus bands), the plane's contrail entrance, the search bar that is
+   the page's front door, and the drifting logo marquee at its foot.
+
+   Part of the stylesheet split described in index.html; the <link> order
+   there is the cascade order, so this file expects everything above it to
+   have loaded first. */
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: min(94vh, 860px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 9rem var(--gutter) 0;
+  margin: 0.75rem 0.75rem 0;
+  border-radius: clamp(20px, 3vw, 34px);
+  overflow: hidden;
+  text-align: center;
+}
+
+.hero__sky {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    var(--sky-deep) 0%,
+    var(--sky-mid) 52%,
+    var(--sky-pale) 100%
+  );
+}
+
+/* Cumulus banks, drawn as SVG in index.html so the hero needs no
+   photograph. The silhouette does the work: a turbulence displacement
+   filter chews the circles' edges into puffs.
+
+   Each band is twice the hero's width and holds two copies of the same
+   tile, so translating it -50% moves exactly one tile and loops with no
+   jump. The transform lives on this div rather than inside the SVG:
+   the filter then rasterises once and the browser just slides the
+   finished layer, instead of re-running turbulence every frame. */
+.sky__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.band {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 200%;
+  will-change: transform;
+}
+.band svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.band--far {
+  height: clamp(11rem, 50%, 29rem);
+  animation: drift 190s linear infinite;
+  /* Lags the scroll, so the sky has depth on the way down. */
+  translate: 0 calc(var(--sky-shift, 0px) * 0.4);
+}
+.band--near {
+  height: clamp(13rem, 58%, 34rem);
+  animation: drift 105s linear infinite;
+  translate: 0 calc(var(--sky-shift, 0px) * 0.85);
+}
+
+@keyframes drift {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Sun high and slightly off-centre, breathing. At dusk it cools into a
+   moon glow rather than disappearing. */
+.sky__bloom {
+  position: absolute;
+  top: -26%;
+  left: 58%;
+  width: min(130vw, 68rem);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  translate: 0 calc(var(--sky-shift, 0px) * 0.25);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    light-dark(rgba(255, 250, 232, 0.62), rgba(150, 158, 220, 0.2)) 0%,
+    light-dark(rgba(255, 248, 226, 0.22), rgba(130, 138, 205, 0.08)) 38%,
+    transparent 66%
+  );
+  animation: breathe 19s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.6;
+    transform: translateX(-50%) scale(1.11);
+  }
+}
+
+/* Only ever visible at dusk. Two sets on different timings so the
+   twinkle doesn't pulse in unison. */
+.sky__stars {
+  position: absolute;
+  inset: 0 0 42% 0;
+  display: var(--stars-on);
+  background-image: radial-gradient(1.6px 1.6px at 8% 24%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 17% 9%, #dfe4ff, transparent),
+    radial-gradient(1.7px 1.7px at 26% 38%, #fff, transparent),
+    radial-gradient(1.3px 1.3px at 34% 15%, #cfd6ff, transparent),
+    radial-gradient(1.8px 1.8px at 45% 30%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 52% 7%, #e6eaff, transparent),
+    radial-gradient(1.6px 1.6px at 61% 34%, #fff, transparent),
+    radial-gradient(1.3px 1.3px at 70% 18%, #d6dcff, transparent),
+    radial-gradient(1.9px 1.9px at 79% 27%, #fff, transparent),
+    radial-gradient(1.4px 1.4px at 88% 12%, #e2e7ff, transparent),
+    radial-gradient(1.6px 1.6px at 95% 36%, #fff, transparent);
+  animation: twinkle 8s ease-in-out infinite;
+}
+.sky__stars::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(1.3px 1.3px at 12% 46%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 22% 20%, #e9ecff, transparent),
+    radial-gradient(1.2px 1.2px at 31% 52%, #fff, transparent),
+    radial-gradient(1.6px 1.6px at 41% 41%, #dbe1ff, transparent),
+    radial-gradient(1.3px 1.3px at 49% 19%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 58% 48%, #e4e9ff, transparent),
+    radial-gradient(1.2px 1.2px at 67% 6%, #fff, transparent),
+    radial-gradient(1.7px 1.7px at 75% 44%, #d9dfff, transparent),
+    radial-gradient(1.3px 1.3px at 84% 22%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 92% 50%, #e7ebff, transparent);
+  animation: twinkle 13s ease-in-out infinite reverse;
+}
+
+@keyframes twinkle {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* stop-color is a CSS property, so the gradients theme like everything
+   else: sunlit white by day, a dim violet-grey at dusk. */
+.cloud-body-1 {
+  stop-color: light-dark(#f2f8ff, #4c517e);
+}
+.cloud-body-2 {
+  stop-color: light-dark(#dfecfa, #3d4269);
+}
+.cloud-body-3 {
+  stop-color: light-dark(#bcd5ed, #2d3252);
+}
+
+.cloud-lit-1 {
+  stop-color: light-dark(#ffffff, #868bbc);
+}
+.cloud-lit-2 {
+  stop-color: light-dark(#f0f7ff, #6b70a2);
+}
+
+/* The far bank sits back in the haze; the near one reads solid. */
+.clouds__far {
+  opacity: var(--cloud-far-o);
+}
+.clouds__near {
+  opacity: var(--cloud-near-o);
+}
+
+.hero__inner {
+  max-width: 46rem;
+  width: 100%;
+}
+
+/* Fixed pixel size on purpose: offset-path takes raw CSS pixels, so the
+   flight path only lines up with the trail's viewBox while the box stays
+   180x80. Scaled as a whole on small screens rather than resized. */
+.planemark {
+  position: relative;
+  width: 180px;
+  height: 80px;
+  margin: 0 auto 1.1rem;
+}
+
+.planemark__trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.planemark__trail path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.75);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 3 9;
+  /* Drawn on by animating the offset of a second, solid dash pattern. */
+  animation: trail-draw 1500ms var(--ease) 200ms backwards;
+}
+
+.planemark__craft {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 35px;
+  offset-path: path("M14 66 C 52 66, 78 50, 118 21");
+  /* The artwork already points up-right, so following the tangent as well
+     would stand it nearly vertical. It holds its own angle instead and the
+     bank comes from the glide keyframes. */
+  offset-rotate: 0deg;
+  offset-anchor: 50% 50%;
+  offset-distance: 100%;
+  color: #fff;
+  filter: drop-shadow(0 6px 14px rgba(10, 20, 45, 0.4));
+  animation: fly-in 1500ms var(--ease) 200ms backwards, glide 5s ease-in-out 1700ms infinite;
+}
+.planemark__craft svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+@keyframes trail-draw {
+  from {
+    stroke-dashoffset: 150;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+}
+
+@keyframes fly-in {
+  from {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+}
+
+/* Holds station at the end of the trail and breathes, so the plane reads
+   as gliding rather than parked. */
+@keyframes glide {
+  50% {
+    offset-distance: 96%;
+    translate: 0 -5px;
+    rotate: -5deg;
+  }
+}
+
+.hero__title {
+  font-family: var(--serif);
+  font-size: clamp(2.9rem, 7.2vw, 5.1rem);
+  letter-spacing: -0.015em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.hero__sub {
+  max-width: 33rem;
+  margin: 1.3rem auto 0;
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-wrap: balance;
+}
+
+/* The search bar is the product's real front door, so it carries the hero
+   rather than a pair of decorative buttons. */
+.search {
+  display: flex;
+  gap: 0.4rem;
+  max-width: 34rem;
+  margin: 2rem auto 0;
+  padding: 0.4rem;
+  background: var(--surface);
+  border-radius: 999px;
+  box-shadow: 0 12px 34px rgba(10, 20, 45, 0.22);
+}
+
+.search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem 0.5rem 0.75rem 1.1rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+}
+.search__input::placeholder {
+  color: var(--muted);
+}
+.search__input:focus {
+  outline: none;
+}
+.search:focus-within {
+  box-shadow: 0 12px 34px rgba(10, 20, 45, 0.22), 0 0 0 3px var(--coral);
+}
+
+.search__button {
+  flex: none;
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--fast) var(--ease);
+}
+.search__button:hover {
+  opacity: 0.85;
+}
+
+.hero__hint {
+  margin-top: 1.1rem;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+.hero__hint a {
+  color: #fff;
+}
+
+/* Logo strip drifting along the bottom edge, in place of Applio's phones.
+   Deliberately quiet: it is texture at the foot of the hero, and the
+   search bar above it is the thing to look at. The fade reaches a long way
+   in from both edges so the strip has no hard start or end. */
+.hero__strip {
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+  padding-bottom: 2.2rem;
+  opacity: 0.78;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 24%, #000 76%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 24%, #000 76%, transparent);
+}
+
+/* Zero-height marker at the top edge of the strip. js/app.js watches it to
+   decide when the nav stops being glass, so the switch tracks the strip's
+   real position instead of a hard-coded offset. */
+.hero__sentinel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* js/app.js lays down four identical runs, so -25% advances exactly one
+   run and the loop is seamless with far fewer distinct logos in it. */
+.marquee {
+  display: flex;
+  gap: 0.8rem;
+  width: max-content;
+  animation: marquee-drift 52s linear infinite;
+}
+.hero__strip:hover .marquee {
+  animation-play-state: paused;
+}
+
+/* The chips land on the brightest part of the cloud bank, so they carry a
+   hairline and a tighter shadow to keep their edges rather than dissolving
+   into it. Translucent rather than solid white, so they sit behind the
+   search rather than beside it. */
+.marquee__chip {
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: none;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(28, 45, 80, 0.07);
+  box-shadow: 0 2px 5px rgba(10, 20, 45, 0.07), 0 8px 20px rgba(10, 20, 45, 0.07);
+}
+.marquee__chip img {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+@keyframes marquee-drift {
+  to {
+    transform: translateX(-25%);
+  }
+}

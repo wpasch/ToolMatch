@@ -20,11 +20,21 @@ Then open http://localhost:8000. (VS Code's Live Server extension works too.)
 ## Structure
 
 ```
-index.html        markup + page skeleton
-css/styles.css     styles (design tokens at the top)
+index.html         markup + page skeleton
+css/               loaded in this order; the order is the cascade
+  base.css         fonts, design tokens, element defaults, nav
+  hero.css         sky, cloud banks, search, logo strip
+  sections.css     section frame, steps, categories, facts, FAQ, footer
+  directory.css    filter bar and the tool card
+  motion.css       reveals, breakpoints, reduced-motion (must load last)
 assets/fonts/      self-hosted webfonts and their licenses
 js/
-  app.js           entry point: boot + rendering
+  app.js           entry point: boots the page
+  dom.js           untrusted-value helpers and DOM builders
+  cards.js         the tool card, list render, loading skeleton
+  hero.js          logo strip, category cluster, sky parallax
+  chrome.js        theme dial, nav state, section reveal
+  directory.js     category chips, directory filters, hero search
   data.js          loads and caches data/tools.json
   search.js        query -> ranked tools
 data/tools.json    the tool catalog: categories, tags, tools
@@ -36,7 +46,7 @@ data/tools.json    the tool catalog: categories, tags, tools
 
 - `categories` — id + label registry (13 categories); each tool has one `category`
 - `tags` — allowed tag vocabulary; each tool has a subset in `tags`
-- `tools` — the catalog (75 tools). Match-relevant fields: `tags`, `useCases`,
+- `tools` — the catalog (100 tools). Match-relevant fields: `tags`, `useCases`,
   `tagline`, `description`.
 
 Per-tool fields: `id`, `name`, `url`, `category`, `tagline`, `description`,

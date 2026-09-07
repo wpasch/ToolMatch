@@ -1,0 +1,426 @@
+/* Base — fonts, design tokens, element defaults, and the nav.
+   Everything the rest of the sheet is written against: the @font-face
+   declarations, the light-dark() token palette, the element resets and
+   shared utilities, the button and icon primitives, and the floating pill
+   nav that sits above every section.
+
+   Part of the stylesheet split described in index.html; the <link> order
+   there is the cascade order, so this file expects everything above it to
+   have loaded first. */
+
+/* ---------- Local fonts ---------- */
+@font-face {
+  font-family: "Figtree";
+  font-style: normal;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../assets/fonts/figtree-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Figtree";
+  font-style: italic;
+  font-weight: 300 900;
+  font-display: swap;
+  src: url("../assets/fonts/figtree-italic-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-serif-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/instrument-serif-italic-latin.woff2") format("woff2");
+}
+
+/* ---------- Design tokens ---------- */
+/* Each color is light-dark(), so the palette is defined once and follows
+   `color-scheme` automatically: "light dark" on :root tracks the OS by
+   default, and the theme toggle (js/app.js) narrows it to a single value
+   to force a side, in either direction, with no separate token block.
+   The dark side reads the hero as dusk rather than noon. */
+:root {
+  color-scheme: light dark;
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+:root {
+  --paper: light-dark(#f4f4f2, #101216);
+  --surface: light-dark(#ffffff, #191c22);
+  --surface-2: light-dark(#fafaf9, #14171c);
+  --ink: light-dark(#16181d, #f2f2ef);
+  --muted: light-dark(#6a6f78, #969ba4);
+  --line: light-dark(#e6e6e2, #262a31);
+
+  --coral: light-dark(#dd5540, #ff7d67);
+  --coral-wash: light-dark(#fbe8e4, #2e1c1a);
+
+  /* Pricing badges read at a glance rather than all in one accent: green
+     for a tool that costs nothing, coral for one that always costs, and a
+     plain neutral for the freemium majority so it doesn't shout. */
+  --green: light-dark(#2c7a51, #6ecf9b);
+  --green-wash: light-dark(#e4f2ea, #14261d);
+  --neutral-wash: light-dark(#f1f1ee, #22262d);
+
+  /* Logo chips keep a light face in both themes: most product marks are
+     dark monochrome and vanish against a dark disc. */
+  --chip-face: light-dark(#ffffff, #e7eaf1);
+
+  /* Pulled from the hero sky, so the accent and the masthead agree. */
+  --sky-deep: light-dark(#3d6ec2, #24305c);
+  --sky-mid: light-dark(#7fa9dd, #3a3f77);
+  /* Deliberately not washed out at the foot: white hero copy has to stay
+     legible where the gradient meets the cloud bank. */
+  --sky-pale: light-dark(#a3c1e4, #171a2c);
+  --link: light-dark(#2f5eae, #8fb4ec);
+
+  --dark-card: light-dark(#16181d, #05070a);
+  --on-dark: #f4f4f2;
+
+  /* light-dark() resolves to a *colour*, so it can only appear where a
+     colour is expected. Wrapping a whole shadow in it makes the
+     declaration invalid and the shadow silently disappears — so the
+     geometry is fixed here and only the tint switches. */
+  --shadow-tint: light-dark(rgba(20, 22, 29, 0.05), rgba(0, 0, 0, 0.4));
+  --shadow-tint-2: light-dark(rgba(20, 22, 29, 0.1), rgba(0, 0, 0, 0.55));
+
+  --shadow-card: 0 1px 2px var(--shadow-tint);
+  --shadow-lift: 0 14px 34px var(--shadow-tint-2), 0 2px 6px var(--shadow-tint);
+  --shadow-nav: 0 6px 24px var(--shadow-tint-2);
+
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --sans: "Figtree", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+
+  --wrap: 1120px;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+  /* One knob for the page's vertical rhythm, tightened on small screens
+     and left generous on the desktop layout. */
+  --section-pad: clamp(4.5rem, 9vw, 7.5rem);
+  --r-sm: 12px;
+  --r-md: 18px;
+  --r-lg: 28px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fast: 160ms;
+  --base: 320ms;
+}
+
+/* Non-colour values can't go through light-dark(), so they're switched
+   the long way: a light default, the OS preference when no explicit
+   choice has been made, then the explicit choice winning in either
+   direction. Custom properties hold any token, so `opacity` and
+   `display` end up valid at the point of use. */
+:root {
+  --cloud-far-o: 0.42;
+  --cloud-near-o: 0.97;
+  --stars-on: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --cloud-far-o: 0.34;
+    --cloud-near-o: 0.76;
+    --stars-on: block;
+  }
+}
+:root[data-theme="dark"] {
+  --cloud-far-o: 0.34;
+  --cloud-near-o: 0.76;
+  --stars-on: block;
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: light dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6.5rem;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 400;
+  line-height: 1.06;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--link);
+  text-underline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Holds the <symbol> only; never painted itself. */
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.skip-link {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--ink);
+  color: var(--paper);
+  border-radius: 0 0 var(--r-sm) var(--r-sm);
+  text-decoration: none;
+  font-weight: 600;
+}
+.skip-link:focus-visible {
+  transform: translate(-50%, 0);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.35rem;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform var(--fast) var(--ease),
+    background var(--fast) var(--ease), box-shadow var(--fast) var(--ease);
+}
+.btn--dark {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn--dark:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lift);
+}
+.btn:active {
+  transform: translateY(0);
+}
+
+/* Sprite icons that are drawn rather than filled (#tm-arrow, #tm-search). */
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* ---------- Floating pill nav ---------- */
+.nav {
+  position: fixed;
+  z-index: 50;
+  top: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(var(--wrap), calc(100vw - 2 * var(--gutter)));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.55rem 0.65rem 0.55rem 1.35rem;
+  border-radius: 999px;
+  background: light-dark(rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.1));
+  border: 1px solid light-dark(rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.14));
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  transition: background var(--base) var(--ease),
+    box-shadow var(--base) var(--ease), border-color var(--base) var(--ease);
+}
+
+/* Over the sky the bar is glass and its text is white; once the page
+   scrolls past the hero it becomes an opaque surface with normal ink. */
+.nav__brand,
+.nav__links a {
+  color: var(--on-dark);
+  text-decoration: none;
+  transition: color var(--base) var(--ease);
+}
+
+.nav--solid {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: var(--shadow-nav);
+}
+.nav--solid .nav__brand,
+.nav--solid .nav__links a {
+  color: var(--ink);
+}
+
+.nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+/* currentColor means the plane follows whatever the brand text is doing —
+   white over the sky, ink once the bar goes solid — with no second rule. */
+.mark {
+  width: 1.2rem;
+  height: 1.25rem;
+  flex: none;
+  fill: currentColor;
+  overflow: visible;
+}
+
+/* A short launch on hover: the plane darts along its own axis and glides
+   back. Motion that answers the pointer, so it earns itself. */
+.nav__brand .mark {
+  transition: transform 260ms var(--ease);
+}
+.nav__brand:hover .mark {
+  transform: translate(3px, -3px);
+}
+
+.nav__links {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+.nav__links a:hover {
+  opacity: 0.72;
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* A porthole onto the dial: the disc inside is twice as tall as this, so
+   whichever body is on the far half sits outside the clip. */
+.theme-toggle {
+  position: relative;
+  width: 2.35rem;
+  height: 2.35rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid light-dark(rgba(28, 45, 80, 0.12), rgba(255, 255, 255, 0.16));
+  background: light-dark(#bfd9f4, #1b1f3a);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color var(--base) var(--ease),
+    background var(--base) var(--ease), transform var(--fast) var(--ease);
+}
+.theme-toggle:hover {
+  transform: translateY(-1px);
+}
+.nav:not(.nav--solid) .theme-toggle {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Rotating about its own centre puts that centre on the button's bottom
+   edge, so a half-turn carries the top body down and out of sight. */
+.dial {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  transition: transform 760ms cubic-bezier(0.62, -0.28, 0.38, 1.3);
+}
+.theme-toggle[aria-pressed="true"] .dial {
+  transform: rotate(180deg);
+}
+
+.dial__sun,
+.dial__moon {
+  position: absolute;
+  left: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 50%;
+}
+
+.dial__sun {
+  top: 0.72rem;
+  transform: translateX(-50%);
+  background: #ffc94d;
+  box-shadow: 0 0 0 2px rgba(255, 201, 77, 0.32), 0 0 9px 2px rgba(255, 190, 60, 0.6);
+}
+
+/* Pre-turned a half-turn so the crescent arrives upright rather than
+   inverted at the end of the rotation. */
+.dial__moon {
+  bottom: 0.72rem;
+  transform: translateX(-50%) rotate(180deg);
+  box-shadow: inset -4px 2px 0 0 #e9edff;
+}

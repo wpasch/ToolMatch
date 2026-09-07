@@ -1,0 +1,227 @@
+/* Motion and responsive — loaded last so it can override.
+   The section reveal, the hero's load sequence, every breakpoint, and the
+   prefers-reduced-motion opt-out. This file has to come last: its media
+   queries and the reduced-motion block exist to override the rules in
+   every sheet before it.
+
+   Part of the stylesheet split described in index.html; the <link> order
+   there is the cascade order, so this file expects everything above it to
+   have loaded first. */
+
+/* ---------- Motion ---------- */
+/* One reveal, used on section headings only — cards and list items stay
+   still so the page doesn't shimmer on every scroll. */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  filter: blur(6px);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition: opacity 750ms var(--ease), transform 750ms var(--ease),
+    filter 750ms var(--ease);
+}
+
+/* Hero load sequence: the one orchestrated moment on the page. The plane
+   is left out — it has its own entrance along the contrail. */
+.hero__title,
+.hero__sub {
+  animation: rise 900ms var(--ease) backwards;
+}
+.hero__title {
+  animation-delay: 160ms;
+}
+.hero__sub {
+  animation-delay: 300ms;
+}
+
+/* The search and the link beside it are the hero's working controls, so
+   they are legible and clickable from the first frame: no stagger delay
+   and no blur, only a short travel that settles them with the type. */
+.search,
+.hero__hint {
+  animation: rise-clear 620ms var(--ease);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(8px);
+  }
+}
+
+@keyframes rise-clear {
+  from {
+    transform: translateY(12px);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 940px) {
+  /* Laptop and below: the desktop rhythm is deliberately airy, but at this
+     width it turns into scrolling between one idea and the next. */
+  :root {
+    --section-pad: clamp(3.75rem, 7vw, 5.5rem);
+  }
+  .facts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .fact--tall {
+    grid-row: auto;
+  }
+  .nav__links {
+    display: none;
+  }
+  .section__head {
+    margin-bottom: 2.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --section-pad: 3.25rem;
+  }
+  .section__head {
+    margin-bottom: 1.6rem;
+  }
+  .step {
+    padding: 1.4rem 0;
+  }
+  .hero {
+    min-height: 0;
+    padding-top: 7.5rem;
+  }
+  /* Scaled whole rather than resized — the flight path is in fixed pixels
+     and would drift out of register with the trail otherwise. */
+  .planemark {
+    transform: scale(0.82);
+    margin-bottom: 0.5rem;
+  }
+  /* The hero is content-height here, so `margin-top: auto` collapses and
+     the strip crowds the hint underneath it. */
+  .hero__strip {
+    margin-top: 3rem;
+  }
+  /* Kept low on a phone so the banks never rise under the hero copy —
+     `slice` crops the width, which keeps the puffs at a believable size
+     rather than squashing a whole bank into the viewport. */
+  .band--near {
+    height: 9.5rem;
+  }
+  .band--far {
+    height: 8rem;
+  }
+  /* The hero carries its own search; a second CTA in the bar only makes
+     the pill wrap. */
+  .nav__cta {
+    display: none;
+  }
+  .search {
+    flex-direction: column;
+    border-radius: var(--r-lg);
+    padding: 0.6rem;
+  }
+  .search__input {
+    padding: 0.6rem 0.75rem;
+    text-align: center;
+  }
+  .search__button {
+    width: 100%;
+  }
+  .footer__top {
+    grid-template-columns: 1fr;
+  }
+  /* The two bare metric cards pair up; everything with prose in it still
+     takes the full width. Stacking all five made this section most of the
+     page's scroll on a phone. */
+  .facts {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  .fact {
+    padding: 1.25rem;
+  }
+  .fact--tall,
+  .fact--wide,
+  .fact--full {
+    grid-column: 1 / -1;
+  }
+  .fact--full {
+    grid-template-columns: 1fr;
+  }
+  .fact__label {
+    max-width: none;
+  }
+  .fact__n {
+    font-size: clamp(2.6rem, 11vw, 3.6rem);
+  }
+
+  /* Fourteen wrapped chips pushed the first tool most of a screen down, so
+     they become one swipeable row that stays reachable under the nav while
+     the list scrolls. */
+  .filters-bar {
+    position: sticky;
+    /* Flush with the underside of the floating nav, so nothing shows
+       through the gap between them. */
+    top: 4.5rem;
+    z-index: 20;
+    margin-inline: calc(var(--gutter) * -1);
+    padding: 0.7rem var(--gutter);
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 1.4rem;
+  }
+  .dirsearch {
+    width: 100%;
+    margin-bottom: 0.65rem;
+  }
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    /* Bleeds the row to the screen edges so a chip can be half-visible and
+       read as "there is more this way". */
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-block: 0.15rem;
+  }
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+  .filter {
+    flex: none;
+    scroll-snap-align: start;
+  }
+  .step {
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0 1rem;
+  }
+  .section__head--row {
+    align-items: flex-start;
+  }
+  .cluster {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

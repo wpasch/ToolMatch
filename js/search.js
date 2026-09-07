@@ -1,6 +1,6 @@
 // Task matching for the hero search.
 //
-// The catalog is 75 hand-checked tools, not a web index, so this leans on a
+// The catalog is 100 hand-checked tools, not a web index, so this leans on a
 // curated vocabulary rather than anything statistical. Three deliberate
 // choices:
 //
@@ -142,7 +142,7 @@ const FIELDS = [
   ["description", 1],
 ];
 
-// Tokenising 75 tools on every keystroke would be wasteful, so the index is
+// Tokenising 100 tools on every keystroke would be wasteful, so the index is
 // built once when the catalog loads.
 export function buildIndex(tools, categoryLabels) {
   return tools.map((tool) => ({
