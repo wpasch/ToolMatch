@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--
+  Source for assets/og.png — the image a link to ToolMatch unfurls into on
+  Slack, iMessage, Discord and every social card.
+
+  It is a page rather than a drawing so it can use the site's own fonts and
+  sky palette: an OG card assembled in a different tool drifts away from the
+  site it represents the first time either changes. Regenerate with:
+
+      npm run og
+
+  Fixed at 1200x630, the size every crawler expects. The font paths are
+  relative to this file, so it renders standalone in a browser too.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ToolMatch — social card</title>
+    <style>
+      @font-face {
+        font-family: "Figtree";
+        font-weight: 300 900;
+        src: url("../assets/fonts/figtree-latin.woff2") format("woff2");
+      }
+      @font-face {
+        font-family: "Instrument Serif";
+        font-weight: 400;
+        src: url("../assets/fonts/instrument-serif-latin.woff2") format("woff2");
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        /* The hero's own sky, light theme, read top-down. */
+        background: linear-gradient(#3d6ec2 0%, #7fa9dd 62%, #a3c1e4 100%);
+        font-family: "Figtree", system-ui, sans-serif;
+        color: #ffffff;
+        position: relative;
+      }
+
+      /* One cloud bank along the foot, echoing the hero without trying to
+         reproduce its generated geometry at a sixth of the size. */
+      .clouds { position: absolute; inset: auto 0 0 0; height: 176px; }
+
+      .inner {
+        position: relative;
+        height: 100%;
+        padding: 72px 80px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .mark { display: flex; align-items: center; gap: 18px; }
+      .mark svg { width: 46px; height: 48px; fill: #ffffff; }
+      .mark span {
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      h1 {
+        margin-top: auto;
+        font-family: "Instrument Serif", Georgia, serif;
+        font-weight: 400;
+        font-size: 82px;
+        line-height: 1.04;
+        letter-spacing: -0.015em;
+        /* The gradient is lightest exactly where this sits, so the copy
+           needs its own separation from the sky behind it. */
+        text-shadow: 0 2px 24px rgba(16, 24, 48, 0.28);
+      }
+
+      p {
+        margin-top: 22px;
+        font-size: 27px;
+        line-height: 1.42;
+        max-width: 760px;
+        color: rgba(255, 255, 255, 0.93);
+        text-shadow: 0 1px 12px rgba(16, 24, 48, 0.3);
+      }
+
+      .facts {
+        margin-top: 40px;
+        display: flex;
+        gap: 12px;
+        font-size: 21px;
+        font-weight: 600;
+      }
+      /* These sit where the cloud bank rises, so they cannot be glass —
+         white-on-white is what the first render looked like. Solid deep sky
+         keeps them legible against both the gradient and the cloud. */
+      .facts span {
+        padding: 11px 22px;
+        border-radius: 999px;
+        background: rgba(23, 48, 98, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+      }
+    </style>
+  </head>
+  <body>
+    <svg class="clouds" viewBox="0 0 1200 200" preserveAspectRatio="none">
+      <path
+        fill="rgba(255,255,255,0.5)"
+        d="M0 128 q64-40 128-14 q40-52 108-38 q46-56 122-34 q56-44 122-8 q66-38 130 6
+           q58-32 118 4 q62-30 122 12 q56-26 116 10 q58-24 118 8 L1200 200 L0 200 Z"
+      />
+      <path
+        fill="rgba(255,255,255,0.85)"
+        d="M0 170 q78-30 148-8 q52-40 124-22 q58-44 138-16 q62-32 130 4 q70-28 138 10
+           q66-24 134 8 q70-20 140 12 q68-18 132 6 L1200 200 L0 200 Z"
+      />
+    </svg>
+
+    <div class="inner">
+      <div class="mark">
+        <!-- The four-point plane from assets/favicon.svg, same geometry. -->
+        <svg viewBox="0 0 73 76"><path d="M73 0 L0 38.5 L35 41 L48 76 Z" /></svg>
+        <span>ToolMatch</span>
+      </div>
+
+      <h1>Describe the task.<br />Get the tools worth trying.</h1>
+      <p>
+        A hand-checked directory of 100 AI tools for coursework and
+        early-career work.
+      </p>
+
+      <div class="facts">
+        <span>100 tools</span>
+        <span>Real pricing</span>
+        <span>No affiliate links</span>
+      </div>
+    </div>
+  </body>
+</html>

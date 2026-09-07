@@ -78,3 +78,18 @@ npm run links        # every catalog URL: dead, moved, or behind bot protection
 `stale` exists because every tool was checked in the same week, so without it
 the 120-day rule expires the whole catalog at once. Working the top of that
 list keeps re-checking a rolling chore.
+
+## Generated files
+
+Three things are derived rather than written, and validation fails if the
+committed copies drift from what the generator produces:
+
+```bash
+npm run meta         # JSON-LD in index.html, sitemap.xml, robots.txt
+npm run og           # assets/og.png, the social card, via headless Chrome
+```
+
+`scripts/site.js` holds the canonical URL that all of it points at — change
+hosts there, then re-run `npm run meta`. The social card's source is
+`scripts/og-card.html`, a real page using the site's own fonts, so the card
+cannot drift from the design it represents.

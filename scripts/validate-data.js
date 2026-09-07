@@ -1,6 +1,14 @@
 import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
+import { SITE_URL } from "./site.js";
+import {
+  buildRobots,
+  buildSitemap,
+  renderJsonLdBlock,
+  JSONLD_OPEN,
+  JSONLD_CLOSE,
+} from "./build-meta.js";
 
 const root = new URL("../", import.meta.url);
 const data = JSON.parse(await readFile(new URL("data/tools.json", root), "utf8"));
@@ -95,4 +103,54 @@ for (const expected of [
   assert.ok(html.includes(expected), `index.html is missing current catalog statistic: ${expected}`);
 }
 
-console.log(`Validated ${data.tools.length} tools, ${data.categories.length} categories, and ${logoFiles.length} logos.`);
+// ---------- Generated metadata ----------
+// robots.txt, sitemap.xml and the JSON-LD block are all produced by
+// `npm run meta`. Committed copies that no longer match the generator are
+// exactly the drift this file already caught once with the tool counts, so
+// they are compared rather than trusted.
+const generated = [
+  ["sitemap.xml", buildSitemap(data)],
+  ["robots.txt", buildRobots()],
+];
+for (const [file, expected] of generated) {
+  const actual = await readFile(new URL(file, root), "utf8").catch(() => null);
+  assert.notEqual(actual, null, `${file} is missing; run: npm run meta`);
+  assert.equal(actual, expected, `${file} is stale; run: npm run meta`);
+}
+
+const jsonLdStart = html.indexOf(JSONLD_OPEN);
+const jsonLdEnd = html.indexOf(JSONLD_CLOSE);
+assert.ok(jsonLdStart !== -1 && jsonLdEnd !== -1, "index.html is missing the JSON-LD markers");
+assert.equal(
+  html.slice(jsonLdStart, jsonLdEnd + JSONLD_CLOSE.length),
+  renderJsonLdBlock(data),
+  "the JSON-LD in index.html is stale; run: npm run meta"
+);
+
+// ---------- Sharing ----------
+// A card that unfurls against the wrong origin fails silently, and a social
+// image of the wrong size is cropped by every platform differently, so both
+// are checked rather than eyeballed.
+const origin = SITE_URL.replace(/\/$/, "");
+for (const tag of [
+  `<link rel="canonical" href="${origin}/" />`,
+  `<meta property="og:url" content="${origin}/" />`,
+  `<meta property="og:image" content="${origin}/assets/og.png" />`,
+  `<meta name="twitter:image" content="${origin}/assets/og.png" />`,
+  '<meta name="twitter:card" content="summary_large_image" />',
+]) {
+  assert.ok(html.includes(tag), `index.html is missing or has drifted from: ${tag}`);
+}
+
+const ogBytes = await readFile(new URL("assets/og.png", root));
+assert.ok(ogBytes.subarray(0, 8).equals(pngSignature), "assets/og.png is not a PNG");
+// A PNG's IHDR is the first chunk, and its width and height are the four
+// bytes each that follow the chunk type at offset 16.
+const ogWidth = ogBytes.readUInt32BE(16);
+const ogHeight = ogBytes.readUInt32BE(20);
+assert.equal(`${ogWidth}x${ogHeight}`, "1200x630", "assets/og.png must be 1200x630; run: npm run og");
+
+console.log(
+  `Validated ${data.tools.length} tools, ${data.categories.length} categories, ` +
+    `${logoFiles.length} logos, and the generated metadata.`
+);
