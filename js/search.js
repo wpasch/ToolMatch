@@ -119,6 +119,15 @@ function foldPlural(word) {
   return word;
 }
 
+// tokenize() with the folding removed. The two split identically, so the
+// nth token of one is the nth word of the other.
+function rawWords(text) {
+  return String(text)
+    .toLowerCase()
+    .split(/[^a-z0-9+#]+/)
+    .filter(Boolean);
+}
+
 function tokenize(text) {
   return String(text)
     .toLowerCase()
@@ -178,9 +187,16 @@ const MIN_SCORE = 3;
 // Turn what someone typed into the terms to match on, plus how strongly the
 // phrasing points at each category.
 function readQuery(query) {
-  const typed = new Set(
-    tokenize(query).filter((word) => word.length > 2 && !STOPWORDS.has(word))
-  );
+  const typed = new Set();
+  // Folding is what makes "slides" and "slide" one token, but an explanation
+  // that quotes the stem back at someone who typed the plural reads like a
+  // typo. The original spelling is kept alongside for that.
+  const spelling = new Map();
+  for (const [index, word] of tokenize(query).entries()) {
+    if (word.length <= 2 || STOPWORDS.has(word)) continue;
+    typed.add(word);
+    if (!spelling.has(word)) spelling.set(word, rawWords(query)[index] ?? word);
+  }
 
   const inferred = new Set();
   const categoryScore = new Map();
@@ -207,7 +223,7 @@ function readQuery(query) {
     }
   }
 
-  return { typed, inferred, categoryScore };
+  return { typed, inferred, categoryScore, spelling };
 }
 
 function matchTerms(entry, terms, multiplier) {
@@ -232,8 +248,62 @@ function scoreEntry(entry, typed, inferred, categoryScore) {
   return score;
 }
 
-export function search(index, query, limit = 6) {
-  const { typed, inferred, categoryScore } = readQuery(query);
+// Why this tool is on the list, in the searcher's own words.
+//
+// A ranked list with no reasoning attached asks to be taken on faith, and six
+// results that arrive without explanation are indistinguishable from six
+// results picked at random. This says which of their words landed — and, when
+// none did, admits that the match came from the category their phrasing
+// pointed at rather than from any word they used.
+function explain(entry, typed, inferred, categoryScore, spelling, categoryLabels) {
+  // Ordered by the strongest field each word reached, not by where it fell in
+  // the sentence: "make some slides" matches Gamma on both words, but "slides"
+  // is why it is a presentation tool and "make" is a verb that appears in half
+  // the catalog's prose.
+  const landed = (terms) =>
+    [...terms]
+      .map((term) => ({
+        term,
+        weight: Math.max(
+          0,
+          ...FIELDS.filter(([field]) => entry.fields[field].has(term)).map(([, w]) => w)
+        ),
+      }))
+      .filter((row) => row.weight > 0)
+      .sort((a, b) => b.weight - a.weight)
+      .map((row) => spelling.get(row.term) ?? row.term);
+
+  const matched = landed(typed);
+
+  if (matched.length > 0) {
+    // Two is enough to show the reasoning; a list of five reads as noise.
+    const shown = matched.slice(0, 2).map((word) => `“${word}”`);
+    return `Matches ${shown.join(" and ")}`;
+  }
+
+  if ((categoryScore.get(entry.category) ?? 0) > 0) {
+    const label = categoryLabels?.[entry.category] ?? entry.category;
+    return `${label} — the category your wording points at`;
+  }
+
+  // Everything left here scored on inferred terms alone: a word the concept
+  // map folded in, on a concept that points at no category. "spreadsheet"
+  // reaches Wolfram Alpha entirely through "formula", a word the searcher
+  // never typed. Naming the word and admitting it was inferred is the only
+  // honest version — the alternative was an empty line under the card, which
+  // is how this path went unnoticed.
+  const implied = landed(inferred);
+  if (implied.length > 0) {
+    return `Matches “${implied[0]}”, which your task implies`;
+  }
+
+  return "";
+}
+
+// The ranking itself. `search` is the plain form of this; `rank` is the one
+// that also says why, and both walk the catalog exactly once.
+export function rank(index, query, limit = 6, categoryLabels) {
+  const { typed, inferred, categoryScore, spelling } = readQuery(query);
   if (typed.size === 0) return [];
 
   return index
@@ -251,5 +321,12 @@ export function search(index, query, limit = 6) {
         a.entry.tool.name.localeCompare(b.entry.tool.name)
     )
     .slice(0, limit)
-    .map((row) => row.entry.tool);
+    .map((row) => ({
+      tool: row.entry.tool,
+      reason: explain(row.entry, typed, inferred, categoryScore, spelling, categoryLabels),
+    }));
+}
+
+export function search(index, query, limit = 6) {
+  return rank(index, query, limit).map((row) => row.tool);
 }

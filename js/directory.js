@@ -3,7 +3,7 @@
 
 import { el, prefersReducedMotion } from "./dom.js";
 import { renderInto } from "./cards.js";
-import { buildIndex, search } from "./search.js";
+import { buildIndex, rank } from "./search.js";
 
 // ---------- Category chips ----------
 export function renderCategories(data) {
@@ -98,6 +98,16 @@ export function initDirectory(data, labels) {
 
   let category = "all";
 
+  // The filter belongs in the URL for the same reason the search query does:
+  // "here are the writing tools" is a thing people send each other, and
+  // without this every such link lands on the unfiltered list.
+  function syncCategory() {
+    const url = new URL(window.location.href);
+    if (category === "all") url.searchParams.delete("category");
+    else url.searchParams.set("category", category);
+    history.replaceState(null, "", url);
+  }
+
   function apply() {
     const query = (input?.value ?? "").trim().toLowerCase();
     const shown = data.tools.filter((tool) => {
@@ -105,7 +115,7 @@ export function initDirectory(data, labels) {
       return !query || haystacks.get(tool).includes(query);
     });
 
-    renderInto(list, shown, labels);
+    renderInto(list, shown, labels, { anchors: true });
     empty.textContent = query
       ? "Nothing here matches that."
       : "No tools in that category yet.";
@@ -132,6 +142,7 @@ export function initDirectory(data, labels) {
 
     category = button.dataset.category;
     revealFilter(button);
+    syncCategory();
     apply();
   });
 
@@ -139,6 +150,35 @@ export function initDirectory(data, labels) {
   // Nothing to submit — the list is already filtered as you type — but
   // Enter would otherwise reload the page.
   form?.addEventListener("submit", (event) => event.preventDefault());
+
+  // ---------- Opening state from the URL ----------
+  const params = new URL(window.location.href).searchParams;
+
+  const requested = params.get("category");
+  if (requested && requested !== "all") {
+    const button = [...bar.querySelectorAll(".filter")].find(
+      (candidate) => candidate.dataset.category === requested
+    );
+    // An unknown category in the URL is left alone rather than corrected:
+    // the list simply renders unfiltered, which is what a stale link should
+    // do. Clicking is what sets the pressed state and scrolls the row.
+    if (button) button.click();
+  }
+
+  // ?tool=<id> opens the directory on one card with its details already
+  // showing — a link to a single tool, on a site that has no per-tool page.
+  const wanted = params.get("tool");
+  if (wanted) {
+    const card = document.getElementById(`tool-${wanted}`);
+    if (card) {
+      card.querySelector(".tool-card__toggle")?.click();
+      card.classList.add("tool-card--linked");
+      card.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "center",
+      });
+    }
+  }
 }
 
 // ---------- Hero search ----------
@@ -161,14 +201,19 @@ export function initSearch(data, labels) {
     history.replaceState(null, "", url);
   }
 
-  function showResults() {
-    const ranked = search(index, input.value);
+  // Renders the panel. `move` is what separates the two ways this is called:
+  // submitting is a deliberate act and the page should travel to the answer,
+  // but re-typing while the answer is already on screen should not yank the
+  // page around under the cursor.
+  function showResults({ move }) {
+    const ranked = rank(index, input.value, 6, labels);
     syncQuery(input.value);
 
     // Nothing usable typed at all — send them to the directory rather than
     // showing an empty results panel.
     if (ranked.length === 0 && input.value.trim() === "") {
-      document.getElementById("directory").scrollIntoView();
+      if (move) document.getElementById("directory").scrollIntoView();
+      results.hidden = true;
       return;
     }
 
@@ -186,25 +231,54 @@ export function initSearch(data, labels) {
       if (status) status.textContent = "No matching tools found.";
     } else {
       heading.textContent = `${ranked.length} tools for that`;
-      renderInto(resultsList, ranked, labels);
+      renderInto(
+        resultsList,
+        ranked.map((row) => row.tool),
+        labels,
+        { reasons: new Map(ranked.map((row) => [row.tool, row.reason])) }
+      );
       if (status) status.textContent = `${ranked.length} matching tools found.`;
     }
 
-    heading.focus({ preventScroll: true });
-    results.scrollIntoView({
-      behavior: prefersReducedMotion() ? "auto" : "smooth",
-      block: "start",
-    });
+    if (move) {
+      heading.focus({ preventScroll: true });
+      results.scrollIntoView({
+        behavior: prefersReducedMotion() ? "auto" : "smooth",
+        block: "start",
+      });
+    }
   }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
-    showResults();
+    showResults({ move: true });
+  });
+
+  // Typing does nothing until there is a panel to update. Live-matching from
+  // the first keystroke would push a results panel onto someone halfway
+  // through a sentence; once they have asked and the panel is open, watching
+  // it narrow as they add a word is the whole point.
+  let pending;
+  input.addEventListener("input", () => {
+    if (results.hidden) return;
+    clearTimeout(pending);
+    pending = setTimeout(() => showResults({ move: false }), 200);
+  });
+
+  // ---------- Example queries ----------
+  // An empty box asking someone to describe their task is the moment they
+  // freeze. These are real queries with real answers, and clicking one runs
+  // it — they are a demonstration of what the box wants, not decoration.
+  document.getElementById("search-examples")?.addEventListener("click", (event) => {
+    const example = event.target.closest("[data-query]");
+    if (!example) return;
+    input.value = example.dataset.query;
+    showResults({ move: true });
   });
 
   const initialQuery = new URL(window.location.href).searchParams.get("q");
   if (initialQuery) {
     input.value = initialQuery;
-    showResults();
+    showResults({ move: true });
   }
 }

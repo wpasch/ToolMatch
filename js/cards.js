@@ -59,9 +59,14 @@ let cardSeq = 0;
 // A closed card carries what you scan by — name, category, one clamped
 // paragraph, the pricing model, a trimmed price. The full paragraph, the
 // publisher's whole tier list and the date it was checked live behind the
-// card's own Details toggle, so seventy-five of these stay skimmable.
-function renderToolCard(tool, categoryLabel) {
+// card's own Details toggle, so a hundred of these stay skimmable.
+function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
   const li = el("li", "tool-card");
+  // Only the directory gets stable ids. The same tool can be on screen twice
+  // — once in the results panel, once in the list below it — and two elements
+  // sharing an id is exactly the thing that breaks a screen reader's
+  // navigation and any #fragment pointing at it.
+  if (anchor) li.id = `tool-${tool.id}`;
 
   const title = el("div", "tool-card__title");
   title.append(
@@ -72,8 +77,19 @@ function renderToolCard(tool, categoryLabel) {
   const head = el("div", "tool-card__head");
   head.append(toolLogo(tool), title);
 
+  li.append(head);
+
+  // Why this card is in front of you, when it was ranked rather than browsed.
+  // It sits above the tagline because it is the answer to the question the
+  // searcher actually asked, and the tagline is the publisher's answer to a
+  // different one.
+  if (reason) {
+    const why = el("p", "tool-card__why");
+    why.append(icon("tm-spark", "tool-card__why-icon"), el("span", null, reason));
+    li.append(why);
+  }
+
   li.append(
-    head,
     el("p", "tool-card__tagline", tool.tagline),
     el("p", "tool-card__description", tool.description)
   );
@@ -127,7 +143,7 @@ function renderToolCard(tool, categoryLabel) {
   toggle.type = "button";
   toggle.setAttribute("aria-expanded", "false");
   toggle.setAttribute("aria-controls", detail.id);
-  // Seventy-five buttons all reading "Details" tells a screen reader
+  // A hundred buttons all reading "Details" tells a screen reader
   // nothing about which one it is on. The visible word stays the start of
   // the accessible name, so voice control still matches what's on screen.
   toggle.setAttribute("aria-label", `Details for ${tool.name}`);
@@ -150,10 +166,17 @@ export function initCardToggles() {
   });
 }
 
-export function renderInto(list, tools, labels) {
+// `reasons` is a Map from tool to the one-line explanation of why it ranked;
+// the directory passes none, because nothing there needs explaining.
+export function renderInto(list, tools, labels, { reasons, anchors } = {}) {
   list.replaceChildren();
   for (const tool of tools) {
-    list.appendChild(renderToolCard(tool, labels[tool.category] ?? tool.category));
+    list.appendChild(
+      renderToolCard(tool, labels[tool.category] ?? tool.category, {
+        reason: reasons?.get(tool),
+        anchor: anchors,
+      })
+    );
   }
   list.removeAttribute("aria-busy");
   list.removeAttribute("aria-label");

@@ -329,6 +329,36 @@
   opacity: 0.85;
 }
 
+/* Example queries under the search bar. Quiet glass so they read as
+   suggestions rather than as a second row of buttons competing with
+   "Match me" — the bar is still the thing to use. */
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  list-style: none;
+  padding: 0;
+}
+.examples button {
+  font: inherit;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  transition:
+    background var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
+}
+.examples button:hover {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
 .hero__hint {
   margin-top: 1.1rem;
   font-size: 0.9375rem;

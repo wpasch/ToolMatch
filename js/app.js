@@ -41,7 +41,10 @@ async function init() {
       data.categories.map((category) => [category.id, category.label])
     );
 
-    renderInto(directoryList, data.tools, labels);
+    // anchors: the directory is the one list whose cards carry stable ids,
+    // so ?tool=<id> has something to find. initDirectory re-renders with the
+    // same flag on every filter change.
+    renderInto(directoryList, data.tools, labels, { anchors: true });
     renderMarquee(data.tools);
     renderCluster(data.tools);
     renderCategories(data);

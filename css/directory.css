@@ -156,13 +156,42 @@
   color: var(--muted);
 }
 
+/* Why this card ranked. Only ever on a search result, and set apart from
+   the publisher's own copy below it — this is the site talking, and it
+   should be legible as such. */
+.tool-card__why {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--link);
+}
+.tool-card__why-icon {
+  flex: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  /* The spark is a filled shape; the shared .icon rule strokes its icons. */
+  fill: currentColor;
+  stroke: none;
+  transform: translateY(0.1rem);
+}
+
+/* The one card a ?tool= link was pointing at, so arriving on a list of a
+   hundred does not mean hunting for the reason you followed the link. */
+.tool-card--linked {
+  border-color: var(--link);
+  box-shadow: 0 0 0 3px light-dark(rgba(47, 94, 174, 0.16), rgba(143, 180, 236, 0.22));
+}
+
 .tool-card__tagline {
   font-size: 0.9375rem;
   color: var(--ink);
   margin-bottom: 0.55rem;
 }
 
-/* Seventy-five of these run down one page, so the collapsed card shows
+/* A hundred of these run down one page, so the collapsed card shows
    only as much prose as can be skimmed. The full text is a click away on
    the card's own Details toggle. */
 .tool-card__description {
