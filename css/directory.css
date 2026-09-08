@@ -83,6 +83,17 @@
   border-color: var(--ink);
   color: var(--paper);
 }
+/* A category with nothing in it at the chosen price. It stays on screen and
+   keeps its count — "(0)" is the answer to "what's in here?" — but it stops
+   inviting a click it cannot honour. */
+.filter:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.filter:disabled:hover {
+  color: var(--muted);
+  border-color: var(--line);
+}
 
 /* ---------- Tool cards ---------- */
 /* Cards take their own height rather than stretching to the tallest in the
@@ -159,6 +170,21 @@
 /* Why this card ranked. Only ever on a search result, and set apart from
    the publisher's own copy below it — this is the site talking, and it
    should be legible as such. */
+/* The cost filter sits under the category row as its own group, so the two
+   read as different questions rather than one long row of chips. */
+.filters--price {
+  margin-top: 0.5rem;
+}
+/* Only the free side takes the green, matching the pricing badge on the
+   cards it filters to. Painting the paid chip green too would say the
+   opposite of what it does. */
+.filters--price .filter[data-price="free"][aria-pressed="true"] {
+  border-color: var(--green);
+}
+.filters--price .filter[data-price="paid"][aria-pressed="true"] {
+  border-color: var(--coral);
+}
+
 .tool-card__why {
   display: flex;
   align-items: baseline;
@@ -191,7 +217,7 @@
   margin-bottom: 0.55rem;
 }
 
-/* A hundred of these run down one page, so the collapsed card shows
+/* The full catalog runs down one page, so the collapsed card shows
    only as much prose as can be skimmed. The full text is a click away on
    the card's own Details toggle. */
 .tool-card__description {

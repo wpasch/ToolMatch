@@ -46,7 +46,7 @@ data/tools.json    the tool catalog: categories, tags, tools
 
 - `categories` — id + label registry (13 categories); each tool has one `category`
 - `tags` — allowed tag vocabulary; each tool has a subset in `tags`
-- `tools` — the catalog (100 tools). Match-relevant fields: `tags`, `useCases`,
+- `tools` — the catalog (107 tools). Match-relevant fields: `tags`, `useCases`,
   `tagline`, `description`.
 
 Per-tool fields: `id`, `name`, `url`, `category`, `tagline`, `description`,

@@ -66,12 +66,6 @@
   :root {
     --section-pad: clamp(3.75rem, 7vw, 5.5rem);
   }
-  .facts {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .fact--tall {
-    grid-row: auto;
-  }
   .nav__links {
     display: none;
   }
@@ -86,9 +80,6 @@
   }
   .section__head {
     margin-bottom: 1.6rem;
-  }
-  .step {
-    padding: 1.4rem 0;
   }
   .hero {
     min-height: 0;
@@ -134,31 +125,6 @@
   .footer__top {
     grid-template-columns: 1fr;
   }
-  /* The two bare metric cards pair up; everything with prose in it still
-     takes the full width. Stacking all five made this section most of the
-     page's scroll on a phone. */
-  .facts {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
-  .fact {
-    padding: 1.25rem;
-  }
-  .fact--tall,
-  .fact--wide,
-  .fact--full {
-    grid-column: 1 / -1;
-  }
-  .fact--full {
-    grid-template-columns: 1fr;
-  }
-  .fact__label {
-    max-width: none;
-  }
-  .fact__n {
-    font-size: clamp(2.6rem, 11vw, 3.6rem);
-  }
-
   /* Fourteen wrapped chips pushed the first tool most of a screen down, so
      they become one swipeable row that stays reachable under the nav while
      the list scrolls. */
@@ -195,10 +161,6 @@
   .filter {
     flex: none;
     scroll-snap-align: start;
-  }
-  .step {
-    grid-template-columns: 2.5rem 1fr;
-    gap: 0 1rem;
   }
   .section__head--row {
     align-items: flex-start;

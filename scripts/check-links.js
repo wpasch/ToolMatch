@@ -1,4 +1,4 @@
-// Are the 100 links in the catalog still real?
+// Are the links in the catalog still real?
 //
 // Deliberately not part of `npm test`: it needs the network, it is slow, and
 // a flaky CDN should never be able to fail a pull request that only touched
@@ -50,7 +50,7 @@ async function attempt(tool) {
       signal,
     });
     // The body is never read, but leaving it unconsumed keeps the socket
-    // open until GC gets to it, which starves the pool on a 100-URL run.
+    // open until GC gets to it, which starves the pool on a catalog-wide run.
     await response.body?.cancel();
 
     if ([403, 405, 429, 503].includes(response.status)) {
@@ -78,7 +78,7 @@ async function attempt(tool) {
   }
 }
 
-// A hundred requests in a burst produces transient failures that have nothing
+// Sending the whole catalog in one burst produces transient failures that have nothing
 // to do with the link: a connection reset, a DNS hiccup, a TLS handshake that
 // lost a race. Reporting a live site as dead is the one result that makes this
 // tool worse than not running it, so a network-level failure is always given a

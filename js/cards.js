@@ -59,7 +59,7 @@ let cardSeq = 0;
 // A closed card carries what you scan by — name, category, one clamped
 // paragraph, the pricing model, a trimmed price. The full paragraph, the
 // publisher's whole tier list and the date it was checked live behind the
-// card's own Details toggle, so a hundred of these stay skimmable.
+// card's own Details toggle, so the full catalog stays skimmable.
 function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
   const li = el("li", "tool-card");
   // Only the directory gets stable ids. The same tool can be on screen twice
@@ -97,7 +97,11 @@ function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
   // The pricing model is the badge people filter on by eye, so it gets its
   // own colour; the skill level stays neutral beside it.
   const model = String(tool.pricing?.model ?? "");
-  const modelBadge = el("span", "tool-card__badge", titleCase(model));
+  // "Paid" beside "Freemium" reads as a tier, not as a wall. On a site whose
+  // premise is that you can start without a budget, the tools you cannot are
+  // the single most useful thing to be able to see at a glance.
+  const modelLabel = model === "paid" ? "Paid only" : titleCase(model);
+  const modelBadge = el("span", "tool-card__badge", modelLabel);
   if (model === "free") modelBadge.classList.add("tool-card__badge--free");
   if (model === "paid") modelBadge.classList.add("tool-card__badge--paid");
 
@@ -143,7 +147,7 @@ function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
   toggle.type = "button";
   toggle.setAttribute("aria-expanded", "false");
   toggle.setAttribute("aria-controls", detail.id);
-  // A hundred buttons all reading "Details" tells a screen reader
+  // A pageful of buttons all reading "Details" tells a screen reader
   // nothing about which one it is on. The visible word stays the start of
   // the accessible name, so voice control still matches what's on screen.
   toggle.setAttribute("aria-label", `Details for ${tool.name}`);

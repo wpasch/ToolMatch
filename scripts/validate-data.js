@@ -111,17 +111,55 @@ for (const file of [
   assert.equal(bytes.subarray(0, 4).toString(), "wOF2", `${file} is not a WOFF2 font`);
 }
 
+// The section promises that nothing on the site is priced older than a given
+// date, and the FAQ repeats it. That date is the oldest pricingChecked in the
+// catalog, so it moves every time the staleest entry is re-verified — and
+// until now nothing noticed when the prose stopped matching the data.
+const oldestChecked = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(
+  new Date(`${data.tools.map((t) => t.pricingChecked).sort()[0]}T00:00:00Z`)
+);
+
 const freeCount = data.tools.filter(({ pricing }) => pricing.model !== "paid").length;
+const paidCount = data.tools.length - freeCount;
 const beginnerCount = data.tools.filter(({ skillLevel }) => skillLevel === "beginner").length;
-for (const expected of [
-  `${data.tools.length} AI tools`,
-  `browse all ${data.tools.length} tools`,
-  `All ${data.tools.length} tools`,
-  `${freeCount} of the ${data.tools.length}`,
-  `>${beginnerCount}</p>`,
-  `>${data.categories.length}</p>`,
+const publishedClaims = [
+  // "directory of N AI tools" appears in the hero and again in the meta
+  // description, so each claim carries enough of its own sentence to name
+  // one place. Without that a single updated copy satisfied the assertion
+  // for both, and the other could go stale unnoticed.
+  ["hero total", `directory of ${data.tools.length} AI tools for coursework`],
+  ["meta description total", `directory of ${data.tools.length} AI tools for students`],
+  ["og:description total", `${data.tools.length} hand-checked tools for`],
+  ["twitter:description total", `${data.tools.length} hand-checked tools.`],
+  ["browse total", `browse all ${data.tools.length} tools`],
+  ["category heading", `${data.categories.length} categories,<br />${data.tools.length} tools`],
+  ["directory heading", `All ${data.tools.length} tools`],
+  ["oldest-price FAQ", `re-checked on or after ${oldestChecked}`],
+  ["free-tier FAQ", `${freeCount} of the ${data.tools.length} have a real free tier`],
+  ["FAQ total", `Why only ${data.tools.length} tools?`],
+  ["footer total", `<p>${data.tools.length} tools</p>`],
+];
+for (const [label, expected] of publishedClaims) {
+  assert.ok(html.includes(expected), `index.html has a stale or missing ${label}: ${expected}`);
+}
+
+// The social card carries the same numbers on a page nobody loads: it is
+// rendered to a PNG by `npm run og` and never served, so a stale count there
+// survives every other check in this file and ships on every share.
+const ogCard = await readFile(new URL("scripts/og-card.html", root), "utf8");
+for (const [label, expected] of [
+  ["hero total", `directory of ${data.tools.length} AI tools`],
+  ["fact total", `<span>${data.tools.length} tools</span>`],
 ]) {
-  assert.ok(html.includes(expected), `index.html is missing current catalog statistic: ${expected}`);
+  assert.ok(
+    ogCard.includes(expected),
+    `scripts/og-card.html has a stale ${label}: ${expected} — then run: npm run og`
+  );
 }
 
 // ---------- Generated metadata ----------
@@ -174,7 +212,6 @@ assert.equal(`${ogWidth}x${ogHeight}`, "1200x630", "assets/og.png must be 1200x6
 // The composition, printed on every run. The site's premise is that these
 // tools are usable with no budget, and that claim is a ratio — worth seeing
 // each time the catalog changes rather than the day someone questions it.
-const paidCount = data.tools.length - freeCount;
 const thinnest = [...perCategory.entries()].sort((a, b) => a[1] - b[1]).slice(0, 3);
 
 console.log(

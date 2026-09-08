@@ -1175,7 +1175,7 @@
     {
       "id": "make",
       "name": "Make",
-      "url": "https://www.make.com",
+      "url": "https://www.make.com/en",
       "category": "automation",
       "tagline": "Visual automation builder with more power than Zapier at lower cost.",
       "description": "Build multi-step automations on a visual canvas with branching, loops, and data transformation. Steeper learning curve than Zapier but cheaper and more flexible.",
@@ -1551,24 +1551,6 @@
       "skillLevel": "intermediate"
     },
     {
-      "id": "imagefx",
-      "name": "Google ImageFX",
-      "url": "https://labs.google/fx/tools/image-fx",
-      "category": "image",
-      "tagline": "Google's free text-to-image tool, with no credits to buy.",
-      "description": "Generates images from a description using Google's Imagen models, with prompt chips for nudging style. Free with a Google account, subject to a daily limit, and downloads carry no watermark.",
-      "tags": ["free", "beginner-friendly"],
-      "useCases": [
-        "make an image for a slide or a poster",
-        "try text-to-image without paying",
-        "explore styles with prompt suggestions",
-        "generate visuals for a class project"
-      ],
-      "pricing": { "model": "free", "note": "Free with a Google account; daily generation limit; no paid tier" },
-      "pricingChecked": "2026-09-07",
-      "skillLevel": "beginner"
-    },
-    {
       "id": "adobe-express",
       "name": "Adobe Express",
       "url": "https://www.adobe.com/express/",
@@ -1769,7 +1751,7 @@
     {
       "id": "kickresume",
       "name": "Kickresume",
-      "url": "https://www.kickresume.com",
+      "url": "https://www.kickresume.com/en/",
       "category": "career",
       "tagline": "Resume builder with AI drafting and an ATS checker.",
       "description": "Builds resumes and cover letters from designed templates, with AI for drafting bullet points and a checker that scores how an applicant tracking system will read the file.",
@@ -1837,6 +1819,150 @@
       "pricing": { "model": "freemium", "note": "Free tier with up to 100 credits/mo; Basic $29/mo; Advanced $49/mo; Connect $99/mo" },
       "pricingChecked": "2026-09-07",
       "skillLevel": "advanced"
+    },
+    {
+      "id": "prezi",
+      "name": "Prezi",
+      "url": "https://prezi.com",
+      "category": "presentations",
+      "tagline": "Zooming, non-linear decks with AI drafting.",
+      "description": "Lays a presentation out on one zoomable canvas instead of a stack of slides, so you move between ideas spatially rather than in a fixed order. Prezi AI drafts the outline from a prompt. The free plan publishes everything publicly and watermarked.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "present without a linear slide stack",
+        "draft a deck from a prompt",
+        "convert a PowerPoint into a zooming presentation",
+        "show how ideas connect rather than follow"
+      ],
+      "pricing": { "model": "freemium", "note": "Free Basic (presentations are public and watermarked, no PDF export); Standard $7/mo billed annually (500 Prezi AI credits); Plus $19/mo; Premium $29/mo" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "intermediate"
+    },
+    {
+      "id": "decktopus",
+      "name": "Decktopus",
+      "url": "https://www.decktopus.com",
+      "category": "presentations",
+      "tagline": "Deck builder that writes your speaker notes too.",
+      "description": "Generates a deck from a prompt and fills in speaker notes and talking points beside each slide, which is the part most deck builders leave empty. There is no free plan — a new account gets a few trial credits.",
+      "tags": ["paid", "beginner-friendly"],
+      "useCases": [
+        "generate a deck and its speaker notes together",
+        "prepare talking points for a presentation",
+        "build a deck from a questionnaire",
+        "rehearse what to say per slide"
+      ],
+      "pricing": { "model": "paid", "note": "No free plan (trial credits only); Pro $9.99/mo billed annually at $119.88/yr, $19.99/mo on the 3-month plan, $24.99 billed monthly" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "read-ai",
+      "name": "Read AI",
+      "url": "https://www.read.ai",
+      "category": "meetings",
+      "tagline": "Meeting summaries with speaking analytics.",
+      "description": "Joins calls to transcribe and summarize them, and reports talk time and engagement per participant — useful for seeing how a group discussion actually went. Free accounts get five meeting transcripts a month.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "summarize a call automatically",
+        "see who spoke and for how long",
+        "search back through past meetings",
+        "get action items out of a discussion"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (5 meeting transcripts/mo); Pro $15/user/mo billed annually ($19.75 monthly); Enterprise and Enterprise+ above that" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "notta",
+      "name": "Notta",
+      "url": "https://www.notta.ai/en/",
+      "category": "meetings",
+      "tagline": "Transcription and translation in 50+ languages.",
+      "description": "Transcribes live audio or uploaded files and can translate the transcript, which makes it the practical option for lectures in a second language. Exporting a transcript needs a paid plan.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "transcribe a lecture in another language",
+        "translate a recording into English",
+        "transcribe an uploaded audio file",
+        "take notes in a call on your phone"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (no credit card, no transcript export); Pro $8.17/mo billed annually at $97.99/yr (1,800 min/mo, 5 h per recording); Business $16.67/mo billed annually at $199.99/yr" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "circleback",
+      "name": "Circleback",
+      "url": "https://circleback.ai",
+      "category": "meetings",
+      "tagline": "Notes and action items, with or without a bot in the call.",
+      "description": "Produces speaker-labeled notes and pulls out action items, and captures in-person conversations from a phone as well as online calls. The free plan keeps 30 days of meeting history.",
+      "tags": ["freemium", "beginner-friendly", "mobile"],
+      "useCases": [
+        "take notes in an in-person meeting",
+        "get action items out of a call",
+        "record a meeting without a bot joining it",
+        "share a summary with people who missed it"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (30-day meeting history, limited automations); Pro $15/user/mo; Business $25/user/mo; Enterprise $35/user/mo" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "yoodli",
+      "name": "Yoodli",
+      "url": "https://yoodli.ai",
+      "category": "career",
+      "tagline": "Interview and speaking practice nobody else sees.",
+      "description": "Runs roleplayed interviews and gives feedback on pacing, filler words and clarity, on recordings that stay private. The free tier covers five roleplays in total rather than five a month.",
+      "tags": ["freemium", "beginner-friendly"],
+      "useCases": [
+        "practice for an interview",
+        "cut filler words out of how you speak",
+        "rehearse a presentation and get feedback",
+        "check your pacing before a talk"
+      ],
+      "pricing": { "model": "freemium", "note": "Starter free (5 roleplays total, no credit card); Pro $8/mo billed annually; Advanced $20/mo billed annually" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "simplify",
+      "name": "Simplify",
+      "url": "https://simplify.jobs",
+      "category": "career",
+      "tagline": "Autofills job applications from one saved profile.",
+      "description": "A browser extension that fills application forms from a profile you set up once, with a tracker for everything you have applied to. The autofill and the tracker are free and uncapped, which is unusual in this category.",
+      "tags": ["freemium", "beginner-friendly", "browser-extension"],
+      "useCases": [
+        "stop retyping the same application form",
+        "track what you have applied to",
+        "find roles matched to your profile",
+        "apply to more jobs in less time"
+      ],
+      "pricing": { "model": "freemium", "note": "Free (unlimited autofill, job matches and application tracker); Simplify+ adds tailored resumes and cover letters and is priced only inside the app" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
+    },
+    {
+      "id": "enhancv",
+      "name": "Enhancv",
+      "url": "https://enhancv.com",
+      "category": "career",
+      "tagline": "Resume builder with an ATS checker attached.",
+      "description": "Templates plus a checker that scores a resume against what applicant tracking systems look for before a human sees it. The free plan is a seven-day trial and puts Enhancv branding on what you export.",
+      "tags": ["paid", "beginner-friendly"],
+      "useCases": [
+        "check a resume against ATS screening",
+        "rewrite a resume for a specific role",
+        "build a resume from a template",
+        "get a second opinion on your wording"
+      ],
+      "pricing": { "model": "paid", "note": "Free plan is a 7-day trial with Enhancv branding; Pro $23/mo billed quarterly at $69, from $16.50/mo on longer terms" },
+      "pricingChecked": "2026-09-07",
+      "skillLevel": "beginner"
     }
   ]
 }
