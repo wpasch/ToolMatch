@@ -95,6 +95,44 @@
   border-color: var(--line);
 }
 
+/* ---------- Grouped catalog ---------- */
+/* The headings are what make a 14,700px list navigable: something to scroll
+   past and recognise, rather than 107 undifferentiated cards. Generous space
+   above each one and almost none below, so a heading reads as belonging to
+   the grid under it rather than floating between two. */
+.tool-group + .tool-group {
+  margin-top: 2.75rem;
+}
+
+/* Sticky, because the point of the headings is to answer "where am I?" and a
+   heading that has scrolled away cannot. It parks under the floating nav
+   (which ends at 5rem) and hands over to the next one on the way past. The
+   opaque background and the negative inline margin are what stop cards
+   showing through and past the sides of a heading that is no longer in the
+   flow. */
+.tool-group__title {
+  position: sticky;
+  top: 5rem;
+  z-index: 5;
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-inline: -0.75rem;
+  margin-bottom: 0.9rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.tool-group__count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
 /* ---------- Tool cards ---------- */
 /* Cards take their own height rather than stretching to the tallest in the
    row. Stretching aligned the footers neatly, but one expanded card then

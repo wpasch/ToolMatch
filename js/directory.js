@@ -2,7 +2,7 @@
 // the Categories section, the directory's own filters, and the hero search.
 
 import { el, prefersReducedMotion } from "./dom.js";
-import { renderInto } from "./cards.js";
+import { renderCatalogInto, renderInto } from "./cards.js";
 import { buildIndex, rank } from "./search.js";
 
 // ---------- Category chips ----------
@@ -217,7 +217,7 @@ export function initDirectory(data, labels) {
     const query = (input?.value ?? "").trim().toLowerCase();
     const shown = filterDirectoryTools(data.tools, { category, price, query }, labels, haystacks);
 
-    renderInto(list, shown, labels, { anchors: true });
+    renderCatalogInto(list, shown, labels, data.categories, { anchors: true });
     empty.textContent = query
       ? "Nothing here matches that."
       : price === "any"

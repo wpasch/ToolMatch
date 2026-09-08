@@ -163,12 +163,23 @@ body {
   color: var(--ink);
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  /* clip, not hidden. The hero's cloud bands and logo marquee are wider than
+     the viewport on purpose and something has to contain them — but
+     overflow-x: hidden makes the body a scroll container, and a scroll
+     container silently breaks position: sticky for everything inside it.
+     That had already cost the directory's sticky filter row on phones. clip
+     hides the same overflow without creating the container. */
+  overflow-x: clip;
 }
 
+/* h4 belongs here too: a card's name drops to h4 when the directory groups
+   itself under category headings, and without the reset it inherits the
+   browser's 1.33em block margins and shoves the category label off the
+   card's title block. */
 h1,
 h2,
-h3 {
+h3,
+h4 {
   margin: 0;
   font-weight: 400;
   line-height: 1.06;

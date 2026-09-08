@@ -14,7 +14,11 @@ import { readFile } from "node:fs/promises";
 // cards.js imports dom.js, which reads window.location inside its functions.
 globalThis.window = { location: { href: "https://wpasch.github.io/ToolMatch/" } };
 
-const { shortPricing } = await import("../js/cards.js");
+const { categoriesPresent, shortPricing } = await import("../js/cards.js");
+
+const data = JSON.parse(
+  await readFile(new URL("../data/tools.json", import.meta.url), "utf8")
+);
 
 test("keeps the first two clauses and drops the rest of the tier list", () => {
   assert.equal(
@@ -73,4 +77,42 @@ test("every pricing note in the catalog survives the trim", async () => {
     assert.ok(!short.includes(";"), `${tool.id} kept a semicolon: ${short}`);
     assert.ok(!/\($/.test(short.trim()), `${tool.id} left a dangling bracket: ${short}`);
   }
+});
+
+// The directory groups itself under category headings only when what's on
+// screen spans more than one category. Filtered to a single category the
+// headings would repeat the pressed chip, so the rule is worth pinning: it
+// decides both the layout and whether card names are h3 or h4.
+test("categories present follow catalog order and skip the empty ones", () => {
+  const categories = [
+    { id: "writing", label: "Writing" },
+    { id: "coding", label: "Coding" },
+    { id: "image", label: "Image" },
+  ];
+  const tools = [
+    { id: "a", category: "image" },
+    { id: "b", category: "writing" },
+    { id: "c", category: "image" },
+  ];
+
+  // Catalog order, not first-seen order — "image" appears first in the tools.
+  assert.deepEqual(
+    categoriesPresent(tools, categories).map(({ id }) => id),
+    ["writing", "image"]
+  );
+});
+
+test("one category and none at all both mean an ungrouped list", () => {
+  const categories = [
+    { id: "writing", label: "Writing" },
+    { id: "coding", label: "Coding" },
+  ];
+
+  assert.equal(categoriesPresent([{ id: "a", category: "coding" }], categories).length, 1);
+  assert.equal(categoriesPresent([], categories).length, 0);
+});
+
+test("every category in the real catalog is reachable as a group", () => {
+  const present = categoriesPresent(data.tools, data.categories);
+  assert.equal(present.length, data.categories.length, "a category has no tools in it");
 });

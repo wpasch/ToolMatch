@@ -128,6 +128,14 @@
   /* Fourteen wrapped chips pushed the first tool most of a screen down, so
      they become one swipeable row that stays reachable under the nav while
      the list scrolls. */
+  /* One sticky thing at a time. The filter row is sticky at this width and
+     runs to about 170px with the search field and both chip rows in it;
+     parking a heading under that would spend a fifth of the viewport on
+     furniture, and the pressed category chip already answers the question a
+     sticky heading is there to answer. */
+  .tool-group__title {
+    position: static;
+  }
   .filters-bar {
     position: sticky;
     /* Flush with the underside of the floating nav, so nothing shows

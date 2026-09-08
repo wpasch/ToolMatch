@@ -60,7 +60,7 @@ let cardSeq = 0;
 // paragraph, the pricing model, a trimmed price. The full paragraph, the
 // publisher's whole tier list and the date it was checked live behind the
 // card's own Details toggle, so the full catalog stays skimmable.
-function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
+function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 } = {}) {
   const li = el("li", "tool-card");
   // Only the directory gets stable ids. The same tool can be on screen twice
   // — once in the results panel, once in the list below it — and two elements
@@ -69,8 +69,11 @@ function renderToolCard(tool, categoryLabel, { reason, anchor } = {}) {
   if (anchor) li.id = `tool-${tool.id}`;
 
   const title = el("div", "tool-card__title");
+  // Under a category heading the card is one level deeper than it is in a
+  // flat list, and a screen reader walking headings should hear that rather
+  // than a run of same-level siblings that skips the group it is inside.
   title.append(
-    el("h3", "tool-card__name", tool.name),
+    el(`h${headingLevel}`, "tool-card__name", tool.name),
     el("span", "tool-card__cat", categoryLabel)
   );
 
@@ -186,10 +189,64 @@ export function renderInto(list, tools, labels, { reasons, anchors } = {}) {
   list.removeAttribute("aria-label");
 }
 
+// The catalog, broken under category headings whenever what's on screen
+// spans more than one of them.
+//
+// The directory is the whole catalog on one page: 14,700 pixels of scroll
+// with nothing in it to navigate by. It is not slow — the logos are lazy and
+// the whole list is about 2,200 nodes — it is just featureless, and a wall
+// you cannot orient yourself in is the actual complaint. Narrowed to a single
+// category the headings would only repeat the pressed chip, so it renders
+// flat and the grouping disappears on its own.
+// Which categories the given tools actually occupy, in catalog order. Pulled
+// out of the renderer because it is the whole grouping rule — group when this
+// returns more than one — and a rule worth testing should not need a DOM.
+export function categoriesPresent(tools, categories) {
+  return categories.filter((category) => tools.some((tool) => tool.category === category.id));
+}
+
+export function renderCatalogInto(container, tools, labels, categories, { anchors } = {}) {
+  container.replaceChildren();
+
+  const present = categoriesPresent(tools, categories);
+
+  const card = (tool, label, headingLevel) =>
+    renderToolCard(tool, label, { anchor: anchors, headingLevel });
+
+  if (present.length > 1) {
+    for (const category of present) {
+      const inGroup = tools.filter((tool) => tool.category === category.id);
+
+      const heading = el("h3", "tool-group__title", category.label);
+      heading.append(el("span", "tool-group__count", String(inGroup.length)));
+
+      const list = el("ul", "tool-list");
+      for (const tool of inGroup) list.appendChild(card(tool, category.label, 4));
+
+      // Each group is its own box so its heading sticks only while you are
+      // inside that group. Left as siblings in one container, every heading
+      // sticks for the height of the whole catalog and they stack up at the
+      // top of the viewport three deep.
+      const group = el("div", "tool-group");
+      group.append(heading, list);
+      container.append(group);
+    }
+  } else {
+    const list = el("ul", "tool-list");
+    for (const tool of tools) {
+      list.appendChild(card(tool, labels[tool.category] ?? tool.category, 3));
+    }
+    container.append(list);
+  }
+
+  container.removeAttribute("aria-busy");
+  container.removeAttribute("aria-label");
+}
+
 // One skeleton card: a logo-sized block, a title-width block, and two
 // tagline-width lines, shown while data/tools.json is still loading.
-export function renderSkeleton(list, count) {
-  list.innerHTML = "";
+export function renderSkeleton(container, count) {
+  const list = el("ul", "tool-list");
   for (let i = 0; i < count; i++) {
     const li = document.createElement("li");
     li.className = "tool-card tool-card--skeleton";
@@ -204,4 +261,5 @@ export function renderSkeleton(list, count) {
     `;
     list.appendChild(li);
   }
+  container.replaceChildren(list);
 }
