@@ -66,6 +66,15 @@ Validation checks the schema, published catalog counts, logo/font assets, and
 pricing dates. Pricing older than 120 days fails the check so stale listings do
 not quietly remain published.
 
+It also checks that `data/tools.json` is canonically formatted. The catalog is
+hand-edited but its layout is not a matter of taste — a file written several
+ways turns the next one-line edit into an unreviewable diff. If validation
+complains, this rewrites it:
+
+```bash
+npm run format
+```
+
 Two more checks need the network, so they run on a schedule rather than on
 every change — a publisher's outage should not fail a pull request that only
 touched CSS:

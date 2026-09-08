@@ -154,10 +154,7 @@
         "write tests faster",
         "get unstuck on a bug"
       ],
-      "pricing": {
-        "model": "freemium",
-        "note": "Free tier (2,000 completions/mo); Pro $10/mo; Pro+ $39/mo; free Pro for verified students"
-      },
+      "pricing": { "model": "freemium", "note": "Free tier (2,000 completions/mo); Pro $10/mo; Pro+ $39/mo; free Pro for verified students" },
       "pricingChecked": "2026-09-03",
       "skillLevel": "intermediate"
     },
@@ -193,10 +190,7 @@
         "generate images for a project",
         "create social media graphics"
       ],
-      "pricing": {
-        "model": "freemium",
-        "note": "Free tier; Pro $18/mo ($144/yr); Business $25/user/mo; free via Canva for Education (K-12) or Campus"
-      },
+      "pricing": { "model": "freemium", "note": "Free tier; Pro $18/mo ($144/yr); Business $25/user/mo; free via Canva for Education (K-12) or Campus" },
       "pricingChecked": "2026-09-03",
       "skillLevel": "beginner"
     },
@@ -1618,7 +1612,7 @@
         "share a deck by link and see who opened it",
         "present without installing software"
       ],
-      "pricing": { "model": "freemium", "note": "Free forever for up to 5 members with 100 AI credits; Plus \u20ac10/mo; Team \u20ac15/mo; Business \u20ac20/mo, cheaper billed yearly" },
+      "pricing": { "model": "freemium", "note": "Free forever for up to 5 members with 100 AI credits; Plus €10/mo; Team €15/mo; Business €20/mo, cheaper billed yearly" },
       "pricingChecked": "2026-09-07",
       "skillLevel": "beginner"
     },

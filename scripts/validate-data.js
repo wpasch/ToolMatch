@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import { SITE_URL } from "./site.js";
+import { formatCatalog } from "./format-data.js";
 import {
   buildRobots,
   buildSitemap,
@@ -170,11 +171,16 @@ for (const [label, expected] of [
 const generated = [
   ["sitemap.xml", buildSitemap(data)],
   ["robots.txt", buildRobots()],
+  // The catalog is hand-edited rather than generated, but its formatting is
+  // not: a file that is written several ways turns the next one-line edit
+  // into an unreviewable diff. Same treatment, different reason.
+  ["data/tools.json", formatCatalog(data)],
 ];
 for (const [file, expected] of generated) {
   const actual = await readFile(new URL(file, root), "utf8").catch(() => null);
-  assert.notEqual(actual, null, `${file} is missing; run: npm run meta`);
-  assert.equal(actual, expected, `${file} is stale; run: npm run meta`);
+  const fix = file === "data/tools.json" ? "npm run format" : "npm run meta";
+  assert.notEqual(actual, null, `${file} is missing; run: ${fix}`);
+  assert.equal(actual, expected, `${file} is not canonically formatted; run: ${fix}`);
 }
 
 const jsonLdStart = html.indexOf(JSONLD_OPEN);
