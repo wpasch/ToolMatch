@@ -118,8 +118,8 @@
         "adjust tone for emails and cover letters",
         "proofread before submitting"
       ],
-      "pricing": { "model": "freemium", "note": "Free tier; Pro $12/mo billed annually ($30/mo monthly)" },
-      "pricingChecked": "2026-09-03",
+      "pricing": { "model": "freemium", "note": "Free tier; Pro $12/mo" },
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -155,7 +155,7 @@
         "get unstuck on a bug"
       ],
       "pricing": { "model": "freemium", "note": "Free tier (2,000 completions/mo); Pro $10/mo; Pro+ $39/mo; free Pro for verified students" },
-      "pricingChecked": "2026-09-03",
+      "pricingChecked": "2026-09-08",
       "skillLevel": "intermediate"
     },
     {
@@ -172,8 +172,8 @@
         "understand a new codebase",
         "refactor with context"
       ],
-      "pricing": { "model": "freemium", "note": "Free Hobby tier; Pro $20/mo ($16/mo annual); Pro+ $60/mo; Ultra $200/mo" },
-      "pricingChecked": "2026-09-03",
+      "pricing": { "model": "freemium", "note": "Free Hobby tier; Pro $20/mo" },
+      "pricingChecked": "2026-09-08",
       "skillLevel": "intermediate"
     },
     {
@@ -208,8 +208,8 @@
         "search back through what was said",
         "summarize an interview"
       ],
-      "pricing": { "model": "freemium", "note": "Free (300 min/mo, 30 min/conversation); Pro $8.33/mo annually ($16.99 monthly, 1,200 min); Business $20/user/mo annually" },
-      "pricingChecked": "2026-09-03",
+      "pricing": { "model": "freemium", "note": "Free (300 min/mo, 30 min/conversation); Pro $8.33/mo annually ($16.99 monthly, 1,200 min); Business $19.99/user/mo annually" },
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -838,8 +838,8 @@
         "dub a video into another language",
         "create a custom voice"
       ],
-      "pricing": { "model": "freemium", "note": "Free tier (~10 min/mo, no commercial use); Starter $6/mo, Creator ~$22/mo, Pro $99/mo" },
-      "pricingChecked": "2026-09-03",
+      "pricing": { "model": "freemium", "note": "Free tier (10k credits/mo, no commercial use); Starter $6/mo, Creator $22/mo, Pro $99/mo" },
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -857,7 +857,7 @@
         "make a video from a screen recording"
       ],
       "pricing": { "model": "freemium", "note": "Free plan (60 min/mo, watermarked); Hobbyist ~$16/mo, Creator ~$24/mo (billed annually)" },
-      "pricingChecked": "2026-09-03",
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -893,7 +893,7 @@
         "create effects shots without a full production"
       ],
       "pricing": { "model": "freemium", "note": "Free tier (125 one-time credits); Standard $15/mo, Pro $35/mo (20% off annual)" },
-      "pricingChecked": "2026-09-03",
+      "pricingChecked": "2026-09-08",
       "skillLevel": "intermediate"
     },
     {
@@ -965,7 +965,7 @@
         "auto-fill database properties"
       ],
       "pricing": { "model": "paid", "note": "Limited trial on Free/Plus; full AI bundled into Business plan at $20/member/mo (annual)" },
-      "pricingChecked": "2026-09-03",
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -1163,7 +1163,7 @@
         "build a simple AI agent that runs on a trigger"
       ],
       "pricing": { "model": "freemium", "note": "Free (100 tasks/mo, 2-step Zaps); Professional $29.99/mo; Team $103.50/mo (33% off annual)" },
-      "pricingChecked": "2026-09-03",
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
@@ -1252,8 +1252,8 @@
         "turn a voice note into structured tasks",
         "pull action items out of a forwarded email"
       ],
-      "pricing": { "model": "freemium", "note": "Free Beginner (5 projects); Pro $5/mo annually ($7 monthly, adds AI); Business $8/user/mo" },
-      "pricingChecked": "2026-09-03",
+      "pricing": { "model": "freemium", "note": "Free Beginner (5 personal projects); Pro $4/mo billed annually (adds AI)" },
+      "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
     {
