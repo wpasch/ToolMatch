@@ -24,21 +24,35 @@ index.html         markup + page skeleton
 css/               loaded in this order; the order is the cascade
   base.css         fonts, design tokens, element defaults, nav
   hero.css         sky, cloud banks, search, logo strip
-  sections.css     section frame, steps, categories, facts, FAQ, footer
-  directory.css    filter bar and the tool card
+  sections.css     section frame, categories, FAQ, footer
+  directory.css    filter bar, category groups, and the tool card
   motion.css       reveals, breakpoints, reduced-motion (must load last)
 assets/fonts/      self-hosted webfonts and their licenses
 js/
   app.js           entry point: boots the page
   dom.js           untrusted-value helpers and DOM builders
-  cards.js         the tool card, list render, loading skeleton
+  cards.js         the tool card, grouped/flat renders, share link, skeleton
   hero.js          logo strip, category cluster, sky parallax
   chrome.js        theme dial, nav state, section reveal
-  directory.js     category chips, directory filters, hero search
+  directory.js     category chips, price filter, directory filters, hero search
   data.js          loads and caches data/tools.json
   search.js        query -> ranked tools
-data/tools.json    the tool catalog: categories, tags, tools
+scripts/
+  format-data.js   canonical layout for data/tools.json (npm run format)
+  build-meta.js    JSON-LD, sitemap.xml, robots.txt (npm run meta)
+  build-og.js      renders og-card.html to assets/og.png (npm run og)
+  validate-data.js the checks behind npm test
+  check-links.js   catalog URLs, diffed against the blocked baseline
+  stale-report.js  listings by pricing age, oldest first
+data/
+  tools.json       the tool catalog: categories, tags, tools
+  link-baseline.json  ids whose hosts always answer a link check with a
+                   challenge page, so the weekly run reports only changes
 ```
+
+The directory renders under category headings whenever what is on screen
+spans more than one category, and flat when it does not — filtered to a
+single category the headings would only repeat the chip you just pressed.
 
 ## Data shape
 
