@@ -1,12 +1,3 @@
-// shortPricing, the one piece of real parsing on the card.
-//
-// Publishers write out every tier they sell. A card being skimmed needs the
-// shape of the price, not the price list, so this cuts it down — and the
-// rules for doing that (two clauses, each trimmed at its first comma,
-// parentheticals removed before the split) are exactly the kind of thing
-// that quietly stops working. The untouched note is still on the card,
-// behind the Details toggle, so a bad trim loses nothing but legibility.
-
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFile } from "node:fs/promises";
@@ -14,69 +5,25 @@ import { readFile } from "node:fs/promises";
 // cards.js imports dom.js, which reads window.location inside its functions.
 globalThis.window = { location: { href: "https://wpasch.github.io/ToolMatch/" } };
 
-const { categoriesPresent, shareLink, shortPricing } = await import("../js/cards.js");
+const { categoriesPresent, shareLink, displayPricing } = await import("../js/cards.js");
 
 const data = JSON.parse(
   await readFile(new URL("../data/tools.json", import.meta.url), "utf8")
 );
 
-test("keeps the first two clauses and drops the rest of the tier list", () => {
-  assert.equal(
-    shortPricing("Free tier; Pro $20/mo ($17/mo annual); Max $100-200/mo"),
-    "Free tier · Pro $20/mo"
-  );
-  assert.equal(shortPricing("Free plan; Plus ~$8-9/mo"), "Free plan · Plus ~$8-9/mo");
+test("pricing keeps annual billing, limits, and parenthetical qualifications visible", () => {
+  for (const note of [
+    "Free for students, with limits; Pro $15/mo, billed yearly",
+    "Free (limited; watermarked); Pro $12/mo",
+    "Pro $20/mo ($17/mo annual)",
+  ]) assert.equal(displayPricing({ note }), note);
+  for (const tool of data.tools) assert.equal(displayPricing(tool.pricing), tool.pricing.note);
 });
 
-test("cuts each clause at its first comma", () => {
-  assert.equal(
-    shortPricing("Free for students, with limits; Pro $15/mo, billed yearly"),
-    "Free for students · Pro $15/mo"
-  );
-});
-
-test("removes parentheticals before splitting, not after", () => {
-  // The order matters. A semicolon inside parentheses would otherwise split
-  // the note in half and leave two fragments that no longer read as an aside.
-  assert.equal(
-    shortPricing("Free (limited; watermarked); Pro $12/mo"),
-    "Free · Pro $12/mo"
-  );
-  assert.equal(shortPricing("Pro $20/mo ($17/mo annual)"), "Pro $20/mo");
-});
-
-test("a single clause is left alone", () => {
-  assert.equal(shortPricing("Completely free"), "Completely free");
-});
-
-test("an absent note produces an empty string rather than 'undefined'", () => {
-  for (const missing of ["", null, undefined]) {
-    assert.equal(shortPricing(missing), "");
-  }
-  assert.equal(shortPricing("   ;  ; "), "");
-});
-
-test("every pricing note in the catalog survives the trim", async () => {
-  // The real corpus, not invented strings. A note that trims to nothing would
-  // leave a blank line where the price belongs, and a trim that keeps the
-  // whole note has not done its job.
-  const data = JSON.parse(
-    await readFile(new URL("../data/tools.json", import.meta.url), "utf8")
-  );
-
-  for (const tool of data.tools) {
-    const short = shortPricing(tool.pricing.note);
-    assert.notEqual(short, "", `${tool.id} trims to nothing: ${tool.pricing.note}`);
-    // Not a length comparison — "; " becomes " · ", so a two-clause note
-    // legitimately comes out one character longer. What the trim promises is
-    // a bounded number of clauses, so that is what is checked.
-    assert.ok(
-      short.split(" · ").length <= 2,
-      `${tool.id} kept more than two clauses: ${short}`
-    );
-    assert.ok(!short.includes(";"), `${tool.id} kept a semicolon: ${short}`);
-    assert.ok(!/\($/.test(short.trim()), `${tool.id} left a dangling bracket: ${short}`);
-  }
+test("an editorial summary is used only when explicitly supplied", () => {
+  assert.equal(displayPricing({ summary: "$120/year ($10/month equivalent)", note: "All tiers" }), "$120/year ($10/month equivalent)");
+  assert.equal(displayPricing({ note: "Completely free" }), "Completely free");
+  assert.equal(displayPricing(), "");
 });
 
 // The directory groups itself under category headings only when what's on

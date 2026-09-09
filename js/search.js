@@ -1,6 +1,6 @@
 // Task matching for the hero search.
 //
-// The catalog is 108 hand-checked tools, not a web index, so this leans on a
+// The catalog is 107 hand-checked tools, not a web index, so this leans on a
 // curated vocabulary rather than anything statistical. Three deliberate
 // choices:
 //
@@ -151,7 +151,7 @@ const FIELDS = [
   ["description", 1],
 ];
 
-// Tokenising 108 tools on every keystroke would be wasteful, so the index is
+// Tokenising 107 tools on every keystroke would be wasteful, so the index is
 // built once when the catalog loads.
 export function buildIndex(tools, categoryLabels) {
   return tools.map((tool) => ({
@@ -300,16 +300,35 @@ function explain(entry, typed, inferred, categoryScore, spelling, categoryLabels
   return "";
 }
 
+// Budget language constrains eligibility before relevance is ranked. Do not
+// mistake royalty-free licensing or a negated preference for a price request.
+export function queryBudget(query) {
+  let text = String(query);
+  let price = "any";
+  if (/\b(?:paid only|paid tools? only|not free)\b/i.test(text)) {
+    price = "paid";
+    text = text.replace(/\b(?:paid only|paid tools? only|not free)\b/gi, " ");
+  } else if (!/\b(?:royalty[- ]free|ad[- ]free|free trial|not necessarily free)\b/i.test(text) &&
+      /\b(?:free|no budget|zero budget|without paying|no cost|at no cost)\b/i.test(text)) {
+    price = "free";
+    text = text.replace(/\b(?:at no cost|no cost|no budget|zero budget|without paying|free)\b/gi, " ");
+  }
+  if (price !== "any") text = text.replace(/\b(?:tools?|only)\b/gi, " ");
+  return { price, text: text.trim() };
+}
+
 // The ranking itself. `search` is the plain form of this; `rank` is the one
 // that also says why, and both walk the catalog exactly once.
 export function rank(index, query, limit = 6, categoryLabels) {
-  const { typed, inferred, categoryScore, spelling } = readQuery(query);
-  if (typed.size === 0) return [];
+  const budget = queryBudget(query);
+  const { typed, inferred, categoryScore, spelling } = readQuery(budget.text);
+  if (typed.size === 0 && budget.price === "any") return [];
 
   return index
+    .filter((entry) => budget.price === "any" || (budget.price === "free" ? entry.free : !entry.free))
     .map((entry) => ({
       entry,
-      score: scoreEntry(entry, typed, inferred, categoryScore),
+      score: typed.size ? scoreEntry(entry, typed, inferred, categoryScore) : MIN_SCORE,
     }))
     .filter((row) => row.score >= MIN_SCORE)
     .sort(
@@ -323,7 +342,9 @@ export function rank(index, query, limit = 6, categoryLabels) {
     .slice(0, limit)
     .map((row) => ({
       tool: row.entry.tool,
-      reason: explain(row.entry, typed, inferred, categoryScore, spelling, categoryLabels),
+      reason: typed.size
+        ? explain(row.entry, typed, inferred, categoryScore, spelling, categoryLabels)
+        : budget.price === "free" ? "Free or freemium plan available" : "Paid-only tool",
     }));
 }
 

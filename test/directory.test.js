@@ -3,6 +3,8 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
   countByCategory,
+  directoryCounts,
+  directoryUrl,
   directoryStateFromUrl,
   filterDirectoryTools,
   normalizePriceFilter,
@@ -93,10 +95,11 @@ test("price filter state is restored from shareable URLs", () => {
   assert.deepEqual(directoryStateFromUrl("https://example.test/?price=free"), {
     category: "all",
     price: "free",
+    query: "",
   });
   assert.deepEqual(
     directoryStateFromUrl("https://example.test/?category=career&price=paid"),
-    { category: "career", price: "paid" }
+    { category: "career", price: "paid", query: "" }
   );
 });
 
@@ -152,4 +155,36 @@ test("counts tolerate a tool with no pricing block at all", () => {
   assert.equal(countByCategory(tools, "any").writing, 2);
   assert.equal(countByCategory(tools, "free").writing, 2);
   assert.equal(countByCategory(tools, "paid").writing ?? 0, 0);
+});
+
+test("task search works in the directory and respects explicit filters", () => {
+  const shown = filterDirectoryTools(data.tools, { query: "make a slide deck", price: "free" }, labels);
+  assert.ok(shown.some((tool) => tool.id === "gamma"));
+  assert.ok(shown.every((tool) => tool.pricing.model !== "paid"));
+});
+
+test("facet counts agree with each possible selection under task searches", () => {
+  for (const query of ["make a slide deck", "free presentation tools", "quantum banana"]) {
+    for (const price of ["any", "free", "paid"]) {
+      const state = { category: "presentations", price, query };
+      const counts = directoryCounts(data.tools, state, labels);
+      for (const { id } of data.categories) {
+        assert.equal(counts.categories[id] ?? 0, filterDirectoryTools(data.tools, { ...state, category: id }, labels).length);
+      }
+      for (const selected of ["any", "free", "paid"]) {
+        assert.equal(counts.prices[selected], filterDirectoryTools(data.tools, { ...state, price: selected }, labels).length);
+      }
+    }
+  }
+});
+
+test("complete directory state survives a URL round trip without changing hero search", () => {
+  const state = { category: "presentations", price: "free", query: "slides & diagrams" };
+  const url = directoryUrl("https://example.test/subpath/?q=resume&tool=gamma#directory", state);
+  assert.deepEqual(directoryStateFromUrl(url), state);
+  assert.equal(new URL(url).searchParams.get("q"), "resume");
+  assert.equal(new URL(url).searchParams.has("tool"), false);
+  assert.equal(new URL(url).hash, "#directory");
+  const cleared = directoryUrl(url, { category: "all", price: "any", query: "" });
+  assert.equal(new URL(cleared).search, "?q=resume");
 });

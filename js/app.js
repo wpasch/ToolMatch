@@ -49,8 +49,8 @@ async function init() {
     renderMarquee(data.tools);
     renderCluster(data.tools);
     renderCategories(data);
-    initDirectory(data, labels);
     initSearch(data, labels);
+    initDirectory(data, labels);
   } catch (error) {
     directoryList.innerHTML = `<li class="tool-list__loading">Couldn't load tools: ${escapeHtml(error.message)}</li>`;
     directoryList.removeAttribute("aria-busy");

@@ -306,7 +306,7 @@
           aria-live="polite"
         ></p>
         <div class="section__head">
-          <span class="pill">Matches</span>
+          <span class="pill" id="results-label">Example matches</span>
           <h2 class="section__title results__heading" tabindex="-1">
             Recommended for you
           </h2>
@@ -346,12 +346,10 @@
         </div>
 
         <div class="filters-bar">
-          <!-- Saves a trip back to the hero once you're deep in the list.
-               This narrows what's already on screen; the hero search is the
-               one that interprets a task. -->
+          <!-- Uses the same task matching as the main search. -->
           <form class="dirsearch" id="directory-search-form" role="search">
             <label class="visually-hidden" for="directory-search">
-              Filter the directory by name or keyword
+              Search the directory by tool name or task
             </label>
             <svg class="icon dirsearch__icon" aria-hidden="true">
               <use href="#tm-search" />
@@ -361,7 +359,7 @@
               name="filter"
               type="search"
               class="dirsearch__input"
-              placeholder="Filter by name or keyword"
+              placeholder="Search by tool name or task"
               autocomplete="off"
             />
           </form>
@@ -374,6 +372,11 @@
                budget skips them in one click. Populated by js/directory.js so
                the counts come from the catalog. -->
           <div class="filters filters--price" id="price-filters" role="group" aria-label="Filter by cost"></div>
+        </div>
+
+        <div class="directory-summary">
+          <p id="directory-status" role="status" aria-live="polite" aria-atomic="true"></p>
+          <button id="directory-clear" class="filter" type="button" disabled>Clear filters</button>
         </div>
 
         <div id="directory-list" class="tool-catalog" aria-busy="true" aria-label="Loading tools">
@@ -393,9 +396,13 @@
             the repository</a>.
         </p>
 
-        <p class="tool-list__empty" id="directory-empty" hidden>
-          No tools in that category yet.
-        </p>
+        <div class="tool-list__empty" id="directory-empty" hidden>
+          <p id="directory-empty-text">No tools match these filters.</p>
+          <div class="directory-empty__actions">
+            <button class="filter" type="button" id="directory-empty-clear">Clear filters</button>
+            <a href="#search-form" id="directory-task-search">Try another task</a>
+          </div>
+        </div>
       </section>
 
       <!-- ---------- FAQ ---------- -->

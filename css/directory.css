@@ -321,15 +321,10 @@
   color: var(--muted);
 }
 
-/* Two views of the same fact: the trimmed headline price while the card is
-   closed, the publisher's full tier list once it is open. Only ever one of
-   them is in the flow, so the card never repeats itself. */
+/* Show pricing once in either state; opening Details adds the checked date. */
+/* Billing qualifications stay visible even on a collapsed card. */
 .tool-card__meta--short {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 .tool-card--open .tool-card__meta--short,
 .tool-card:not(.tool-card--open) .tool-card__detail {
@@ -507,4 +502,22 @@
   50% {
     opacity: 0.45;
   }
+}
+
+.directory-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.directory-summary .filter { flex-shrink: 0; }
+.directory-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }

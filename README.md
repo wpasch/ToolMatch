@@ -57,6 +57,12 @@ The directory renders under category headings whenever what is on screen
 spans more than one category, and flat when it does not — filtered to a
 single category the headings would only repeat the chip you just pressed.
 
+Both search boxes share task matching and recognize explicit free/paid-only
+requests. “Free” includes freemium plans. Directory URLs preserve `category`,
+`price`, and `filter`; hero requests use `q`. Facet counts retain the other
+active filters. Billing notes remain visible without punctuation trimming; an
+optional editorial pricing summary must retain billing conditions and limits.
+
 ## Data shape
 
 `data/tools.json` has three parts:
@@ -67,7 +73,7 @@ single category the headings would only repeat the chip you just pressed.
   `tagline`, `description`.
 
 Per-tool fields: `id`, `name`, `url`, `category`, `tagline`, `description`,
-`tags`, `useCases`, `pricing` (`model` = free/freemium/paid + `note`),
+`tags`, `useCases`, `pricing` (`model` = free/freemium/paid + `note`, optional editorial `summary`),
 `pricingChecked` (YYYY-MM-DD — pricing drifts, so this flags staleness),
 `skillLevel`.
 

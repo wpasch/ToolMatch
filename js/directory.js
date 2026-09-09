@@ -43,10 +43,7 @@ export function renderCategories(data) {
 }
 
 // ---------- Directory filters ----------
-// The category chips and the text field narrow the same list, so they share
-// one piece of state and one render. The field is a plain substring filter
-// over what's on the card — the interpreting search is the one in the hero,
-// and this only saves a trip back up to it.
+// Both search fields use the same task matching and budget constraints.
 const VALID_PRICE_FILTERS = new Set(["any", "free", "paid"]);
 
 export function normalizePriceFilter(value) {
@@ -58,6 +55,7 @@ export function directoryStateFromUrl(href) {
   return {
     category: params.get("category") || "all",
     price: normalizePriceFilter(params.get("price") || "any"),
+    query: params.get("filter") || "",
   };
 }
 
@@ -76,229 +74,155 @@ export function countByCategory(tools, price = "any") {
   return counts;
 }
 
-function searchableText(tool, labels) {
-  return [
-    tool.name,
-    tool.tagline,
-    tool.description,
-    labels[tool.category] ?? tool.category,
-    ...(tool.tags ?? []),
-    ...(tool.useCases ?? []),
-  ]
-    .join(" ")
-    .toLowerCase();
-}
-
 export function filterDirectoryTools(
   tools,
   { category = "all", price = "any", query = "" } = {},
   labels = {},
-  haystacks
+  index
 ) {
   const wantedPrice = normalizePriceFilter(price);
-  const wantedText = query.trim().toLowerCase();
+  const matched = query.trim()
+    ? rank(index ?? buildIndex(tools, labels), query, tools.length, labels).map((row) => row.tool)
+    : tools;
+  return matched.filter((tool) =>
+    (category === "all" || tool.category === category) &&
+    (wantedPrice !== "free" || tool.pricing?.model !== "paid") &&
+    (wantedPrice !== "paid" || tool.pricing?.model === "paid")
+  );
+}
 
-  return tools.filter((tool) => {
-    if (category !== "all" && tool.category !== category) return false;
-    const model = tool.pricing?.model;
-    if (wantedPrice === "free" && model === "paid") return false;
-    if (wantedPrice === "paid" && model !== "paid") return false;
-    const haystack = haystacks?.get(tool) ?? searchableText(tool, labels);
-    return !wantedText || haystack.includes(wantedText);
-  });
+// Facet counts answer what selecting each option would show, retaining the
+// other filters. In particular, text matching applies to every count.
+export function directoryCounts(tools, state, labels = {}, index) {
+  const matched = filterDirectoryTools(tools, { query: state.query }, labels, index);
+  const categories = countByCategory(matched, state.price);
+  const inCategory = matched.filter((tool) => state.category === "all" || tool.category === state.category);
+  const free = inCategory.filter((tool) => tool.pricing?.model !== "paid").length;
+  return {
+    categories,
+    total: Object.values(categories).reduce((sum, n) => sum + n, 0),
+    prices: { any: inCategory.length, free, paid: inCategory.length - free },
+  };
+}
+
+export function directoryUrl(href, { category, price, query }) {
+  const url = new URL(href);
+  for (const [key, value] of Object.entries({
+    category: category === "all" ? "" : category,
+    price: price === "any" ? "" : price,
+    filter: query.trim(),
+  })) {
+    if (value) url.searchParams.set(key, value);
+    else url.searchParams.delete(key);
+  }
+  url.searchParams.delete("tool");
+  return url.toString();
 }
 
 export function initDirectory(data, labels) {
   const bar = document.getElementById("filters");
+  const priceBar = document.getElementById("price-filters");
   const list = document.getElementById("directory-list");
   const empty = document.getElementById("directory-empty");
-  if (!bar || !list || !empty) return;
-
-  const form = document.getElementById("directory-search-form");
+  const emptyText = document.getElementById("directory-empty-text");
+  const status = document.getElementById("directory-status");
   const input = document.getElementById("directory-search");
+  const clear = document.getElementById("directory-clear");
+  if (!bar || !list || !empty || !input || !priceBar) return;
+  const index = buildIndex(data.tools, labels);
+  let state = directoryStateFromUrl(window.location.href);
+  if (!data.categories.some((c) => c.id === state.category)) state.category = "all";
+  input.value = state.query;
 
-  const options = [
-    { id: "all", label: "Everything" },
-    ...data.categories.map((c) => ({ id: c.id, label: c.label })),
-  ];
-
-  bar.replaceChildren();
-  options.forEach((option, i) => {
-    const button = el("button", "filter", option.label);
-    button.type = "button";
-    button.dataset.category = option.id;
-    // The count is rewritten whenever the price filter moves, so the label
-    // it is appended to has to survive as its own value.
-    button.dataset.label = option.label;
-    button.setAttribute("aria-pressed", String(i === 0));
-    bar.appendChild(button);
-  });
-
-  // Cost, as a filter rather than something to notice on each card. The
-  // catalog's bar for inclusion is "usable with no budget", and the tools
-  // that miss it are a minority worth being able to hide outright.
-  const priceBar = document.getElementById("price-filters");
-
-  if (priceBar) {
-    const freeTotal = data.tools.filter((t) => t.pricing?.model !== "paid").length;
-    const priceOptions = [
-      { id: "any", label: `Any price (${data.tools.length})` },
-      { id: "free", label: `Free to start (${freeTotal})` },
-      { id: "paid", label: `Paid only (${data.tools.length - freeTotal})` },
-    ];
-    priceBar.replaceChildren();
-    priceOptions.forEach((option, i) => {
-      const button = el("button", "filter", option.label);
+  function buttons(container, options, key) {
+    container.replaceChildren();
+    for (const [id, label] of options) {
+      const button = el("button", "filter", label);
       button.type = "button";
-      button.dataset.price = option.id;
-      button.setAttribute("aria-pressed", String(i === 0));
-      priceBar.appendChild(button);
-    });
-
-    priceBar.addEventListener("click", (event) => {
-      const button = event.target.closest(".filter");
-      if (!button) return;
-      for (const other of priceBar.querySelectorAll(".filter")) {
-        other.setAttribute("aria-pressed", String(other === button));
-      }
-      price = button.dataset.price;
-      relabelCategories();
-      syncPrice();
-      apply();
-    });
+      button.dataset[key] = id;
+      button.dataset.label = label;
+      container.append(button);
+    }
   }
+  buttons(bar, [["all", "Everything"], ...data.categories.map((c) => [c.id, c.label])], "category");
+  buttons(priceBar, [["any", "Any price"], ["free", "Free to start"], ["paid", "Paid only"]], "price");
 
-  // Built once. Re-joining every catalog entry's text on every keystroke
-  // would repeat the same work for each character typed.
-  const haystacks = new Map(data.tools.map((tool) => [tool, searchableText(tool, labels)]));
-
-  let category = "all";
-  let price = "any";
-
-  // The chips ship without counts in their markup and get them here, from
-  // the same function the price filter calls, so there is one place that
-  // decides what a chip claims.
-  relabelCategories();
-
-  // The filter belongs in the URL for the same reason the search query does:
-  // "here are the writing tools" is a thing people send each other, and
-  // without this every such link lands on the unfiltered list.
-  function syncCategory() {
-    const url = new URL(window.location.href);
-    if (category === "all") url.searchParams.delete("category");
-    else url.searchParams.set("category", category);
-    history.replaceState(null, "", url);
-  }
-
-  function syncPrice() {
-    const url = new URL(window.location.href);
-    if (price === "any") url.searchParams.delete("price");
-    else url.searchParams.set("price", price);
-    history.replaceState(null, "", url);
-  }
-
-  // A chip reading "Chat Assistants (10)" that lands on an empty list is
-  // worse than no count at all, and under "Paid only" five of them did
-  // exactly that. The counts follow the price filter, and a chip that would
-  // come up empty stops being clickable — except the one already pressed,
-  // since disabling that would strand you on the empty list it produced.
-  function relabelCategories() {
-    const counts = countByCategory(data.tools, price);
-    const total = Object.values(counts).reduce((sum, n) => sum + n, 0);
-    for (const button of bar.querySelectorAll(".filter")) {
+  function apply({ sync = true } = {}) {
+    state.query = input.value;
+    const shown = filterDirectoryTools(data.tools, state, labels, index);
+    const counts = directoryCounts(data.tools, state, labels, index);
+    for (const button of bar.children) {
       const id = button.dataset.category;
-      const shown = id === "all" ? total : (counts[id] ?? 0);
-      button.textContent = `${button.dataset.label} (${shown})`;
-      button.disabled = shown === 0 && button.getAttribute("aria-pressed") !== "true";
+      const count = id === "all" ? counts.total : counts.categories[id] ?? 0;
+      button.textContent = `${button.dataset.label} (${count})`;
+      button.setAttribute("aria-pressed", String(id === state.category));
+      // Keep empty options available: changing another filter can recover.
     }
-  }
-
-  function apply() {
-    const query = (input?.value ?? "").trim().toLowerCase();
-    const shown = filterDirectoryTools(data.tools, { category, price, query }, labels, haystacks);
-
+    for (const button of priceBar.children) {
+      const id = button.dataset.price;
+      button.textContent = `${button.dataset.label} (${counts.prices[id]})`;
+      button.setAttribute("aria-pressed", String(id === state.price));
+    }
     renderCatalogInto(list, shown, labels, data.categories, { anchors: true });
-    empty.textContent = query
-      ? "Nothing here matches that."
-      : price === "any"
-        ? "No tools in that category yet."
-        : "Nothing in that category at that price.";
     empty.hidden = shown.length > 0;
+    if (emptyText) emptyText.textContent = state.query.trim()
+      ? `No tools match “${state.query.trim()}” with these filters.`
+      : "No tools match these filters.";
+    if (status) status.textContent = `Showing ${shown.length} of ${data.tools.length} tools`;
+    if (clear) clear.disabled = state.category === "all" && state.price === "any" && !state.query;
+    if (sync) history.replaceState(null, "", directoryUrl(window.location.href, state));
   }
-
-  // On a phone the chips are one horizontally scrolling row, so a chip
-  // chosen from the Categories section may be off to the side. Scrolling
-  // the row itself rather than calling scrollIntoView keeps the page where
-  // it is.
-  function revealFilter(button) {
-    if (bar.scrollWidth <= bar.clientWidth) return;
-    const left = button.offsetLeft - (bar.clientWidth - button.offsetWidth) / 2;
-    bar.scrollTo({ left, behavior: prefersReducedMotion() ? "auto" : "smooth" });
-  }
-
   bar.addEventListener("click", (event) => {
-    const button = event.target.closest(".filter");
+    const button = event.target.closest("button[data-category]");
     if (!button) return;
-
-    for (const other of bar.querySelectorAll(".filter")) {
-      other.setAttribute("aria-pressed", String(other === button));
+    state.category = button.dataset.category;
+    apply();
+    if (bar.scrollWidth > bar.clientWidth) {
+      bar.scrollTo({ left: button.offsetLeft - (bar.clientWidth - button.offsetWidth) / 2,
+        behavior: prefersReducedMotion() ? "auto" : "smooth" });
     }
-
-    category = button.dataset.category;
-    revealFilter(button);
-    syncCategory();
+  });
+  priceBar.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-price]");
+    if (!button) return;
+    state.price = button.dataset.price;
     apply();
   });
-
-  if (input) input.addEventListener("input", apply);
-  // Nothing to submit — the list is already filtered as you type — but
-  // Enter would otherwise reload the page.
-  form?.addEventListener("submit", (event) => event.preventDefault());
-
-  // ---------- Opening state from the URL ----------
-  const openingState = directoryStateFromUrl(window.location.href);
-
-  const requested = openingState.category;
-  if (requested && requested !== "all") {
-    const button = [...bar.querySelectorAll(".filter")].find(
-      (candidate) => candidate.dataset.category === requested
-    );
-    // An unknown category in the URL is left alone rather than corrected:
-    // the list simply renders unfiltered, which is what a stale link should
-    // do. Clicking is what sets the pressed state and scrolls the row.
-    if (button) button.click();
+  input.addEventListener("input", () => apply());
+  document.getElementById("directory-search-form")?.addEventListener("submit", (event) => event.preventDefault());
+  function reset() {
+    state = { category: "all", price: "any", query: "" };
+    input.value = "";
+    apply();
+    input.focus({ preventScroll: true });
   }
+  clear?.addEventListener("click", reset);
+  document.getElementById("directory-empty-clear")?.addEventListener("click", reset);
+  document.getElementById("directory-task-search")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    const heroInput = document.getElementById("search-input");
+    heroInput.value = input.value;
+    heroInput.focus({ preventScroll: true });
+    document.getElementById("search-form").scrollIntoView({
+      behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center",
+    });
+  });
+  apply({ sync: false });
 
-  const wantedPrice = openingState.price;
-  if (wantedPrice !== "any" && priceBar) {
-    const button = [...priceBar.querySelectorAll(".filter")].find(
-      (candidate) => candidate.dataset.price === wantedPrice
-    );
-    if (button) button.click();
-  }
-
-  // ?tool=<id> opens the directory on one card with its details already
-  // showing — a link to a single tool, on a site that has no per-tool page.
+  // A shared tool takes precedence over filters that would hide it.
   const wanted = new URL(window.location.href).searchParams.get("tool");
-  if (wanted) {
-    // The filters are how you browse; an id is a specific request, so it
-    // wins. Without this a link like ?category=coding&tool=grammarly renders
-    // the coding list and says nothing about the tool it was asked for.
-    const inCatalog = data.tools.some((tool) => tool.id === wanted);
-    if (inCatalog && !document.getElementById(`tool-${wanted}`)) {
-      bar.querySelector('.filter[data-category="all"]')?.click();
-      priceBar?.querySelector('.filter[data-price="any"]')?.click();
+  if (wanted && data.tools.some((tool) => tool.id === wanted)) {
+    if (!document.getElementById(`tool-${wanted}`)) {
+      state = { category: "all", price: "any", query: "" };
+      input.value = "";
+      apply({ sync: false });
     }
-
     const card = document.getElementById(`tool-${wanted}`);
-    if (card) {
-      card.querySelector(".tool-card__toggle")?.click();
-      card.classList.add("tool-card--linked");
-      card.scrollIntoView({
-        behavior: prefersReducedMotion() ? "auto" : "smooth",
-        block: "center",
-      });
-    }
+    card.querySelector(".tool-card__toggle")?.click();
+    card.classList.add("tool-card--linked");
+    card.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
+  } else if (window.location.hash === "#directory") {
+    document.getElementById("directory").scrollIntoView({ behavior: "instant", block: "start" });
   }
 }
 
@@ -330,7 +254,7 @@ export function initSearch(data, labels) {
   // page around under the cursor.
   // `sync` and `announce`: an answer nobody asked for does not belong in the
   // URL, and must not interrupt a screen reader.
-  function renderPanel(query, { move = false, sync = true, announce = true, limit = 6 } = {}) {
+  function renderPanel(query, { move = false, sync = true, announce = true, limit = 6, example = false } = {}) {
     const ranked = rank(index, query, limit, labels);
     if (sync) syncQuery(query);
 
@@ -343,6 +267,8 @@ export function initSearch(data, labels) {
     }
 
     results.hidden = false;
+    const label = document.getElementById("results-label");
+    if (label) label.textContent = example ? "Example matches" : "Matches";
 
     if (ranked.length === 0) {
       heading.textContent = "No match for that yet";
@@ -432,6 +358,7 @@ export function initSearch(data, labels) {
         // screens before the page reached the categories. Three fills one
         // row on a wide screen and still makes the point on a narrow one.
         limit: 3,
+        example: true,
       });
     }
   }

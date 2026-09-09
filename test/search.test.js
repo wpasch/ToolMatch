@@ -131,3 +131,15 @@ test("a result with no explanation is never shown", () => {
     }
   }
 });
+
+test("budget requests filter eligibility without losing task relevance", () => {
+  for (const query of ["free presentation tools", "presentation tools without paying", "no budget for slides"]) {
+    const found = search(index, query);
+    assert.ok(found.some((tool) => tool.id === "gamma"));
+    assert.ok(found.every((tool) => tool.pricing.model !== "paid"));
+  }
+  const paid = search(index, "paid only presentation tools");
+  assert.ok(paid.length > 0);
+  assert.ok(paid.every((tool) => tool.pricing.model === "paid"));
+  assert.ok(search(index, "free tools").every((tool) => tool.pricing.model !== "paid"));
+});

@@ -34,22 +34,10 @@ function toolLogo(tool) {
   return img;
 }
 
-// Publishers list every tier they sell; a card that is being skimmed needs
-// the shape of the price, not the price list. The first two clauses, each
-// cut at its first comma, carry it — "Free tier; Pro $20/mo ($17/mo
-// annual); Max $100-200/mo" becomes "Free tier · Pro $20/mo". The untouched
-// note is still on the card, behind its Details toggle.
-//
-// Parentheticals come out before the split, not after: a note that puts a
-// semicolon *inside* its parentheses would otherwise be torn in half and
-// neither half would still look like an aside.
-export function shortPricing(note) {
-  const clauses = String(note ?? "")
-    .replace(/\s*\([^)]*\)/g, "")
-    .split(";")
-    .map((clause) => clause.split(",")[0].trim())
-    .filter(Boolean);
-  return clauses.slice(0, 2).join(" · ");
+// Pricing is editorial content: preserve billing periods, limits, and
+// qualifications exactly as written rather than cutting at punctuation.
+export function displayPricing(pricing) {
+  return String(pricing?.summary || pricing?.note || "").trim();
 }
 
 // Only ever used to mint element ids for aria-controls, so it can keep
@@ -57,8 +45,8 @@ export function shortPricing(note) {
 let cardSeq = 0;
 
 // A closed card carries what you scan by — name, category, one clamped
-// paragraph, the pricing model, a trimmed price. The full paragraph, the
-// publisher's whole tier list and the date it was checked live behind the
+// paragraph, the pricing model, and complete billing details. The full
+// paragraph and the date pricing was checked live behind the
 // card's own Details toggle, so the full catalog stays skimmable.
 function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 } = {}) {
   const li = el("li", "tool-card");
@@ -116,7 +104,7 @@ function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 
   li.append(badges);
 
   const note = tool.pricing?.note ?? "";
-  li.append(el("p", "tool-card__meta tool-card__meta--short", shortPricing(note)));
+  li.append(el("p", "tool-card__meta tool-card__meta--short", displayPricing(tool.pricing)));
 
   const detail = el("div", "tool-card__detail");
   detail.id = `tool-detail-${++cardSeq}`;
