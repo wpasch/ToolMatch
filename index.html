@@ -49,6 +49,11 @@
     <link rel="icon" href="assets/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <meta name="theme-color" content="#3d6ec2" />
+    <!-- Names the site and picks the icon when someone adds it to a phone
+         home screen. Every path inside it is relative to the manifest, which
+         is what keeps it working from a project subpath. It is also what
+         assets/icon-192.png was made for; nothing referenced it until now. -->
+    <link rel="manifest" href="manifest.webmanifest" />
 
     <link
       rel="preload"
@@ -91,6 +96,35 @@
     <!-- BEGIN generated JSON-LD (npm run meta) -->
     <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://wpasch.github.io/ToolMatch/#website","url":"https://wpasch.github.io/ToolMatch/","name":"ToolMatch","description":"A hand-checked directory of AI tools for coursework and early-career work.","inLanguage":"en","potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://wpasch.github.io/ToolMatch/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"CollectionPage","@id":"https://wpasch.github.io/ToolMatch/#catalog","url":"https://wpasch.github.io/ToolMatch/","name":"107 AI tools, hand-checked","isPartOf":{"@id":"https://wpasch.github.io/ToolMatch/#website"},"dateModified":"2026-09-07","mainEntity":{"@type":"ItemList","numberOfItems":107,"itemListElement":[{"@type":"ListItem","position":1,"name":"ChatGPT","url":"https://chat.openai.com"},{"@type":"ListItem","position":2,"name":"Claude","url":"https://claude.ai"},{"@type":"ListItem","position":3,"name":"Perplexity","url":"https://www.perplexity.ai"},{"@type":"ListItem","position":4,"name":"NotebookLM","url":"https://notebooklm.google.com"},{"@type":"ListItem","position":5,"name":"Grammarly","url":"https://www.grammarly.com"},{"@type":"ListItem","position":6,"name":"QuillBot","url":"https://quillbot.com"},{"@type":"ListItem","position":7,"name":"GitHub Copilot","url":"https://github.com/features/copilot"},{"@type":"ListItem","position":8,"name":"Cursor","url":"https://cursor.com"},{"@type":"ListItem","position":9,"name":"Canva (Magic Studio)","url":"https://www.canva.com/magic-studio/"},{"@type":"ListItem","position":10,"name":"Otter.ai","url":"https://otter.ai"},{"@type":"ListItem","position":11,"name":"Google Gemini","url":"https://gemini.google.com"},{"@type":"ListItem","position":12,"name":"Microsoft Copilot","url":"https://copilot.microsoft.com"},{"@type":"ListItem","position":13,"name":"Grok","url":"https://grok.com"},{"@type":"ListItem","position":14,"name":"DeepSeek","url":"https://chat.deepseek.com"},{"@type":"ListItem","position":15,"name":"Wordtune","url":"https://www.wordtune.com"},{"@type":"ListItem","position":16,"name":"Jasper","url":"https://www.jasper.ai"},{"@type":"ListItem","position":17,"name":"Sudowrite","url":"https://www.sudowrite.com"},{"@type":"ListItem","position":18,"name":"ProWritingAid","url":"https://prowritingaid.com"},{"@type":"ListItem","position":19,"name":"Replit","url":"https://replit.com"},{"@type":"ListItem","position":20,"name":"Windsurf","url":"https://windsurf.com"},{"@type":"ListItem","position":21,"name":"Tabnine","url":"https://www.tabnine.com"},{"@type":"ListItem","position":22,"name":"v0 by Vercel","url":"https://v0.app"},{"@type":"ListItem","position":23,"name":"Bolt.new","url":"https://bolt.new"},{"@type":"ListItem","position":24,"name":"Elicit","url":"https://elicit.com"},{"@type":"ListItem","position":25,"name":"Consensus","url":"https://consensus.app"},{"@type":"ListItem","position":26,"name":"SciSpace","url":"https://scispace.com"},{"@type":"ListItem","position":27,"name":"ResearchRabbit","url":"https://www.researchrabbit.ai"},{"@type":"ListItem","position":28,"name":"Wolfram Alpha","url":"https://www.wolframalpha.com"},{"@type":"ListItem","position":29,"name":"Quizlet","url":"https://quizlet.com"},{"@type":"ListItem","position":30,"name":"Photomath","url":"https://photomath.com"},{"@type":"ListItem","position":31,"name":"Duolingo","url":"https://www.duolingo.com"},{"@type":"ListItem","position":32,"name":"Khanmigo","url":"https://www.khanmigo.ai"},{"@type":"ListItem","position":33,"name":"Midjourney","url":"https://www.midjourney.com"},{"@type":"ListItem","position":34,"name":"Adobe Firefly","url":"https://firefly.adobe.com"},{"@type":"ListItem","position":35,"name":"Ideogram","url":"https://ideogram.ai"},{"@type":"ListItem","position":36,"name":"Leonardo.ai","url":"https://leonardo.ai"},{"@type":"ListItem","position":37,"name":"Recraft","url":"https://www.recraft.ai"},{"@type":"ListItem","position":38,"name":"Figma","url":"https://www.figma.com"},{"@type":"ListItem","position":39,"name":"Framer","url":"https://www.framer.com"},{"@type":"ListItem","position":40,"name":"Microsoft Designer","url":"https://designer.microsoft.com"},{"@type":"ListItem","position":41,"name":"Photoroom","url":"https://www.photoroom.com"},{"@type":"ListItem","position":42,"name":"Gamma","url":"https://gamma.app"},{"@type":"ListItem","position":43,"name":"Beautiful.ai","url":"https://www.beautiful.ai"},{"@type":"ListItem","position":44,"name":"Plus AI","url":"https://plusai.com"},{"@type":"ListItem","position":45,"name":"ElevenLabs","url":"https://elevenlabs.io"},{"@type":"ListItem","position":46,"name":"Descript","url":"https://www.descript.com"},{"@type":"ListItem","position":47,"name":"Suno","url":"https://suno.com"},{"@type":"ListItem","position":48,"name":"Runway","url":"https://runway.com"},{"@type":"ListItem","position":49,"name":"HeyGen","url":"https://www.heygen.com"},{"@type":"ListItem","position":50,"name":"OpusClip","url":"https://www.opus.pro"},{"@type":"ListItem","position":51,"name":"CapCut","url":"https://www.capcut.com"},{"@type":"ListItem","position":52,"name":"Notion AI","url":"https://www.notion.com/product/ai"},{"@type":"ListItem","position":53,"name":"Reclaim.ai","url":"https://reclaim.ai"},{"@type":"ListItem","position":54,"name":"Motion","url":"https://www.usemotion.com"},{"@type":"ListItem","position":55,"name":"Fireflies.ai","url":"https://fireflies.ai"},{"@type":"ListItem","position":56,"name":"Fathom","url":"https://www.fathom.ai"},{"@type":"ListItem","position":57,"name":"Granola","url":"https://www.granola.ai"},{"@type":"ListItem","position":58,"name":"tl;dv","url":"https://tldv.io"},{"@type":"ListItem","position":59,"name":"Teal","url":"https://www.tealhq.com"},{"@type":"ListItem","position":60,"name":"Rezi","url":"https://www.rezi.ai"},{"@type":"ListItem","position":61,"name":"Jobscan","url":"https://www.jobscan.co"},{"@type":"ListItem","position":62,"name":"Final Round AI","url":"https://www.finalroundai.com"},{"@type":"ListItem","position":63,"name":"Zapier","url":"https://zapier.com"},{"@type":"ListItem","position":64,"name":"Make","url":"https://www.make.com/en"},{"@type":"ListItem","position":65,"name":"n8n","url":"https://n8n.io"},{"@type":"ListItem","position":66,"name":"Gumloop","url":"https://www.gumloop.com"},{"@type":"ListItem","position":67,"name":"Lindy","url":"https://www.lindy.ai"},{"@type":"ListItem","position":68,"name":"Todoist","url":"https://todoist.com"},{"@type":"ListItem","position":69,"name":"Taskade","url":"https://www.taskade.com"},{"@type":"ListItem","position":70,"name":"Sunsama","url":"https://www.sunsama.com"},{"@type":"ListItem","position":71,"name":"Poe","url":"https://poe.com"},{"@type":"ListItem","position":72,"name":"Le Chat (Mistral)","url":"https://chat.mistral.ai"},{"@type":"ListItem","position":73,"name":"Presentations.ai","url":"https://www.presentations.ai"},{"@type":"ListItem","position":74,"name":"Looka","url":"https://looka.com"},{"@type":"ListItem","position":75,"name":"Semantic Scholar","url":"https://www.semanticscholar.org"},{"@type":"ListItem","position":76,"name":"Qwen Chat","url":"https://chat.qwen.ai"},{"@type":"ListItem","position":77,"name":"Meta AI","url":"https://www.meta.ai"},{"@type":"ListItem","position":78,"name":"Hemingway Editor","url":"https://hemingwayapp.com"},{"@type":"ListItem","position":79,"name":"LanguageTool","url":"https://languagetool.org"},{"@type":"ListItem","position":80,"name":"Lovable","url":"https://lovable.dev"},{"@type":"ListItem","position":81,"name":"Aider","url":"https://aider.chat"},{"@type":"ListItem","position":82,"name":"Connected Papers","url":"https://www.connectedpapers.com"},{"@type":"ListItem","position":83,"name":"scite","url":"https://scite.ai"},{"@type":"ListItem","position":84,"name":"Krea","url":"https://www.krea.ai"},{"@type":"ListItem","position":85,"name":"Adobe Express","url":"https://www.adobe.com/express/"},{"@type":"ListItem","position":86,"name":"Uizard","url":"https://uizard.io"},{"@type":"ListItem","position":87,"name":"SlidesAI","url":"https://www.slidesai.io"},{"@type":"ListItem","position":88,"name":"Pitch","url":"https://pitch.com"},{"@type":"ListItem","position":89,"name":"VEED","url":"https://www.veed.io"},{"@type":"ListItem","position":90,"name":"Synthesia","url":"https://www.synthesia.io"},{"@type":"ListItem","position":91,"name":"goblin.tools","url":"https://goblin.tools"},{"@type":"ListItem","position":92,"name":"Raycast","url":"https://www.raycast.com"},{"@type":"ListItem","position":93,"name":"Krisp","url":"https://krisp.ai"},{"@type":"ListItem","position":94,"name":"Brainly","url":"https://brainly.com"},{"@type":"ListItem","position":95,"name":"Brilliant","url":"https://brilliant.org"},{"@type":"ListItem","position":96,"name":"Kickresume","url":"https://www.kickresume.com/en/"},{"@type":"ListItem","position":97,"name":"Huntr","url":"https://huntr.co"},{"@type":"ListItem","position":98,"name":"Activepieces","url":"https://www.activepieces.com"},{"@type":"ListItem","position":99,"name":"Pipedream","url":"https://pipedream.com"},{"@type":"ListItem","position":100,"name":"Prezi","url":"https://prezi.com"},{"@type":"ListItem","position":101,"name":"Decktopus","url":"https://www.decktopus.com"},{"@type":"ListItem","position":102,"name":"Read AI","url":"https://www.read.ai"},{"@type":"ListItem","position":103,"name":"Notta","url":"https://www.notta.ai/en/"},{"@type":"ListItem","position":104,"name":"Circleback","url":"https://circleback.ai"},{"@type":"ListItem","position":105,"name":"Yoodli","url":"https://yoodli.ai"},{"@type":"ListItem","position":106,"name":"Simplify","url":"https://simplify.jobs"},{"@type":"ListItem","position":107,"name":"Enhancv","url":"https://enhancv.com"}]}}]}</script>
     <!-- END generated JSON-LD -->
+    <!-- Every tool on this page is rendered from data/tools.json by js/app.js,
+         and even the loading skeleton is drawn by script — so with JavaScript
+         off the directory, the categories and the results panel are simply
+         three empty stretches of page with headings over them. This hides the
+         frames that will never fill and explains why. In <head> because that
+         is where <noscript> is allowed to carry a <style>.
+
+         It covers JavaScript being off, not a script that loads and then
+         fails; nothing inside <noscript> runs in that case. -->
+    <noscript>
+      <style>
+        #results,
+        #categories,
+        .filters-bar,
+        #directory-list {
+          display: none !important;
+        }
+        .noscript-note {
+          display: block !important;
+        }
+        /* The search box and the example queries both do nothing without
+           js/directory.js behind them, and a field that swallows a sentence
+           in silence is worse than no field. The hero keeps its headline. */
+        .search,
+        .examples {
+          display: none !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
     <a class="skip-link" href="#directory">Skip to the directory</a>
@@ -349,6 +383,15 @@
         <!-- Shared by every card's copy-link button: one live region for the
              page rather than one per card. -->
         <p id="copy-status" class="visually-hidden" role="status"></p>
+
+        <p class="noscript-note">
+          The catalog is rendered in the browser, so this page needs JavaScript
+          to list or search anything. There is still no account and nothing to
+          install — the whole catalog is one JSON file, and you can read it
+          directly in
+          <a href="https://github.com/wpasch/ToolMatch/blob/main/data/tools.json">
+            the repository</a>.
+        </p>
 
         <p class="tool-list__empty" id="directory-empty" hidden>
           No tools in that category yet.

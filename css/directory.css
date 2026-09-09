@@ -95,6 +95,19 @@
   border-color: var(--line);
 }
 
+/* Shown only by the <noscript> block in index.html, which flips it to block
+   and hides the machinery that never fills. Hidden here rather than with the
+   hidden attribute so the noscript stylesheet can reveal it without script. */
+.noscript-note {
+  display: none;
+  max-width: 34rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--muted);
+}
+
 /* ---------- Grouped catalog ---------- */
 /* The headings are what make a 14,700px list navigable: something to scroll
    past and recognise, rather than 107 undifferentiated cards. Generous space
@@ -298,7 +311,7 @@
 }
 .tool-card__badge--paid {
   background: var(--coral-wash);
-  color: var(--coral);
+  color: var(--coral-ink);
 }
 
 .tool-card__meta {

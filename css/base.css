@@ -67,6 +67,13 @@
 
   --coral: light-dark(#dd5540, #ff7d67);
   --coral-wash: light-dark(#fbe8e4, #2e1c1a);
+  /* Coral as *text on the wash*, which is a different job from coral as an
+     accent. The accent sits on paper and can stay bright; the paid-only
+     badge is 12px semibold on a pale pink chip, where #dd5540 comes to
+     3.26:1 and AA wants 4.5. Darkened just for that, so the badge is legible
+     without dulling the accent everywhere else. Dark mode already cleared
+     it, so the value is unchanged there. */
+  --coral-ink: light-dark(#ba3e2b, #ff7d67);
 
   /* Pricing badges read at a glance rather than all in one accent: green
      for a tool that costs nothing, coral for one that always costs, and a
