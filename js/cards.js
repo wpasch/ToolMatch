@@ -146,6 +146,16 @@ function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 
     actions.append(link);
   }
 
+  // ?tool=<id> has worked for a while and survives a filter that would hide
+  // the card, but the only way to get one was to type it. This is the
+  // affordance that finishes the feature — a link to one tool, on a site
+  // with no per-tool pages.
+  const share = el("button", "tool-card__share");
+  share.type = "button";
+  share.dataset.tool = tool.id;
+  share.setAttribute("aria-label", `Copy link to ${tool.name}`);
+  share.append(icon("tm-link"));
+
   const toggle = el("button", "tool-card__toggle", "Details");
   toggle.type = "button";
   toggle.setAttribute("aria-expanded", "false");
@@ -154,7 +164,12 @@ function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 
   // nothing about which one it is on. The visible word stays the start of
   // the accessible name, so voice control still matches what's on screen.
   toggle.setAttribute("aria-label", `Details for ${tool.name}`);
-  actions.append(toggle);
+
+  // The two secondary controls sit together so the card keeps one primary
+  // move on the left rather than three things competing across the row.
+  const secondary = el("div", "tool-card__secondary");
+  secondary.append(share, toggle);
+  actions.append(secondary);
 
   li.append(actions);
 
@@ -170,6 +185,51 @@ export function initCardToggles() {
     const open = toggle.getAttribute("aria-expanded") !== "true";
     toggle.setAttribute("aria-expanded", String(open));
     toggle.closest(".tool-card")?.classList.toggle("tool-card--open", open);
+  });
+}
+
+// The link a card's copy button produces: this page, this tool, and none of
+// the filters that happened to be on at the time. The id is the request; the
+// filters are just how the person browsing got there.
+export function shareLink(href, id) {
+  const url = new URL(href);
+  url.search = "";
+  url.hash = "";
+  url.searchParams.set("tool", id);
+  return url.toString();
+}
+
+// Delegated like the toggles, and for the same reason.
+export function initCardSharing() {
+  const status = document.getElementById("copy-status");
+  let clearing;
+
+  document.addEventListener("click", async (event) => {
+    const button = event.target.closest(".tool-card__share");
+    if (!button) return;
+
+    const link = shareLink(window.location.href, button.dataset.tool);
+
+    // The clipboard needs a secure context and a permission that can be
+    // refused. When it is not available the link still has to end up
+    // somewhere the person can get at it, and the address bar is somewhere —
+    // no dialog, no selection dance, and the page does not move.
+    let copied = true;
+    try {
+      await navigator.clipboard.writeText(link);
+    } catch {
+      copied = false;
+      history.replaceState(null, "", link);
+    }
+
+    button.classList.add("is-copied");
+    if (status) status.textContent = copied ? "Link copied." : "Link is in the address bar.";
+
+    clearTimeout(clearing);
+    clearing = setTimeout(() => {
+      button.classList.remove("is-copied");
+      if (status) status.textContent = "";
+    }, 2000);
   });
 }
 

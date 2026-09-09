@@ -12,7 +12,7 @@
 
 import { loadData } from "./data.js";
 import { escapeHtml } from "./dom.js";
-import { initCardToggles, renderCatalogInto, renderSkeleton } from "./cards.js";
+import { initCardSharing, initCardToggles, renderCatalogInto, renderSkeleton } from "./cards.js";
 import { renderSky } from "./sky.js";
 import { initSkyParallax, renderCluster, renderMarquee } from "./hero.js";
 import { initNav, initReveal, initThemeToggle } from "./chrome.js";
@@ -31,6 +31,7 @@ async function init() {
   initSkyParallax();
   initReveal();
   initCardToggles();
+  initCardSharing();
 
   if (!directoryList) return;
   renderSkeleton(directoryList, 9);
