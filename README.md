@@ -33,14 +33,17 @@ js/
   dom.js           untrusted-value helpers and DOM builders
   cards.js         the tool card, grouped/flat renders, share link, skeleton
   hero.js          logo strip, category cluster, sky parallax
+  sky.js           the hero's cumulus geometry, built into the page
   chrome.js        theme dial, nav state, section reveal
   directory.js     category chips, price filter, directory filters, hero search
   data.js          loads and caches data/tools.json
   search.js        query -> ranked tools
 scripts/
+  site.js          SITE_URL, the one canonical origin the rest agree on
   format-data.js   canonical layout for data/tools.json (npm run format)
   build-meta.js    JSON-LD, sitemap.xml, robots.txt (npm run meta)
   build-og.js      renders og-card.html to assets/og.png (npm run og)
+  og-card.html     the 1200x630 card build-og.js screenshots
   validate-data.js the checks behind npm test
   check-links.js   catalog URLs, diffed against the blocked baseline
   stale-report.js  listings by pricing age, oldest first

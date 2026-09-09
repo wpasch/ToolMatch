@@ -224,6 +224,46 @@ for (const tag of [
   assert.ok(html.includes(tag), `index.html is missing or has drifted from: ${tag}`);
 }
 
+// ---------- The README's file map ----------
+//
+// The map in the README is the first thing anyone reads to find their way
+// around, which makes a stale one worse than none: it sends a newcomer
+// looking for a file that moved. It has now drifted twice — js/sky.js was
+// split out of hero.js and went unlisted for two commits — so the check is
+// mechanical from here rather than a thing to remember.
+//
+// The map is read the way a person reads it: a line ending in "/" opens a
+// directory, and the two-space-indented lines under it are its contents.
+// Both directions are checked, because a listing for a file that no longer
+// exists misleads exactly as much as a missing one.
+const readme = await readFile(new URL("README.md", root), "utf8");
+const mapped = new Map();
+let openDirectory = null;
+for (const line of readme.split("\n")) {
+  const heading = line.match(/^(\S+)\/(?:\s|$)/);
+  if (heading) {
+    openDirectory = heading[1];
+    mapped.set(openDirectory, []);
+    continue;
+  }
+  const entry = line.match(/^ {2}(\S+)/);
+  if (entry && openDirectory) mapped.get(openDirectory).push(entry[1]);
+  else if (!line.startsWith(" ") && line.trim() !== "") openDirectory = null;
+}
+
+for (const directory of ["js", "css", "scripts"]) {
+  const onDisk = (await readdir(new URL(`${directory}/`, root)))
+    .filter((file) => !file.startsWith("."))
+    .sort();
+  const listed = (mapped.get(directory) ?? []).sort();
+  assert.deepEqual(
+    listed,
+    onDisk,
+    `README's map of ${directory}/ disagrees with the directory — ` +
+      `listed: ${listed.join(", ") || "nothing"}; on disk: ${onDisk.join(", ")}`
+  );
+}
+
 const ogBytes = await readFile(new URL("assets/og.png", root));
 assert.ok(ogBytes.subarray(0, 8).equals(pngSignature), "assets/og.png is not a PNG");
 // A PNG's IHDR is the first chunk, and its width and height are the four
