@@ -84,6 +84,18 @@ npm run stale        # listings by age, oldest first; `-- 90` to filter
 npm run links        # every catalog URL: dead, moved, or behind bot protection
 ```
 
+Nineteen of the listed sites answer any link check with a challenge page, so
+they can never be verified automatically. That set lives in
+`data/link-baseline.json` and the check reports the *difference* — printing
+the same nineteen every week is noise, and noise is where a real change
+hides. A tool that starts or stops being blocked fails the run, because a
+challenge page is also what a moved URL looks like from here. When the change
+is expected, record it:
+
+```bash
+npm run links -- --save
+```
+
 `stale` exists because every tool was checked in the same week, so without it
 the 120-day rule expires the whole catalog at once. Working the top of that
 list keeps re-checking a rolling chore.

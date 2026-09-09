@@ -1,0 +1,24 @@
+{
+  "note": "Catalog URLs whose hosts answer a link check with a challenge page. Regenerate with: npm run links -- --save",
+  "blocked": [
+    "brainly",
+    "canva-magic",
+    "chatgpt",
+    "claude",
+    "gamma",
+    "ideogram",
+    "jobscan",
+    "leonardo-ai",
+    "looka",
+    "lovable",
+    "make",
+    "meta-ai",
+    "midjourney",
+    "mistral-le-chat",
+    "perplexity",
+    "quillbot",
+    "quizlet",
+    "teal",
+    "windsurf"
+  ]
+}

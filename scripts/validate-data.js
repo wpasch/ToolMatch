@@ -163,6 +163,23 @@ for (const [label, expected] of [
   );
 }
 
+// The link checker's baseline names tool ids, and a tool can leave the
+// catalog. Nothing else would notice: the checker only ever reads the
+// baseline to diff against, so a dropped id would sit there quietly claiming
+// a tool is unverifiable forever. Dropping Google ImageFX is exactly the
+// edit that would have done it.
+const linkBaseline = JSON.parse(
+  await readFile(new URL("data/link-baseline.json", root), "utf8")
+);
+const catalogIds = new Set(data.tools.map(({ id }) => id));
+for (const id of linkBaseline.blocked) {
+  assert.ok(
+    catalogIds.has(id),
+    `data/link-baseline.json lists "${id}", which is no longer in the catalog; ` +
+      "run: npm run links -- --save"
+  );
+}
+
 // ---------- Generated metadata ----------
 // robots.txt, sitemap.xml and the JSON-LD block are all produced by
 // `npm run meta`. Committed copies that no longer match the generator are

@@ -10,7 +10,7 @@
 // are reported separately and do not fail the run — only a genuine 404, a
 // gone host, or a server error does.
 
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 
 const TIMEOUT_MS = 15_000;
 const CONCURRENCY = 8;
@@ -126,13 +126,59 @@ function report(title, rows) {
 
 report(`Dead (${dead.length}) — fix or drop these:`, dead);
 report(`Moved (${moved.length}) — update the catalog URL:`, moved);
-report(`Unverifiable (${blocked.length}) — bot protection, check by hand:`, blocked);
 
+// ---------- The blind spot, tracked ----------
+//
+// A directory of AI tools is a directory of sites behind bot protection, and
+// eighteen of them answer a link check with a challenge page no matter what.
+// Printing the same eighteen every week is not a report, it is noise nobody
+// reads — and noise nobody reads is where a real change hides.
+//
+// So the set is committed, and the run reports the difference. A tool that
+// used to verify and now does not is worth a look: a challenge page is what
+// a moved path looks like from here, since the server answers 403 whether or
+// not the URL still exists. A tool that has stopped being blocked is worth
+// knowing too — it can finally be checked automatically again.
+const baselineFile = new URL("data/link-baseline.json", root);
+// A missing baseline is the first run, not an error: everything currently
+// blocked is the starting set, and --save writes it down.
+const baseline = JSON.parse(await readFile(baselineFile, "utf8").catch(() => "null")) ?? {
+  note: "Catalog URLs whose hosts answer a link check with a challenge page. Regenerate with: npm run links -- --save",
+  blocked: blocked.map(({ tool }) => tool.id).sort(),
+};
+const wasBlocked = new Set(baseline.blocked);
+const nowBlocked = new Set(blocked.map(({ tool }) => tool.id));
+
+const newlyBlocked = blocked.filter(({ tool }) => !wasBlocked.has(tool.id));
+const noLongerBlocked = [...wasBlocked].filter((id) => !nowBlocked.has(id)).sort();
+
+if (process.argv.includes("--save")) {
+  const updated = { ...baseline, blocked: [...nowBlocked].sort() };
+  await writeFile(baselineFile, `${JSON.stringify(updated, null, 2)}\n`);
+  console.log(`\nWrote data/link-baseline.json — ${nowBlocked.size} unverifiable.`);
+} else {
+  report(
+    `Newly unverifiable (${newlyBlocked.length}) — these used to answer; check the URL by hand:`,
+    newlyBlocked
+  );
+  if (noLongerBlocked.length > 0) {
+    console.log(
+      `\nNo longer blocked (${noLongerBlocked.length}) — verified automatically now, ` +
+        `drop from the baseline with \`npm run links -- --save\`:`
+    );
+    for (const id of noLongerBlocked) console.log(`  ${id}`);
+  }
+}
+
+const stillBlocked = blocked.length - newlyBlocked.length;
 console.log(
   `\n${results.length} links · ${by("ok").length} ok · ${moved.length} moved · ` +
-    `${blocked.length} unverifiable · ${dead.length} dead\n`
+    `${blocked.length} unverifiable (${stillBlocked} known) · ${dead.length} dead\n`
 );
 
-// Only a dead link is a failure. A redirect is a chore and a challenge page
-// is noise; neither should be able to page anyone.
-process.exit(dead.length > 0 ? 1 : 0);
+// A dead link fails, and so does a change in the blocked set — that is the
+// whole point of tracking it. A redirect stays a chore, and the eighteen
+// sites that have always served a challenge page page nobody.
+const changed = newlyBlocked.length + noLongerBlocked.length;
+if (process.argv.includes("--save")) process.exit(dead.length > 0 ? 1 : 0);
+process.exit(dead.length > 0 || changed > 0 ? 1 : 0);
