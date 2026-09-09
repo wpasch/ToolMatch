@@ -86,6 +86,19 @@
      dark monochrome and vanish against a dark disc. */
   --chip-face: light-dark(#ffffff, #e7eaf1);
 
+  /* The hero's suggestion chips and the browse hint sit at the foot of the
+     sky, which is where the cloud bank rises to meet them. They cannot
+     borrow the headline's contrast: by day the bank is near-white, and
+     white-on-glass disappears into it entirely. So by day they take a light
+     face and dark type, which reads on both the pale sky and the cloud; at
+     dusk the bank is a dim violet and the original glass is correct again. */
+  --hero-chip-bg: light-dark(rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.14));
+  --hero-chip-bg-hover: light-dark(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.24));
+  --hero-chip-edge: light-dark(rgba(22, 24, 29, 0.14), rgba(255, 255, 255, 0.32));
+  --hero-chip-edge-hover: light-dark(rgba(22, 24, 29, 0.26), rgba(255, 255, 255, 0.5));
+  --hero-chip-ink: light-dark(#16181d, rgba(255, 255, 255, 0.95));
+  --hero-hint-ink: light-dark(#1d2230, rgba(255, 255, 255, 0.92));
+
   /* Pulled from the hero sky, so the accent and the masthead agree. */
   --sky-deep: light-dark(#3d6ec2, #24305c);
   --sky-mid: light-dark(#7fa9dd, #3a3f77);

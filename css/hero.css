@@ -331,7 +331,9 @@
 
 /* Example queries under the search bar. Quiet glass so they read as
    suggestions rather than as a second row of buttons competing with
-   "Match me" — the bar is still the thing to use. */
+   "Match me" — the bar is still the thing to use. The face and type are
+   themed (see --hero-chip-* in base.css): these sit on the cloud bank, not
+   on open sky, so "quiet" cannot mean white-on-white. */
 .examples {
   display: flex;
   flex-wrap: wrap;
@@ -344,9 +346,9 @@
 .examples button {
   font: inherit;
   font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.95);
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  color: var(--hero-chip-ink);
+  background: var(--hero-chip-bg);
+  border: 1px solid var(--hero-chip-edge);
   border-radius: 999px;
   padding: 0.4rem 0.85rem;
   cursor: pointer;
@@ -355,17 +357,19 @@
     border-color var(--fast) var(--ease);
 }
 .examples button:hover {
-  background: rgba(255, 255, 255, 0.24);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: var(--hero-chip-bg-hover);
+  border-color: var(--hero-chip-edge-hover);
 }
 
 .hero__hint {
   margin-top: 1.1rem;
   font-size: 0.9375rem;
-  color: rgba(255, 255, 255, 0.92);
+  color: var(--hero-hint-ink);
 }
 .hero__hint a {
-  color: #fff;
+  /* The underline from the base rule is what marks it as a link; the colour
+     has to follow the hint so it stays legible over the cloud. */
+  color: inherit;
 }
 
 /* Logo strip drifting along the bottom edge, in place of Applio's phones.
