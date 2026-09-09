@@ -39,6 +39,37 @@ function normalize(url) {
   }
 }
 
+// A sign-in wall is not a move.
+//
+// Plenty of these tools bounce a signed-out visitor to a login page, either
+// on their own domain or at an identity provider. The old check saw a final
+// URL that differed from the catalog's and called it "moved", which sent a
+// human to look at a URL that was never wrong — claude.ai and NotebookLM
+// reported every week for years of nobody editing anything.
+//
+// The honest reading is the same one the 403s already get: the server never
+// served the page, so this run cannot confirm the URL still resolves. That
+// makes it unverifiable, and the committed baseline is what keeps a standing
+// sign-in wall from being re-reported forever.
+const AUTH_PATHS =
+  /^\/(?:login|log-in|signin|sign-in|sign_in|auth|authorize|session|account\/login|users\/sign_in)\b/i;
+const AUTH_HOSTS =
+  /(?:^|\.)(?:accounts\.google\.com|login\.microsoftonline\.com|login\.live\.com|appleid\.apple\.com|auth0\.com|okta\.com|onelogin\.com)$/i;
+// The parameter carrying "come back here once you have signed in" is the
+// giveaway that the destination is a detour rather than the new address.
+const RETURN_PARAMS = ["continue", "redirect_url", "redirect_uri", "next", "return_to", "returnTo", "followup"];
+
+function looksLikeSignIn(finalUrl) {
+  try {
+    const parsed = new URL(finalUrl);
+    if (AUTH_HOSTS.test(parsed.host)) return true;
+    if (AUTH_PATHS.test(parsed.pathname)) return true;
+    return RETURN_PARAMS.some((name) => parsed.searchParams.has(name));
+  } catch {
+    return false;
+  }
+}
+
 async function attempt(tool) {
   const signal = AbortSignal.timeout(TIMEOUT_MS);
   try {
@@ -60,6 +91,9 @@ async function attempt(tool) {
       return { tool, state: "dead", detail: `HTTP ${response.status}` };
     }
     if (normalize(response.url) !== normalize(tool.url)) {
+      if (looksLikeSignIn(response.url)) {
+        return { tool, state: "blocked", detail: "redirects to sign-in" };
+      }
       return { tool, state: "moved", detail: `→ ${response.url}` };
     }
     return { tool, state: "ok", detail: "" };
@@ -129,21 +163,22 @@ report(`Moved (${moved.length}) — update the catalog URL:`, moved);
 
 // ---------- The blind spot, tracked ----------
 //
-// A directory of AI tools is a directory of sites behind bot protection, and
-// eighteen of them answer a link check with a challenge page no matter what.
-// Printing the same eighteen every week is not a report, it is noise nobody
-// reads — and noise nobody reads is where a real change hides.
+// A directory of AI tools is a directory of sites that will not simply serve
+// their front page to a script: some answer with a bot challenge, others
+// bounce a signed-out visitor to a login form. Either way the page itself
+// never arrives. Printing the same set every week is not a report, it is
+// noise nobody reads — and noise nobody reads is where a real change hides.
 //
 // So the set is committed, and the run reports the difference. A tool that
-// used to verify and now does not is worth a look: a challenge page is what
-// a moved path looks like from here, since the server answers 403 whether or
-// not the URL still exists. A tool that has stopped being blocked is worth
-// knowing too — it can finally be checked automatically again.
+// used to verify and now does not is worth a look: an unverifiable response
+// is what a moved path looks like from here, since the server answers the
+// same way whether or not the URL still exists. A tool that has stopped
+// being blocked is worth knowing too — it can be checked automatically again.
 const baselineFile = new URL("data/link-baseline.json", root);
 // A missing baseline is the first run, not an error: everything currently
 // blocked is the starting set, and --save writes it down.
 const baseline = JSON.parse(await readFile(baselineFile, "utf8").catch(() => "null")) ?? {
-  note: "Catalog URLs whose hosts answer a link check with a challenge page. Regenerate with: npm run links -- --save",
+  note: "Catalog URLs that answer a link check with a bot challenge or a sign-in wall, so the page itself never arrives. Regenerate with: npm run links -- --save",
   blocked: blocked.map(({ tool }) => tool.id).sort(),
 };
 const wasBlocked = new Set(baseline.blocked);
@@ -177,8 +212,8 @@ console.log(
 );
 
 // A dead link fails, and so does a change in the blocked set — that is the
-// whole point of tracking it. A redirect stays a chore, and the eighteen
-// sites that have always served a challenge page page nobody.
+// whole point of tracking it. A redirect stays a chore, and the sites that
+// have always been unverifiable page nobody.
 const changed = newlyBlocked.length + noLongerBlocked.length;
 if (process.argv.includes("--save")) process.exit(dead.length > 0 ? 1 : 0);
 process.exit(dead.length > 0 || changed > 0 ? 1 : 0);

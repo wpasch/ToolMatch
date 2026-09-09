@@ -1,9 +1,8 @@
 {
-  "note": "Catalog URLs whose hosts answer a link check with a challenge page. Regenerate with: npm run links -- --save",
+  "note": "Catalog URLs that answer a link check with a bot challenge or a sign-in wall, so the page itself never arrives. Regenerate with: npm run links -- --save",
   "blocked": [
     "brainly",
     "canva-magic",
-    "chatgpt",
     "claude",
     "gamma",
     "ideogram",
@@ -15,7 +14,9 @@
     "meta-ai",
     "midjourney",
     "mistral-le-chat",
+    "notebooklm",
     "perplexity",
+    "poe",
     "quillbot",
     "quizlet",
     "teal",
