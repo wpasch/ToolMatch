@@ -35,7 +35,7 @@
     {
       "id": "chatgpt",
       "name": "ChatGPT",
-      "url": "https://chat.openai.com",
+      "url": "https://chatgpt.com",
       "category": "chat-assistant",
       "tagline": "General-purpose AI assistant for writing, coding, and research.",
       "description": "A conversational assistant that handles drafting, explaining concepts, brainstorming, and light coding. The free tier covers most everyday student use.",
