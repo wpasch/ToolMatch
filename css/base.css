@@ -455,3 +455,38 @@ ol {
   transform: translateX(-50%) rotate(180deg);
   box-shadow: inset -4px 2px 0 0 #e9edff;
 }
+
+/* Native disclosure keeps navigation available even before JavaScript loads. */
+.nav__mobile { display: none; }
+.nav__mobile summary {
+  list-style: none;
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 0.55rem 0.8rem;
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.nav__mobile summary::-webkit-details-marker { display: none; }
+.nav__mobile-links {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  display: grid;
+  min-width: 12rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-nav);
+}
+.nav__mobile-links a {
+  padding: 0.75rem 1rem;
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: 0.5rem;
+}
+.nav__mobile-links a:hover { background: var(--surface-2); }
+button:disabled, input:disabled { cursor: not-allowed; }

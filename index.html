@@ -107,6 +107,9 @@
          fails; nothing inside <noscript> runs in that case. -->
     <noscript>
       <style>
+        #catalog-status,
+        #catalog-retry,
+        .directory-summary,
         #results,
         #categories,
         .filters-bar,
@@ -172,6 +175,15 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="nav__actions">
+        <details class="nav__mobile" id="mobile-menu">
+          <summary>Menu</summary>
+          <nav class="nav__mobile-links" aria-label="Mobile sections">
+            <a href="#search-form">Find a tool</a>
+            <a href="#directory">Browse tools</a>
+            <a href="#categories">Categories</a>
+            <a href="#faq">FAQ</a>
+          </nav>
+        </details>
         <!-- A day/night dial rather than two swapped icons: the disc is
              twice the button's height and rotates about its own centre,
              so the sun sets below the rim as the moon rises. Only the top
@@ -246,19 +258,22 @@
             early-career work. Real pricing, no affiliate links.
           </p>
 
+          <p id="catalog-status" class="catalog-status" role="status" aria-live="polite">Loading tools…</p>
+          <button id="catalog-retry" class="filter" type="button" hidden>Try again</button>
           <form id="search-form" class="search" role="search">
             <label class="visually-hidden" for="search-input">
               Describe what you're trying to do
             </label>
             <input
               id="search-input"
+              disabled
               name="q"
               type="text"
               class="search__input"
               placeholder="summarize long readings for class"
               autocomplete="off"
             />
-            <button type="submit" class="search__button">Match me</button>
+            <button type="submit" class="search__button" disabled>Match me</button>
           </form>
 
           <!-- Real queries with real answers, wired up in js/directory.js.
@@ -266,18 +281,18 @@
                not navigate. -->
           <ul class="examples" id="search-examples">
             <li>
-              <button type="button" data-query="summarize long readings for class">
+              <button type="button" disabled data-query="summarize long readings for class">
                 summarize long readings
               </button>
             </li>
             <li>
-              <button type="button" data-query="make a slide deck">make a slide deck</button>
+              <button type="button" disabled data-query="make a slide deck">make a slide deck</button>
             </li>
             <li>
-              <button type="button" data-query="transcribe a lecture">transcribe a lecture</button>
+              <button type="button" disabled data-query="transcribe a lecture">transcribe a lecture</button>
             </li>
             <li>
-              <button type="button" data-query="improve my resume">improve my resume</button>
+              <button type="button" disabled data-query="improve my resume">improve my resume</button>
             </li>
           </ul>
 
@@ -312,6 +327,7 @@
           </h2>
         </div>
         <ul id="results-list" class="tool-list"></ul>
+        <a id="results-more" class="results-more" hidden>See all matches</a>
       </section>
 
       <!-- ---------- Categories ---------- -->
@@ -356,6 +372,7 @@
             </svg>
             <input
               id="directory-search"
+              disabled
               name="filter"
               type="search"
               class="dirsearch__input"
@@ -502,6 +519,22 @@
       <p class="footer__wordmark" aria-hidden="true">ToolMatch</p>
     </footer>
 
+    <aside id="compare-bar" class="compare-bar" aria-label="Selected tools" hidden>
+      <div id="compare-picks" class="compare-picks"></div>
+      <button id="compare-open" class="filter" type="button" disabled>Compare (0/3)</button>
+      <span class="compare-hint">Choose 2–3 tools</span>
+    </aside>
+    <p id="compare-status" class="visually-hidden" role="status"></p>
+    <dialog id="compare-dialog" class="compare-dialog" aria-labelledby="compare-title">
+      <div class="compare-dialog__head">
+        <h2 id="compare-title">Compare your tools</h2>
+        <button id="compare-close" class="filter" type="button" autofocus>Close</button>
+      </div>
+      <p>Compare the listed features and limits. Scroll sideways on smaller screens.</p>
+      <div class="compare-scroll" tabindex="0" role="region" aria-label="Tool comparison table">
+        <table id="compare-table"></table>
+      </div>
+    </dialog>
     <script type="module" src="js/app.js"></script>
   </body>
 </html>

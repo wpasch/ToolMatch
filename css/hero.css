@@ -436,3 +436,15 @@
     transform: translateX(-25%);
   }
 }
+
+.catalog-status:not(:empty) {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1rem auto 0;
+  padding: 0.6rem 1rem;
+  border-radius: var(--r-md);
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 0.9375rem;
+}
+.search__button:disabled { opacity: 0.55; }

@@ -1,3 +1,4 @@
+import { isCompared, reportUrl, syncComparisonButtons } from "./compare.js";
 // The tool card: the one component the directory and the search results
 // both render, plus the skeleton shown while the catalog loads.
 
@@ -102,6 +103,7 @@ function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 
     el("span", "tool-card__badge", `${titleCase(tool.skillLevel)} level`)
   );
   li.append(badges);
+  if (tool.pricing?.freeAccess) li.append(el("p", "tool-card__access", tool.pricing.freeAccess));
 
   const note = tool.pricing?.note ?? "";
   li.append(el("p", "tool-card__meta tool-card__meta--short", displayPricing(tool.pricing)));
@@ -160,6 +162,20 @@ function renderToolCard(tool, categoryLabel, { reason, anchor, headingLevel = 3 
   actions.append(secondary);
 
   li.append(actions);
+  const utilities = el("div", "tool-card__utilities");
+  const compare = el("button", "tool-card__compare", isCompared(tool.id) ? "Selected for comparison" : "Compare");
+  compare.type = "button";
+  compare.dataset.compare = tool.id;
+  compare.dataset.toolName = tool.name;
+  compare.setAttribute("aria-pressed", String(isCompared(tool.id)));
+  compare.setAttribute("aria-label", `Compare ${tool.name}`);
+  const report = el("a", "tool-card__report", "Report outdated info");
+  report.href = reportUrl(tool);
+  report.target = "_blank";
+  report.rel = "noopener noreferrer";
+  report.setAttribute("aria-label", `Report outdated info for ${tool.name} on GitHub`);
+  utilities.append(compare, report);
+  li.append(utilities);
 
   return li;
 }
@@ -189,35 +205,39 @@ export function shareLink(href, id) {
 
 // Delegated like the toggles, and for the same reason.
 export function initCardSharing() {
-  const status = document.getElementById("copy-status");
-  let clearing;
-
+  const timers = new WeakMap();
   document.addEventListener("click", async (event) => {
     const button = event.target.closest(".tool-card__share");
     if (!button) return;
-
+    const card = button.closest(".tool-card");
+    let feedback = card.querySelector(".tool-card__copy-feedback");
+    if (!feedback) {
+      feedback = el("div", "tool-card__copy-feedback");
+      feedback.setAttribute("role", "status");
+      card.append(feedback);
+    }
+    clearTimeout(timers.get(button));
+    button.classList.remove("is-copied");
     const link = shareLink(window.location.href, button.dataset.tool);
-
-    // The clipboard needs a secure context and a permission that can be
-    // refused. When it is not available the link still has to end up
-    // somewhere the person can get at it, and the address bar is somewhere —
-    // no dialog, no selection dance, and the page does not move.
-    let copied = true;
     try {
       await navigator.clipboard.writeText(link);
+      button.classList.add("is-copied");
+      feedback.replaceChildren(el("span", null, "Link copied."));
+      timers.set(button, setTimeout(() => {
+        button.classList.remove("is-copied");
+        feedback.replaceChildren();
+      }, 2000));
     } catch {
-      copied = false;
-      history.replaceState(null, "", link);
+      const label = el("label", null, "Copy this link:");
+      const input = el("input");
+      input.type = "text";
+      input.readOnly = true;
+      input.value = link;
+      label.append(input);
+      feedback.replaceChildren(el("p", null, "Automatic copying was unavailable."), label);
+      input.focus();
+      input.select();
     }
-
-    button.classList.add("is-copied");
-    if (status) status.textContent = copied ? "Link copied." : "Link is in the address bar.";
-
-    clearTimeout(clearing);
-    clearing = setTimeout(() => {
-      button.classList.remove("is-copied");
-      if (status) status.textContent = "";
-    }, 2000);
   });
 }
 
@@ -233,6 +253,7 @@ export function renderInto(list, tools, labels, { reasons, anchors } = {}) {
       })
     );
   }
+  syncComparisonButtons();
   list.removeAttribute("aria-busy");
   list.removeAttribute("aria-label");
 }
@@ -253,7 +274,7 @@ export function categoriesPresent(tools, categories) {
   return categories.filter((category) => tools.some((tool) => tool.category === category.id));
 }
 
-export function renderCatalogInto(container, tools, labels, categories, { anchors } = {}) {
+export function renderCatalogInto(container, tools, labels, categories, { anchors, ranked = false } = {}) {
   container.replaceChildren();
 
   const present = categoriesPresent(tools, categories);
@@ -261,7 +282,7 @@ export function renderCatalogInto(container, tools, labels, categories, { anchor
   const card = (tool, label, headingLevel) =>
     renderToolCard(tool, label, { anchor: anchors, headingLevel });
 
-  if (present.length > 1) {
+  if (!ranked && present.length > 1) {
     for (const category of present) {
       const inGroup = tools.filter((tool) => tool.category === category.id);
 
@@ -287,6 +308,7 @@ export function renderCatalogInto(container, tools, labels, categories, { anchor
     container.append(list);
   }
 
+  syncComparisonButtons();
   container.removeAttribute("aria-busy");
   container.removeAttribute("aria-label");
 }

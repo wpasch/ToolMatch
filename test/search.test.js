@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { buildIndex, rank, search } from "../js/search.js";
+import { buildIndex, queryBudget, rank, search } from "../js/search.js";
 
 const data = JSON.parse(
   await readFile(new URL("../data/tools.json", import.meta.url), "utf8")
@@ -22,7 +22,7 @@ test("returns no confident result for empty, generic, or unknown requests", () =
 test("ranks representative task specialists near the top", () => {
   assert.ok(ids("summarize long readings for class").slice(0, 4).includes("notebooklm"));
   assert.ok(ids("cite sources for a literature review").slice(0, 3).includes("elicit"));
-  assert.ok(ids("make a powerpoint").slice(0, 4).includes("gamma"));
+  assert.ok(ids("make a powerpoint").slice(0, 4).includes("plus-ai"));
   assert.equal(ids("remove a photo background")[0], "photoroom");
   assert.equal(ids("transcribe a meeting")[0], "otter");
   assert.equal(ids("improve my resume")[0], "jobscan");
@@ -143,3 +143,38 @@ test("budget requests filter eligibility without losing task relevance", () => {
   assert.ok(paid.every((tool) => tool.pricing.model === "paid"));
   assert.ok(search(index, "free tools").every((tool) => tool.pricing.model !== "paid"));
 });
+
+test("partial product names and meaningful short terms find tools", () => {
+  assert.equal(ids("chatg")[0], "chatgpt");
+  assert.equal(ids("gramm")[0], "grammarly");
+  assert.equal(ids("v0")[0], "v0");
+  assert.ok(search(index, "CV").some((tool) => tool.category === "career"));
+  assert.deepEqual(ids("a"), []);
+});
+
+test("mixed-price and licensing language do not accidentally restrict costs", () => {
+  for (const phrase of ["free or paid", "paid or free", "free and paid", "not necessarily free"]) {
+    const query = `presentation tools, ${phrase}`;
+    assert.equal(queryBudget(query).price, "any");
+    assert.ok(search(index, query, 107).some((tool) => tool.pricing.model === "paid"));
+  }
+  assert.equal(queryBudget("royalty-free music").price, "any");
+  assert.equal(queryBudget("free royalty-free music generator").price, "free");
+  assert.ok(search(index, "free royalty-free music generator", 107).every((tool) => tool.pricing.model !== "paid"));
+});
+
+test("specific tasks dominate generic AI words and weak matches are excluded", () => {
+  assert.deepEqual(ids("AI launcher"), ["raycast"]);
+  assert.deepEqual(ids("free AI launcher"), []);
+  const slides = search(index, "make a slide deck", 107);
+  assert.ok(slides.some((tool) => tool.id === "gamma"));
+  assert.ok(!slides.some((tool) => ["windsurf", "suno", "grammarly"].includes(tool.id)));
+});
+
+test("free matching respects known feature restrictions without excluding the free core app", () => {
+  assert.ok(ids("free Raycast").includes("raycast"));
+  assert.ok(!ids("free Raycast AI").includes("raycast"));
+  assert.ok(!search(index, "free AI resume tools", 107).some((tool) => ["teal", "huntr"].includes(tool.id)));
+  assert.ok(search(index, "free resume tools", 107).some((tool) => tool.id === "teal"));
+});
+

@@ -32,6 +32,7 @@ js/
   app.js           entry point: boots the page
   dom.js           untrusted-value helpers and DOM builders
   cards.js         the tool card, grouped/flat renders, share link, skeleton
+  compare.js       selection, comparison dialog, and prefilled report links
   hero.js          logo strip, category cluster, sky parallax
   sky.js           the hero's cumulus geometry, built into the page
   chrome.js        theme dial, nav state, section reveal
@@ -53,9 +54,15 @@ data/
                    challenge page, so the weekly run reports only changes
 ```
 
-The directory renders under category headings whenever what is on screen
-spans more than one category, and flat when it does not — filtered to a
+When browsing, the directory renders under category headings whenever what
+is on screen spans more than one category, and flat when it does not — filtered to a
 single category the headings would only repeat the chip you just pressed.
+
+Task search results stay in relevance order across categories. Product names
+support prefixes, and short queries such as CV and v0 are searchable. Category
+links open a fresh category view without carrying previous filters. On small
+screens, the Menu disclosure keeps all sections available. Failed catalog
+requests disable search and offer a retry; only usable data is cached.
 
 Both search boxes share task matching and recognize explicit free/paid-only
 requests. “Free” includes freemium plans. Directory URLs preserve `category`,
@@ -137,3 +144,17 @@ npm run og           # assets/og.png, the social card, via headless Chrome
 hosts there, then re-run `npm run meta`. The social card's source is
 `scripts/og-card.html`, a real page using the site's own fonts, so the card
 cannot drift from the design it represents.
+
+Comparison supports up to three tools, retained in session storage across
+category navigation. At the cap the remaining Compare buttons stay pressable
+and answer with the rule rather than switching off, because a selection
+outlives the page it was made on. A comparison row the catalog cannot fill for
+any of the chosen tools is dropped rather than repeated as an apology, so
+adding `setup` to a listing makes that row appear; where `pricing.freeAccess`
+is missing, free access falls back to what `pricing.model` states rather than
+reprinting the pricing note. Reports open a prefilled GitHub issue; the visitor reviews
+and submits it. Search history records submissions and filter selections, while
+a directory typing session occupies one history entry. Free task matching uses
+optional `pricing.paidFeatures` terms and shows `pricing.freeAccess` notes for
+known restrictions. These fields come from existing catalog notes; they are not
+an assertion that every feature on every free plan has been verified.

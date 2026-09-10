@@ -604,7 +604,7 @@
         "practice math and science with guidance",
         "prepare for a test with a study coach"
       ],
-      "pricing": { "model": "freemium", "note": "Khan Academy core is free; Khanmigo for learners $4/mo or $44/yr; free for teachers" },
+      "pricing": { "model": "freemium", "note": "Khan Academy core is free; Khanmigo for learners $4/mo or $44/yr; free for teachers", "paidFeatures": ["ai","tutor","tutoring","khanmigo"], "freeAccess": "Khan Academy core is free; Khanmigo costs learners $4/month or $44/year. Free for teachers.", "freeAudiences": ["teacher"] },
       "pricingChecked": "2026-09-03",
       "skillLevel": "beginner"
     },
@@ -786,7 +786,8 @@
       ],
       "pricing": { "model": "freemium", "note": "Free plan (400 one-time credits); Plus ~$8-9/mo, Pro ~$15-18/mo (billed annually)" },
       "pricingChecked": "2026-09-03",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Start with a topic prompt or pasted outline, then edit the generated deck."
     },
     {
       "id": "beautiful-ai",
@@ -804,7 +805,8 @@
       ],
       "pricing": { "model": "paid", "note": "14-day trial, no free tier; Pro $12/user/mo annually ($45 monthly); Team $40/user/mo" },
       "pricingChecked": "2026-09-03",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Start with smart slide templates or an AI prompt; the trial is time-limited."
     },
     {
       "id": "plus-ai",
@@ -822,7 +824,8 @@
       ],
       "pricing": { "model": "paid", "note": "No free plan; Basic $10/user/mo annually ($15 monthly); Pro $20/user/mo annually" },
       "pricingChecked": "2026-09-03",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Requires Google Slides or PowerPoint; works as an add-on inside those apps."
     },
     {
       "id": "elevenlabs",
@@ -966,7 +969,8 @@
       ],
       "pricing": { "model": "paid", "note": "Limited trial on Free/Plus; full AI bundled into Business plan at $20/member/mo (annual)" },
       "pricingChecked": "2026-09-08",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Requires a Notion workspace; the catalog recommends it for people who already use Notion."
     },
     {
       "id": "reclaim-ai",
@@ -1090,7 +1094,7 @@
         "check how well your resume matches a job description",
         "generate resume bullet points"
       ],
-      "pricing": { "model": "freemium", "note": "Free (tracking + basic builder); Teal+ ~$9/wk or ~$29/mo (unlimited AI)" },
+      "pricing": { "model": "freemium", "note": "Free (tracking + basic builder); Teal+ ~$9/wk or ~$29/mo (unlimited AI)", "paidFeatures": ["ai"], "freeAccess": "Tracking and the basic resume builder are free; AI features are paid." },
       "pricingChecked": "2026-09-03",
       "skillLevel": "beginner"
     },
@@ -1252,7 +1256,7 @@
         "turn a voice note into structured tasks",
         "pull action items out of a forwarded email"
       ],
-      "pricing": { "model": "freemium", "note": "Free Beginner (5 personal projects); Pro $4/mo billed annually (adds AI)" },
+      "pricing": { "model": "freemium", "note": "Free Beginner (5 personal projects); Pro $4/mo billed annually (adds AI)", "paidFeatures": ["ai","voice"], "freeAccess": "Five personal projects free; AI Assist and voice-to-task require a paid plan." },
       "pricingChecked": "2026-09-08",
       "skillLevel": "beginner"
     },
@@ -1344,7 +1348,8 @@
       ],
       "pricing": { "model": "freemium", "note": "Free Starter (100 credits, 20 slides); Pro $20/mo annually; Gold $100/mo annually" },
       "pricingChecked": "2026-09-03",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Start with a prompt or uploaded document; supports PowerPoint export."
     },
     {
       "id": "looka",
@@ -1432,7 +1437,7 @@
         "find passive voice and long sentences",
         "simplify writing for a general audience"
       ],
-      "pricing": { "model": "freemium", "note": "Free web editor, no account needed; desktop app $19.99 one-time; Editor Plus is a subscription with a 2-week free trial" },
+      "pricing": { "model": "freemium", "note": "Free web editor, no account needed; desktop app $19.99 one-time; Editor Plus is a subscription with a 2-week free trial", "paidFeatures": ["ai","rewrite","rewriting"], "freeAccess": "Web readability editor is free; AI rewriting requires Editor Plus." },
       "pricingChecked": "2026-09-07",
       "skillLevel": "beginner"
     },
@@ -1486,9 +1491,10 @@
         "work with a local or open-weight model",
         "keep AI edits in reviewable git commits"
       ],
-      "pricing": { "model": "free", "note": "Free and open source; you pay your own LLM provider for API usage" },
+      "pricing": { "model": "free", "note": "Free and open source; you pay your own LLM provider for API usage", "freeAccess": "Software is free; provider API usage is paid. The catalog also lists local-model support." },
       "pricingChecked": "2026-09-07",
-      "skillLevel": "advanced"
+      "skillLevel": "advanced",
+      "setup": "Runs in a terminal against an existing repository. Bring a model provider API key; the catalog also lists local-model support."
     },
     {
       "id": "connected-papers",
@@ -1558,7 +1564,7 @@
         "remove the background from a photo",
         "resize one design for several platforms"
       ],
-      "pricing": { "model": "freemium", "note": "Free plan with basic tools and limited assets; Premium $9.99/mo with 250 generative credits; Firefly Pro $19.99/mo; education discounts available" },
+      "pricing": { "model": "freemium", "note": "Free plan with basic tools and limited assets; Premium $9.99/mo with 250 generative credits; Firefly Pro $19.99/mo; education discounts available", "paidFeatures": ["ai","generate","generative"], "freeAccess": "Basic templates, fonts and stock are free; generative credits require Premium." },
       "pricingChecked": "2026-09-07",
       "skillLevel": "beginner"
     },
@@ -1596,7 +1602,8 @@
       ],
       "pricing": { "model": "freemium", "note": "Free tier with 12 presentations/yr; Pro $10/mo billed annually at $120/yr; Premium $20.83/mo at $250/yr" },
       "pricingChecked": "2026-09-07",
-      "skillLevel": "beginner"
+      "skillLevel": "beginner",
+      "setup": "Requires Google Slides; runs as an add-on and accepts pasted text or an outline."
     },
     {
       "id": "pitch",
@@ -1684,9 +1691,10 @@
         "reuse snippets and clipboard history",
         "run scripts from one command bar"
       ],
-      "pricing": { "model": "freemium", "note": "Free core app, no AI; Pro $10/mo or $8/mo billed annually adds Raycast AI; Advanced AI add-on +$8/mo" },
+      "pricing": { "model": "freemium", "note": "Free core app, no AI; Pro $10/mo or $8/mo billed annually adds Raycast AI; Advanced AI add-on +$8/mo", "paidFeatures": ["ai"], "freeAccess": "Core launcher is free; Raycast AI requires Pro." },
       "pricingChecked": "2026-09-07",
-      "skillLevel": "intermediate"
+      "skillLevel": "intermediate",
+      "setup": "Desktop launcher. Mac first; the catalog lists the Windows version as beta. AI requires the paid tier."
     },
     {
       "id": "krisp",
@@ -1774,7 +1782,7 @@
         "tailor a resume to one posting",
         "keep notes and contacts per application"
       ],
-      "pricing": { "model": "freemium", "note": "Free plan tracks up to 100 jobs; Pro $40/mo, $90 per quarter or $160 for six months" },
+      "pricing": { "model": "freemium", "note": "Free plan tracks up to 100 jobs; Pro $40/mo, $90 per quarter or $160 for six months", "paidFeatures": ["ai","tailor","tailoring"], "freeAccess": "Tracks up to 100 jobs free; AI resume tailoring requires Pro." },
       "pricingChecked": "2026-09-07",
       "skillLevel": "beginner"
     },

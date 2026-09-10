@@ -521,3 +521,54 @@
   gap: 1rem;
   margin-top: 1rem;
 }
+
+.results-more { display: inline-block; margin-top: 1.5rem; font-weight: 600; }
+.tool-card__access { font-size: 0.8125rem; margin-bottom: 0.8rem; color: var(--ink); }
+.tool-card__utilities { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
+.tool-card__compare, .compare-pick { font: inherit; font-size: 0.8125rem; padding: 0.4rem 0.6rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 0.5rem; cursor: pointer; }
+.tool-card__compare[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+/* At the cap, the other Compare buttons recede rather than switching off.
+   Disabling them stated the limit nowhere, could not be focused or pressed,
+   and — since a selection survives in session storage — met people on a
+   fresh page with a screenful of dead controls. Pressing one still answers,
+   so it stays a button: full contrast on its label, muted frame. */
+.tool-card__compare--full {
+  border-style: dashed;
+  color: var(--muted);
+}
+.tool-card__report { font-size: 0.75rem; }
+.tool-card__copy-feedback:not(:empty) { margin-top: 0.75rem; font-size: 0.8125rem; color: var(--ink); }
+.tool-card__copy-feedback input { box-sizing: border-box; width: 100%; margin-top: 0.5rem; padding: 0.65rem; font: inherit; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 0.4rem; }
+.compare-bar { position: fixed; z-index: 60; bottom: 1rem; left: 50%; transform: translateX(-50%); width: min(58rem, calc(100% - 2rem)); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-nav); }
+.compare-picks { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
+.compare-hint { font-size: 0.75rem; color: var(--muted); }
+
+/* Pressing Compare at the cap changes nothing on the card, so the bar —
+   which is where the rule is written and where the three picks are — takes
+   one beat of attention. The reduced-motion block in motion.css flattens
+   the duration, leaving the colour change alone. */
+.compare-bar--full {
+  animation: compare-full 900ms var(--ease);
+}
+@keyframes compare-full {
+  0%, 60% { border-color: var(--coral); }
+  100% { border-color: var(--line); }
+}
+.compare-bar--full .compare-hint {
+  color: var(--ink);
+  font-weight: 600;
+}
+.has-comparison { padding-bottom: 12rem; }
+.compare-dialog { width: min(68rem, calc(100% - 2rem)); max-height: 85dvh; box-sizing: border-box; margin: auto; padding: 1.5rem; color: var(--ink); background: var(--paper); border: 1px solid var(--line); border-radius: var(--r-md); }
+.compare-dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+.compare-dialog__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.compare-dialog h2 { font-size: 1.5rem; }
+.compare-dialog p { font-size: 0.875rem; color: var(--muted); }
+.compare-scroll { overflow: auto; margin-top: 1rem; }
+.compare-scroll table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.compare-scroll th, .compare-scroll td { min-width: 12rem; padding: 1rem; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+.compare-scroll th { background: var(--surface); }
+.compare-scroll th:first-child { min-width: 9rem; }
+
+.compare-bar[hidden], .results-more[hidden] { display: none; }

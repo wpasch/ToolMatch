@@ -15,7 +15,7 @@ const STOPWORDS = new Set([
   "help", "how", "i",
   "in", "is", "it", "me", "my", "need", "of", "on", "or", "some", "that",
   "the", "there", "to", "want", "was", "what", "which", "with", "you",
-  "your",
+  "your", "ai", "tool", "make", "generate",
 ]);
 
 // User phrasing on the left, where it should point on the right. `also`
@@ -63,7 +63,7 @@ const CONCEPTS = [
   },
   {
     when: ["video", "audio", "voice", "podcast", "narrate", "narration",
-      "dub", "music", "sound", "clip", "subtitle", "caption", "speech"],
+      "dub", "voiceover", "music", "sound", "clip", "subtitle", "caption", "speech"],
     categories: ["audio-video"],
     also: ["video", "audio", "voice"],
   },
@@ -153,6 +153,14 @@ const FIELDS = [
 
 // Tokenising 107 tools on every keystroke would be wasteful, so the index is
 // built once when the catalog loads.
+// Restrictions are editorial catalog fields, never inferred from a price label.
+export function hasFreeTask(tool, query = "") {
+  if (tool.pricing?.model === "paid") return false;
+  const words = tokenSet(query);
+  if ((tool.pricing?.freeAudiences ?? []).some((term) => words.has(foldPlural(term)))) return true;
+  return !(tool.pricing?.paidFeatures ?? []).some((term) => words.has(foldPlural(term)));
+}
+
 export function buildIndex(tools, categoryLabels) {
   return tools.map((tool) => ({
     tool,
@@ -193,7 +201,7 @@ function readQuery(query) {
   // typo. The original spelling is kept alongside for that.
   const spelling = new Map();
   for (const [index, word] of tokenize(query).entries()) {
-    if (word.length <= 2 || STOPWORDS.has(word)) continue;
+    if ((word.length <= 2 && !["cv", "v0", "ai"].includes(word)) || STOPWORDS.has(word)) continue;
     typed.add(word);
     if (!spelling.has(word)) spelling.set(word, rawWords(query)[index] ?? word);
   }
@@ -305,13 +313,20 @@ function explain(entry, typed, inferred, categoryScore, spelling, categoryLabels
 export function queryBudget(query) {
   let text = String(query);
   let price = "any";
-  if (/\b(?:paid only|paid tools? only|not free)\b/i.test(text)) {
+  // Licensing and mixed-price preferences are not restrictions on cost.
+  text = text.replace(/\b(?:royalty|ad)[- ]free\b/gi, " ");
+  const unrestricted = /\b(?:free or paid|paid or free|free and paid|paid and free|not necessarily free|does(?:n't| not) have to be free)\b/gi;
+  if (unrestricted.test(text)) {
+    text = text.replace(unrestricted, " ");
+  } else if (/\b(?:paid only|paid tools? only|not free)\b/i.test(text)) {
     price = "paid";
     text = text.replace(/\b(?:paid only|paid tools? only|not free)\b/gi, " ");
-  } else if (!/\b(?:royalty[- ]free|ad[- ]free|free trial|not necessarily free)\b/i.test(text) &&
-      /\b(?:free|no budget|zero budget|without paying|no cost|at no cost)\b/i.test(text)) {
-    price = "free";
-    text = text.replace(/\b(?:at no cost|no cost|no budget|zero budget|without paying|free)\b/gi, " ");
+  } else {
+    text = text.replace(/\bfree trials?\b/gi, "trial");
+    if (/\b(?:free|no budget|zero budget|without paying|no cost|at no cost)\b/i.test(text)) {
+      price = "free";
+      text = text.replace(/\b(?:at no cost|no cost|no budget|zero budget|without paying|free)\b/gi, " ");
+    }
   }
   if (price !== "any") text = text.replace(/\b(?:tools?|only)\b/gi, " ");
   return { price, text: text.trim() };
@@ -322,15 +337,22 @@ export function queryBudget(query) {
 export function rank(index, query, limit = 6, categoryLabels) {
   const budget = queryBudget(query);
   const { typed, inferred, categoryScore, spelling } = readQuery(budget.text);
-  if (typed.size === 0 && budget.price === "any") return [];
+  if (typed.size === 0 && budget.price === "any" && budget.text.trim().toLowerCase() !== "make") return [];
 
-  return index
-    .filter((entry) => budget.price === "any" || (budget.price === "free" ? entry.free : !entry.free))
+  const fragment = budget.text.toLowerCase().trim();
+  const namePrefix = (entry) => /^[a-z0-9]{3,}$/.test(fragment) &&
+    rawWords(entry.tool.name).some((word) => word.startsWith(fragment));
+
+  const scored = index
+    .filter((entry) => budget.price === "any" || (budget.price === "free" ? hasFreeTask(entry.tool, query) : !entry.free))
     .map((entry) => ({
       entry,
-      score: typed.size ? scoreEntry(entry, typed, inferred, categoryScore) : MIN_SCORE,
+      score: (typed.size ? scoreEntry(entry, typed, inferred, categoryScore) : budget.price !== "any" ? MIN_SCORE : 0) + (namePrefix(entry) ? 24 : 0),
     }))
-    .filter((row) => row.score >= MIN_SCORE)
+    .filter((row) => row.score >= MIN_SCORE);
+  const strongest = Math.max(0, ...scored.map((row) => row.score));
+  return scored
+    .filter((row) => row.score >= strongest * 0.25)
     .sort(
       (a, b) =>
         b.score - a.score ||
@@ -342,7 +364,7 @@ export function rank(index, query, limit = 6, categoryLabels) {
     .slice(0, limit)
     .map((row) => ({
       tool: row.entry.tool,
-      reason: typed.size
+      reason: namePrefix(row.entry) ? `Tool name matches “${budget.text}”` : typed.size
         ? explain(row.entry, typed, inferred, categoryScore, spelling, categoryLabels)
         : budget.price === "free" ? "Free or freemium plan available" : "Paid-only tool",
     }));

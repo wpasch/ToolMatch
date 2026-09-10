@@ -69,6 +69,7 @@
   .nav__links {
     display: none;
   }
+  .nav__mobile { display: block; }
   .section__head {
     margin-bottom: 2.25rem;
   }

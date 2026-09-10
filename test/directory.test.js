@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 import {
+  categoryUrl,
   countByCategory,
   directoryCounts,
   directoryUrl,
@@ -187,4 +188,10 @@ test("complete directory state survives a URL round trip without changing hero s
   assert.equal(new URL(url).hash, "#directory");
   const cleared = directoryUrl(url, { category: "all", price: "any", query: "" });
   assert.equal(new URL(cleared).search, "?q=resume");
+});
+
+test("category links are independent and preserve subpath hosting", () => {
+  const url = categoryUrl("https://example.test/ToolMatch/?q=resume&filter=banana&price=paid&tool=gamma#results", "coding");
+  assert.equal(url, "https://example.test/ToolMatch/?category=coding#directory");
+  assert.deepEqual(directoryStateFromUrl(url), { category: "coding", price: "any", query: "" });
 });

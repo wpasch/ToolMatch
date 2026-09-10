@@ -3,7 +3,7 @@
 
 import { el, prefersReducedMotion } from "./dom.js";
 import { renderCatalogInto, renderInto } from "./cards.js";
-import { buildIndex, rank } from "./search.js";
+import { buildIndex, hasFreeTask, rank } from "./search.js";
 
 // ---------- Category chips ----------
 export function renderCategories(data) {
@@ -18,7 +18,7 @@ export function renderCategories(data) {
   list.replaceChildren();
   for (const category of data.categories) {
     const link = el("a", null, category.label);
-    link.href = "#directory";
+    link.href = categoryUrl(window.location.href, category.id);
     // dataset assigns a property, so an id containing quotes cannot escape
     // into the surrounding markup the way string concatenation allowed.
     link.dataset.category = category.id;
@@ -29,17 +29,15 @@ export function renderCategories(data) {
     list.appendChild(item);
   }
 
-  // Jumping from a category chip pre-selects that filter in the directory.
-  list.addEventListener("click", (event) => {
-    const link = event.target.closest("a[data-category]");
-    if (!link) return;
-    // Matched by comparing values rather than building a selector string:
-    // a category id with a quote in it would break the selector.
-    const button = [...document.querySelectorAll(".filter")].find(
-      (candidate) => candidate.dataset.category === link.dataset.category
-    );
-    button?.click();
-  });
+}
+
+// Real, independent links work with normal clicks, new tabs, and copying.
+export function categoryUrl(href, category) {
+  const url = new URL(href);
+  url.search = "";
+  url.searchParams.set("category", category);
+  url.hash = "directory";
+  return url.toString();
 }
 
 // ---------- Directory filters ----------
@@ -62,12 +60,12 @@ export function directoryStateFromUrl(href) {
 // How many tools each category would show at a given price. The chips are a
 // promise about what a click produces, so they have to be counted under the
 // same filter the click will apply.
-export function countByCategory(tools, price = "any") {
+export function countByCategory(tools, price = "any", query = "") {
   const wanted = normalizePriceFilter(price);
   const counts = {};
   for (const tool of tools) {
     const model = tool.pricing?.model;
-    if (wanted === "free" && model === "paid") continue;
+    if (wanted === "free" && !hasFreeTask(tool, query)) continue;
     if (wanted === "paid" && model !== "paid") continue;
     counts[tool.category] = (counts[tool.category] ?? 0) + 1;
   }
@@ -86,7 +84,7 @@ export function filterDirectoryTools(
     : tools;
   return matched.filter((tool) =>
     (category === "all" || tool.category === category) &&
-    (wantedPrice !== "free" || tool.pricing?.model !== "paid") &&
+    (wantedPrice !== "free" || hasFreeTask(tool, query)) &&
     (wantedPrice !== "paid" || tool.pricing?.model === "paid")
   );
 }
@@ -95,13 +93,14 @@ export function filterDirectoryTools(
 // other filters. In particular, text matching applies to every count.
 export function directoryCounts(tools, state, labels = {}, index) {
   const matched = filterDirectoryTools(tools, { query: state.query }, labels, index);
-  const categories = countByCategory(matched, state.price);
+  const categories = countByCategory(matched, state.price, state.query);
   const inCategory = matched.filter((tool) => state.category === "all" || tool.category === state.category);
-  const free = inCategory.filter((tool) => tool.pricing?.model !== "paid").length;
+  const free = inCategory.filter((tool) => hasFreeTask(tool, state.query)).length;
+  const paid = inCategory.filter((tool) => tool.pricing?.model === "paid").length;
   return {
     categories,
     total: Object.values(categories).reduce((sum, n) => sum + n, 0),
-    prices: { any: inCategory.length, free, paid: inCategory.length - free },
+    prices: { any: inCategory.length, free, paid },
   };
 }
 
@@ -116,6 +115,19 @@ export function directoryUrl(href, { category, price, query }) {
     else url.searchParams.delete(key);
   }
   url.searchParams.delete("tool");
+  return url.toString();
+}
+
+export function writeHistory(href, mode = "push") {
+  if (new URL(href, window.location.href).href === window.location.href) return;
+  history[mode === "replace" ? "replaceState" : "pushState"](null, "", href);
+}
+
+export function allMatchesUrl(href, query) {
+  const url = new URL(href);
+  url.search = "";
+  url.searchParams.set("filter", query.trim());
+  url.hash = "directory";
   return url.toString();
 }
 
@@ -147,7 +159,8 @@ export function initDirectory(data, labels) {
   buttons(bar, [["all", "Everything"], ...data.categories.map((c) => [c.id, c.label])], "category");
   buttons(priceBar, [["any", "Any price"], ["free", "Free to start"], ["paid", "Paid only"]], "price");
 
-  function apply({ sync = true } = {}) {
+  let editing = false;
+  function apply({ sync = true, mode = "push" } = {}) {
     state.query = input.value;
     const shown = filterDirectoryTools(data.tools, state, labels, index);
     const counts = directoryCounts(data.tools, state, labels, index);
@@ -163,18 +176,23 @@ export function initDirectory(data, labels) {
       button.textContent = `${button.dataset.label} (${counts.prices[id]})`;
       button.setAttribute("aria-pressed", String(id === state.price));
     }
-    renderCatalogInto(list, shown, labels, data.categories, { anchors: true });
+    renderCatalogInto(list, shown, labels, data.categories, { anchors: true, ranked: Boolean(state.query.trim()) });
     empty.hidden = shown.length > 0;
     if (emptyText) emptyText.textContent = state.query.trim()
       ? `No tools match “${state.query.trim()}” with these filters.`
       : "No tools match these filters.";
     if (status) status.textContent = `Showing ${shown.length} of ${data.tools.length} tools`;
     if (clear) clear.disabled = state.category === "all" && state.price === "any" && !state.query;
-    if (sync) history.replaceState(null, "", directoryUrl(window.location.href, state));
+    if (sync) {
+      const url = new URL(directoryUrl(window.location.href, state));
+      url.hash = "directory";
+      writeHistory(url, mode);
+    }
   }
   bar.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-category]");
     if (!button) return;
+    editing = false;
     state.category = button.dataset.category;
     apply();
     if (bar.scrollWidth > bar.clientWidth) {
@@ -185,12 +203,21 @@ export function initDirectory(data, labels) {
   priceBar.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-price]");
     if (!button) return;
+    editing = false;
     state.price = button.dataset.price;
     apply();
   });
-  input.addEventListener("input", () => apply());
-  document.getElementById("directory-search-form")?.addEventListener("submit", (event) => event.preventDefault());
+  input.addEventListener("input", () => {
+    apply({ mode: editing ? "replace" : "push" });
+    editing = true;
+  });
+  input.addEventListener("blur", () => { editing = false; });
+  document.getElementById("directory-search-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    editing = false;
+  });
   function reset() {
+    editing = false;
     state = { category: "all", price: "any", query: "" };
     input.value = "";
     apply();
@@ -207,23 +234,31 @@ export function initDirectory(data, labels) {
       behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center",
     });
   });
-  apply({ sync: false });
+  function restore() {
+    editing = false;
+    state = directoryStateFromUrl(window.location.href);
+    if (!data.categories.some((c) => c.id === state.category)) state.category = "all";
+    input.value = state.query;
+    apply({ sync: false });
 
-  // A shared tool takes precedence over filters that would hide it.
-  const wanted = new URL(window.location.href).searchParams.get("tool");
-  if (wanted && data.tools.some((tool) => tool.id === wanted)) {
-    if (!document.getElementById(`tool-${wanted}`)) {
-      state = { category: "all", price: "any", query: "" };
-      input.value = "";
-      apply({ sync: false });
+    // A shared tool takes precedence over filters that would hide it.
+    const wanted = new URL(window.location.href).searchParams.get("tool");
+    if (wanted && data.tools.some((tool) => tool.id === wanted)) {
+      if (!document.getElementById(`tool-${wanted}`)) {
+        state = { category: "all", price: "any", query: "" };
+        input.value = "";
+        apply({ sync: false });
+      }
+      const card = document.getElementById(`tool-${wanted}`);
+      card.querySelector(".tool-card__toggle")?.click();
+      card.classList.add("tool-card--linked");
+      card.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
+    } else if (window.location.hash === "#directory") {
+      document.getElementById("directory").scrollIntoView({ behavior: "instant", block: "start" });
     }
-    const card = document.getElementById(`tool-${wanted}`);
-    card.querySelector(".tool-card__toggle")?.click();
-    card.classList.add("tool-card--linked");
-    card.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
-  } else if (window.location.hash === "#directory") {
-    document.getElementById("directory").scrollIntoView({ behavior: "instant", block: "start" });
   }
+  restore();
+  window.addEventListener("popstate", restore);
 }
 
 // ---------- Hero search ----------
@@ -243,7 +278,9 @@ export function initSearch(data, labels) {
     const url = new URL(window.location.href);
     if (value.trim()) url.searchParams.set("q", value.trim());
     else url.searchParams.delete("q");
-    history.replaceState(null, "", url);
+    url.searchParams.delete("tool");
+    url.hash = "results";
+    writeHistory(url);
   }
 
   // Ranking and rendering, separated from reading the box, so the page can
@@ -254,8 +291,15 @@ export function initSearch(data, labels) {
   // page around under the cursor.
   // `sync` and `announce`: an answer nobody asked for does not belong in the
   // URL, and must not interrupt a screen reader.
-  function renderPanel(query, { move = false, sync = true, announce = true, limit = 6, example = false } = {}) {
-    const ranked = rank(index, query, limit, labels);
+  function renderPanel(query, { move = false, sync = false, announce = true, limit = 6, example = false } = {}) {
+    const all = rank(index, query, data.tools.length, labels);
+    const ranked = all.slice(0, limit);
+    const more = document.getElementById("results-more");
+    if (more) {
+      more.hidden = all.length <= ranked.length;
+      more.href = allMatchesUrl(window.location.href, query);
+      more.textContent = `See all ${all.length} matches`;
+    }
     if (sync) syncQuery(query);
 
     // Nothing usable typed at all — send them to the directory rather than
@@ -283,7 +327,7 @@ export function initSearch(data, labels) {
     } else {
       // Quoting the query rather than saying "for that": the panel is on
       // screen before anyone has typed, so it has to name what it answered.
-      heading.textContent = `${ranked.length} tools for \u201c${query.trim()}\u201d`;
+      heading.textContent = `${ranked.length} ${ranked.length === 1 ? "tool" : "tools"} for \u201c${query.trim()}\u201d`;
       renderInto(
         resultsList,
         ranked.map((row) => row.tool),
@@ -305,11 +349,12 @@ export function initSearch(data, labels) {
   }
 
   function showResults({ move }) {
-    renderPanel(input.value, { move });
+    renderPanel(input.value, { move, sync: move });
   }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
+    clearTimeout(pending);
     showResults({ move: true });
   });
 
@@ -332,34 +377,45 @@ export function initSearch(data, labels) {
     const example = event.target.closest("[data-query]");
     if (!example) return;
     input.value = example.dataset.query;
+    clearTimeout(pending);
     showResults({ move: true });
   });
 
-  const initialQuery = new URL(window.location.href).searchParams.get("q");
-  if (initialQuery) {
-    input.value = initialQuery;
-    showResults({ move: true });
-  } else {
-    // Nothing asked yet. This panel sits between the hero and the categories
-    // and stayed empty until someone typed, which meant the page never once
-    // showed the thing it promises — a task in, a short list out. It lands on
-    // a real answer instead: ranked live, not typed into the box, absent from
-    // the URL, unannounced, and replaced the moment anyone asks their own
-    // question. The query is read from the first example in the hero so the
-    // answer on screen always belongs to a question also on screen.
-    const firstExample = document.querySelector("#search-examples [data-query]");
-    if (firstExample) {
-      renderPanel(firstExample.dataset.query, {
-        move: false,
-        sync: false,
-        announce: false,
-        // Three, not the usual six. A full answer is what someone gets for
-        // asking; this one is unasked for, and six cards ran to three phone
-        // screens before the page reached the categories. Three fills one
-        // row on a wide screen and still makes the point on a narrow one.
-        limit: 3,
-        example: true,
-      });
+  function restoreSearch() {
+    clearTimeout(pending);
+    const initialQuery = new URL(window.location.href).searchParams.get("q");
+    if (initialQuery) {
+      input.value = initialQuery;
+      renderPanel(initialQuery, { sync: false, announce: false });
+    } else {
+      input.value = "";
+      // Nothing asked yet. This panel sits between the hero and the categories
+      // and stayed empty until someone typed, which meant the page never once
+      // showed the thing it promises — a task in, a short list out. It lands on
+      // a real answer instead: ranked live, not typed into the box, absent from
+      // the URL, unannounced, and replaced the moment anyone asks their own
+      // question. The query is read from the first example in the hero so the
+      // answer on screen always belongs to a question also on screen.
+      const firstExample = document.querySelector("#search-examples [data-query]");
+      if (firstExample) {
+        renderPanel(firstExample.dataset.query, {
+          move: false,
+          sync: false,
+          announce: false,
+          // Three, not the usual six. A full answer is what someone gets for
+          // asking; this one is unasked for, and six cards ran to three phone
+          // screens before the page reached the categories. Three fills one
+          // row on a wide screen and still makes the point on a narrow one.
+          limit: 3,
+          example: true,
+        });
+      }
     }
   }
+  restoreSearch();
+  if (new URL(window.location.href).searchParams.has("q") &&
+      window.location.hash !== "#directory" && !new URL(window.location.href).searchParams.has("tool")) {
+    results.scrollIntoView({ behavior: "instant", block: "start" });
+  }
+  window.addEventListener("popstate", restoreSearch);
 }

@@ -121,3 +121,33 @@ export function initReveal() {
     observer.observe(target);
   }
 }
+
+// Close the disclosure after navigation, outside clicks, Escape, or a switch
+// to the desktop layout. Focus returns to the trigger only on Escape.
+export function initMobileMenu() {
+  const menu = document.getElementById("mobile-menu");
+  if (!menu) return;
+  menu.addEventListener("click", (event) => {
+    const link = event.target.closest("a");
+    if (!link) return;
+    menu.open = false;
+    const target = document.querySelector(link.getAttribute("href"));
+    if (target) {
+      const focus = target.querySelector("input:not(:disabled), h2") ?? target;
+      if (!focus.matches("input")) focus.setAttribute("tabindex", "-1");
+      focus.focus({ preventScroll: true });
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!menu.contains(event.target)) menu.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menu.open) {
+      menu.open = false;
+      menu.querySelector("summary").focus();
+    }
+  });
+  window.matchMedia("(min-width: 941px)").addEventListener("change", (event) => {
+    if (event.matches) menu.open = false;
+  });
+}

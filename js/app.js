@@ -1,3 +1,4 @@
+import { initComparison } from "./compare.js";
 // Entry point. Wires the page together and owns nothing else — the parts
 // live beside it:
 //
@@ -11,11 +12,11 @@
 //   data.js       fetching and shape-checking data/tools.json
 
 import { loadData } from "./data.js";
-import { escapeHtml } from "./dom.js";
-import { initCardSharing, initCardToggles, renderCatalogInto, renderSkeleton } from "./cards.js";
+import { el } from "./dom.js";
+import { initCardSharing, initCardToggles, renderSkeleton } from "./cards.js";
 import { renderSky } from "./sky.js";
 import { initSkyParallax, renderCluster, renderMarquee } from "./hero.js";
-import { initNav, initReveal, initThemeToggle } from "./chrome.js";
+import { initMobileMenu, initNav, initReveal, initThemeToggle } from "./chrome.js";
 import { initDirectory, initSearch, renderCategories } from "./directory.js";
 
 const directoryList = document.getElementById("directory-list");
@@ -25,36 +26,67 @@ const directoryList = document.getElementById("directory-list");
 // first thing on screen.
 renderSky();
 
-async function init() {
-  initThemeToggle();
-  initNav();
-  initSkyParallax();
-  initReveal();
-  initCardToggles();
-  initCardSharing();
+initThemeToggle();
+initMobileMenu();
+initNav();
+initSkyParallax();
+initReveal();
+initCardToggles();
+initCardSharing();
 
-  if (!directoryList) return;
-  renderSkeleton(directoryList, 9);
+const status = document.getElementById("catalog-status");
+const retry = document.getElementById("catalog-retry");
+let loading = false;
+let ready = false;
 
-  try {
-    const data = await loadData();
-    const labels = Object.fromEntries(
-      data.categories.map((category) => [category.id, category.label])
-    );
-
-    // anchors: the directory is the one list whose cards carry stable ids,
-    // so ?tool=<id> has something to find. initDirectory re-renders with the
-    // same flag on every filter change.
-    renderCatalogInto(directoryList, data.tools, labels, data.categories, { anchors: true });
-    renderMarquee(data.tools);
-    renderCluster(data.tools);
-    renderCategories(data);
-    initSearch(data, labels);
-    initDirectory(data, labels);
-  } catch (error) {
-    directoryList.innerHTML = `<li class="tool-list__loading">Couldn't load tools: ${escapeHtml(error.message)}</li>`;
-    directoryList.removeAttribute("aria-busy");
-  }
+function setSearchEnabled(enabled) {
+  for (const control of document.querySelectorAll(
+    "#search-form input, #search-form button, #search-examples button, #directory-search"
+  )) control.disabled = !enabled;
 }
 
-init();
+async function startCatalog(focusTarget) {
+  if (!directoryList || loading || ready) return;
+  loading = true;
+  setSearchEnabled(false);
+  status.textContent = "Loading tools…";
+  retry.hidden = true;
+  directoryList.setAttribute("aria-busy", "true");
+  renderSkeleton(directoryList, 9);
+
+  let data;
+  try {
+    data = await loadData();
+  } catch {
+    loading = false;
+    status.textContent = "Tools couldn’t load. Search is unavailable for now. Please try again.";
+    retry.hidden = false;
+    const error = el("div", "tool-list__empty");
+    error.setAttribute("role", "alert");
+    error.append(el("p", null, "We couldn’t load the tools. Check your connection and try again."));
+    const button = el("button", "filter", "Try again");
+    button.type = "button";
+    button.addEventListener("click", () => startCatalog("directory-search"));
+    error.append(button);
+    directoryList.replaceChildren(error);
+    directoryList.removeAttribute("aria-busy");
+    directoryList.removeAttribute("aria-label");
+    return;
+  }
+
+  const labels = Object.fromEntries(data.categories.map((category) => [category.id, category.label]));
+  renderMarquee(data.tools);
+  renderCluster(data.tools);
+  renderCategories(data);
+  initSearch(data, labels);
+  initDirectory(data, labels);
+  initComparison(data);
+  ready = true;
+  loading = false;
+  setSearchEnabled(true);
+  status.textContent = "";
+  if (focusTarget) document.getElementById(focusTarget)?.focus();
+}
+
+retry?.addEventListener("click", () => startCatalog("search-input"));
+startCatalog();

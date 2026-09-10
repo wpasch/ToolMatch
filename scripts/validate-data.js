@@ -54,6 +54,12 @@ for (const tool of data.tools) {
   assert.ok(tool.tags.every((tag) => allowedTags.has(tag)), `${tool.id} has an unknown tag`);
   assert.ok(validPricing.has(tool.pricing?.model), `${tool.id} has invalid pricing`);
   assert.ok(tool.pricing?.note?.trim(), `${tool.id} needs a pricing note`);
+  if (tool.setup !== undefined) assert.ok(typeof tool.setup === "string" && tool.setup.trim(), `${tool.id} has invalid setup text`);
+  if (tool.pricing.freeAudiences !== undefined) assert.ok(Array.isArray(tool.pricing.freeAudiences) && tool.pricing.freeAudiences.every((term) => typeof term === "string" && term.trim()), `${tool.id} has invalid freeAudiences`);
+  if (tool.pricing.paidFeatures !== undefined) {
+    assert.ok(Array.isArray(tool.pricing.paidFeatures) && tool.pricing.paidFeatures.every((term) => typeof term === "string" && term.trim()), `${tool.id} has invalid paidFeatures`);
+    assert.ok(tool.pricing.freeAccess?.trim(), `${tool.id} needs an explanation of free access`);
+  }
   assert.ok(validSkills.has(tool.skillLevel), `${tool.id} has invalid skill level`);
   assert.match(tool.pricingChecked ?? "", /^\d{4}-\d{2}-\d{2}$/, `${tool.id} has an invalid pricing date`);
   const checkedDate = new Date(`${tool.pricingChecked}T00:00:00Z`);
