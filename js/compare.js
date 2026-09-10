@@ -34,6 +34,22 @@ const FREE_ACCESS_BY_MODEL = {
   paid: "No free tier.",
 };
 
+// Every pricing note in the catalog is written free-tier-first: it opens by
+// saying what you get without paying, then lists the paid tiers after a
+// semicolon. So the answer this row wants is already written, dated and
+// checked — it was just never read, and 90 tools showed the generic fallback
+// while their own note two rows down said "Free tier (10 rewrites/day)".
+// validate-data.js holds the notes to that shape.
+//
+// Nothing is inferred here beyond where the sentence ends. A note with only
+// one clause is returned as null instead: the Pricing row already shows it
+// whole, and the same sentence twice is what this row was fixed for.
+function freeClause(pricing) {
+  const note = String(pricing?.note ?? "").trim();
+  const clause = note.split(";")[0].trim();
+  return clause && clause !== note ? clause : null;
+}
+
 // A field returns null where the catalog holds nothing for that tool. Rows
 // that come back null for every tool on screen are dropped rather than
 // printed as a line of apologies: `setup` exists on 8 of 107 tools, so
@@ -41,7 +57,8 @@ const FREE_ACCESS_BY_MODEL = {
 const FIELDS = [
   ["Best for", (tool) => tool.tagline],
   ["Free access & limits", (tool) =>
-    tool.pricing?.freeAccess || FREE_ACCESS_BY_MODEL[tool.pricing?.model] || null],
+    tool.pricing?.freeAccess || freeClause(tool.pricing) ||
+    FREE_ACCESS_BY_MODEL[tool.pricing?.model] || null],
   ["Pricing", (tool) => tool.pricing?.note],
   ["Useful tasks", (tool) => tool.useCases?.join(" · ")],
   // Split off setup so the level, which every tool has, is not withheld by

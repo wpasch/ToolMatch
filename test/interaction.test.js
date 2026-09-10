@@ -88,13 +88,25 @@ test("a row absent from every compared tool is dropped, not filled with apologie
   assert.deepEqual(setup[1], [withSetup.setup, "Not recorded"]);
 });
 
-test("free access states the model when the catalog has no researched note", () => {
-  const byModel = (model) => data.tools.find((tool) => tool.pricing.model === model && !tool.pricing.freeAccess);
+test("free access answers with the best source the catalog has", () => {
   const read = (tool) => comparisonRows([tool]).find(([label]) => label === "Free access & limits")[1][0];
-  assert.match(read(byModel("paid")), /No free tier/);
-  assert.match(read(byModel("freemium")), /Free tier/);
+
+  // 1. A researched note wins outright.
   const researched = data.tools.find((tool) => tool.pricing.freeAccess);
   assert.equal(read(researched), researched.pricing.freeAccess);
+
+  // 2. Otherwise the pricing note's opening clause, which is where the
+  //    catalog already records what the free tier gives you.
+  const fromNote = data.tools.find((tool) =>
+    !tool.pricing.freeAccess && tool.pricing.note.includes(";"));
+  assert.equal(read(fromNote), fromNote.pricing.note.split(";")[0].trim());
+  assert.notEqual(read(fromNote), fromNote.pricing.note, "the whole note reached the free row");
+
+  // 3. And only a single-clause note falls back to the pricing model, because
+  //    repeating that note here would put one sentence in two rows.
+  assert.match(read({ pricing: { model: "paid", note: "No free plan" } }), /No free tier/);
+  assert.match(read({ pricing: { model: "freemium", note: "Free tier" } }), /limits not recorded/);
+  assert.match(read({ pricing: { model: "free", note: "Completely free" } }), /no paid tier/);
 });
 
 test("the comparison renders the checked date the way the card does", () => {

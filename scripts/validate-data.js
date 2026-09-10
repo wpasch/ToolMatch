@@ -54,6 +54,16 @@ for (const tool of data.tools) {
   assert.ok(tool.tags.every((tag) => allowedTags.has(tag)), `${tool.id} has an unknown tag`);
   assert.ok(validPricing.has(tool.pricing?.model), `${tool.id} has invalid pricing`);
   assert.ok(tool.pricing?.note?.trim(), `${tool.id} needs a pricing note`);
+  // Notes are written free-tier-first — what you get without paying, then the
+  // paid tiers after a semicolon. The comparison reads that opening clause as
+  // its free-access answer, so a note that opens with a price instead would
+  // quietly label a paid tier as the free one. Kept as a rule rather than a
+  // habit for that reason.
+  assert.match(
+    tool.pricing.note.split(";")[0],
+    /free|trial/i,
+    `${tool.id}'s pricing note must open with what the free tier gives you (or that there isn't one) — the comparison reads that clause: ${tool.pricing.note}`
+  );
   if (tool.setup !== undefined) assert.ok(typeof tool.setup === "string" && tool.setup.trim(), `${tool.id} has invalid setup text`);
   if (tool.pricing.freeAudiences !== undefined) assert.ok(Array.isArray(tool.pricing.freeAudiences) && tool.pricing.freeAudiences.every((term) => typeof term === "string" && term.trim()), `${tool.id} has invalid freeAudiences`);
   if (tool.pricing.paidFeatures !== undefined) {
@@ -102,11 +112,47 @@ const logoFiles = (await readdir(logosDirectory)).filter((file) => file.endsWith
 const logoIds = new Set(logoFiles.map((file) => path.basename(file, ".png")));
 assert.deepEqual([...logoIds].sort(), [...ids].sort(), "tool IDs and logo filenames differ");
 
+// Logos render in a 36px box, so 64 is the floor for a retina screen and 128
+// covers a 3x one. Past that it is bytes nobody can see: chatgpt.png sat at
+// 512x512 and 34KB for that 36px slot, and four files like it were most of
+// the set's weight.
+//
+// The ten below were collected under the floor. They can only be fixed by
+// finding a better original — upscaling a 32px icon adds no detail, it just
+// ships a larger blur — so they are listed rather than waived, and the list
+// is asserted to be exactly right. Replace one with a sharper source and
+// this check will tell you to take it off the list.
+const LOGO_MIN = 64;
+const LOGO_MAX = 128;
+const SOFT_LOGOS = new Set([
+  "grammarly", "heygen", "jobscan", "n8n", "pipedream",
+  "poe", "scispace", "slidesai", "todoist", "veed",
+]);
+
 const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+const stillSoft = new Set();
 for (const file of logoFiles) {
   const bytes = await readFile(new URL(file, logosDirectory));
   assert.ok(bytes.subarray(0, 8).equals(pngSignature), `${file} is not actually a PNG`);
+
+  // Dimensions live in the IHDR chunk, at a fixed offset in every PNG.
+  const id = path.basename(file, ".png");
+  const width = bytes.readUInt32BE(16);
+  const height = bytes.readUInt32BE(20);
+  assert.ok(
+    Math.max(width, height) <= LOGO_MAX,
+    `${file} is ${width}x${height}; nothing renders above ${LOGO_MAX}px, so resize it: sips -Z ${LOGO_MAX} ${file} --out ${file}`
+  );
+  if (Math.min(width, height) < LOGO_MIN) {
+    assert.ok(SOFT_LOGOS.has(id), `${file} is ${width}x${height} and will look soft on a retina screen. Find a source at least ${LOGO_MIN}px rather than upscaling this one.`);
+    stillSoft.add(id);
+  }
 }
+assert.deepEqual(
+  [...stillSoft].sort(),
+  [...SOFT_LOGOS].sort(),
+  "SOFT_LOGOS lists a logo that is now big enough — take it off the list"
+);
 
 for (const file of [
   "figtree-latin.woff2",
