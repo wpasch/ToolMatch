@@ -4,3 +4,8 @@
 
 # Scratch output from browser-automation runs (screenshots, snapshots, logs)
 .playwright-mcp/
+
+# Vercel's project link and the OIDC token it writes beside it. Both are
+# per-machine credentials, not configuration anyone else can use.
+.vercel
+.env*
