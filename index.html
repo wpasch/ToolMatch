@@ -531,6 +531,29 @@
         <table id="compare-table"></table>
       </div>
     </dialog>
+    <!-- Vercel Web Analytics. The script is served by Vercel's own edge at
+         /_vercel/insights/script.js and exists nowhere else, so loading it
+         unconditionally would mean a 404 on every visit to the canonical
+         site, which is on GitHub Pages. The host check is written as an
+         exclusion rather than a match for *.vercel.app so that attaching a
+         real domain later needs no edit here.
+
+         The rest of the page makes no third-party requests at all — the tool
+         logos are served from this repository precisely so no one is told
+         which tools a visitor is reading about. This is the one exception,
+         and it is deliberate. -->
+    <script>
+      (function () {
+        var host = location.hostname;
+        if (host === "localhost" || host === "127.0.0.1" || host.endsWith("github.io")) return;
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        var script = document.createElement("script");
+        script.defer = true;
+        script.src = "/_vercel/insights/script.js";
+        document.head.appendChild(script);
+      })();
+    </script>
+
     <script type="module" src="js/app.js"></script>
   </body>
 </html>

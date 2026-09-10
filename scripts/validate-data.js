@@ -124,9 +124,13 @@ assert.deepEqual([...logoIds].sort(), [...ids].sort(), "tool IDs and logo filena
 // this check will tell you to take it off the list.
 const LOGO_MIN = 64;
 const LOGO_MAX = 128;
+// These seven publish nothing larger. Their own sites declare only 32-48px
+// icons, and a favicon service asked for 256 returns the same 32-48px file —
+// which is where these came from in the first place. Sharper copies exist
+// only in brand kits and press pages, one tool at a time.
 const SOFT_LOGOS = new Set([
-  "grammarly", "heygen", "jobscan", "n8n", "pipedream",
-  "poe", "scispace", "slidesai", "todoist", "veed",
+  "grammarly", "heygen", "jobscan", "pipedream",
+  "scispace", "slidesai", "veed",
 ]);
 
 const pngSignature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);

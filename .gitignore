@@ -9,3 +9,8 @@
 # per-machine credentials, not configuration anyone else can use.
 .vercel
 .env*
+
+# There are no runtime dependencies and no build step, so nothing here is
+# meant to exist. Ignored anyway: deploying added an unused @vercel/analytics
+# package unasked, and an accidental commit of one is easy to miss.
+node_modules/
