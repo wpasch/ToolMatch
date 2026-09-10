@@ -3,7 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import { initCardSharing } from "../js/cards.js";
 import { comparisonRows, isCompared, toggleComparison, reportUrl } from "../js/compare.js";
-import { allMatchesUrl, writeHistory, directoryStateFromUrl } from "../js/directory.js";
+import { allMatchesUrl, linkedToolUrl, writeHistory, directoryStateFromUrl } from "../js/directory.js";
 
 const data = JSON.parse(await readFile(new URL("../data/tools.json", import.meta.url), "utf8"));
 
@@ -133,4 +133,22 @@ test("history pushes deliberate changes and replaces typing without destroying t
   assert.equal(more.searchParams.get("filter"), "slides & graphics");
   assert.equal(more.searchParams.has("price"), false);
   assert.equal(more.hash, "#directory");
+});
+
+// Revealing a shared card drops the filters from the page, so the address
+// bar must stop advertising them — it described a state the page was no
+// longer in, and that URL is the thing people paste to each other.
+test("a revealed tool link sheds the filters it overrode", () => {
+  const url = new URL(linkedToolUrl(
+    "https://example.test/sub/?category=career&price=paid&filter=resume#directory", "chatgpt"));
+  assert.equal(url.searchParams.get("tool"), "chatgpt");
+  for (const dropped of ["category", "price", "filter"]) {
+    assert.equal(url.searchParams.has(dropped), false, `${dropped} survived`);
+  }
+  // Subpath hosting and the fragment both have to come through intact.
+  assert.equal(url.pathname, "/sub/");
+  assert.equal(url.hash, "#directory");
+  // And the state it leaves behind is what the page is actually showing.
+  const state = directoryStateFromUrl(url.toString());
+  assert.deepEqual([state.category, state.price, state.query], ["all", "any", ""]);
 });

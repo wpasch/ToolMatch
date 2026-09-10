@@ -55,14 +55,6 @@ export function logoUrl(tool) {
   return SAFE_LOGO_ID.test(id) ? `assets/logos/${id}.png` : null;
 }
 
-export function escapeHtml(value) {
-  return String(value).replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]
-  );
-}
-
 // Small DOM builders. textContent never parses markup, so these are safe to
 // hand arbitrary strings.
 export function el(tag, className, text) {

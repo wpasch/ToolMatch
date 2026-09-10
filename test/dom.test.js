@@ -14,7 +14,7 @@ import test from "node:test";
 // before any test runs.
 globalThis.window = { location: { href: "https://wpasch.github.io/ToolMatch/" } };
 
-const { safeUrl, logoUrl, escapeHtml, titleCase, formatCheckedDate } = await import(
+const { safeUrl, logoUrl, titleCase, formatCheckedDate } = await import(
   "../js/dom.js"
 );
 
@@ -83,19 +83,6 @@ test("logoUrl only builds a filename from an id that cannot escape the folder", 
 
   assert.equal(logoUrl({}), null);
   assert.equal(logoUrl(null), null);
-});
-
-test("escapeHtml neutralises every character that can break out of markup", () => {
-  assert.equal(
-    escapeHtml('<img src=x onerror="alert(1)">'),
-    "&lt;img src=x onerror=&quot;alert(1)&quot;&gt;"
-  );
-  assert.equal(escapeHtml("it's"), "it&#39;s");
-  assert.equal(escapeHtml("a & b"), "a &amp; b");
-  // Escaped first, so an already-escaped entity cannot be reassembled.
-  assert.equal(escapeHtml("&lt;"), "&amp;lt;");
-  assert.equal(escapeHtml(null), "null");
-  assert.equal(escapeHtml(42), "42");
 });
 
 test("titleCase handles the hyphenated ids it is given", () => {

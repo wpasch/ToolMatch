@@ -385,10 +385,15 @@
 /* The primary move on every card. The arrow leans out on hover and the
    rule under the label draws in from the left, so it reads as something
    that goes somewhere rather than a line of bold text. */
+/* The vertical padding is the tap target, not decoration. Without it this
+   is a 22px-high box on a phone — under the 24px WCAG 2.5.8 floor, on the
+   one control every card exists to offer. The row is already as tall as the
+   copy button beside it, so paying for it costs about a pixel. */
 .tool-card__link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.3rem 0;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--ink);
@@ -537,7 +542,9 @@
   border-style: dashed;
   color: var(--muted);
 }
-.tool-card__report { font-size: 0.75rem; }
+/* Same reason as the card's own link: 0.75rem of text is a 19px target.
+   The compare button sets this row's height, so the padding is free. */
+.tool-card__report { font-size: 0.75rem; padding: 0.3rem 0; }
 .tool-card__copy-feedback:not(:empty) { margin-top: 0.75rem; font-size: 0.8125rem; color: var(--ink); }
 .tool-card__copy-feedback input { box-sizing: border-box; width: 100%; margin-top: 0.5rem; padding: 0.65rem; font: inherit; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 0.4rem; }
 .compare-bar { position: fixed; z-index: 60; bottom: 1rem; left: 50%; transform: translateX(-50%); width: min(58rem, calc(100% - 2rem)); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); box-shadow: var(--shadow-nav); }
@@ -570,5 +577,20 @@
 .compare-scroll th, .compare-scroll td { min-width: 12rem; padding: 1rem; border: 1px solid var(--line); text-align: left; vertical-align: top; }
 .compare-scroll th { background: var(--surface); }
 .compare-scroll th:first-child { min-width: 9rem; }
+
+/* On a phone the table is two and a half times the width of its window, so
+   scrolling to the third tool used to carry the row labels off the left
+   edge — leaving a column of values with nothing saying what they measure.
+   The label column stays put instead. The header cell needs the higher
+   layer because it is the one place a sticky row and a sticky column meet. */
+.compare-scroll th[scope="row"],
+.compare-scroll thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+.compare-scroll thead th:first-child {
+  z-index: 2;
+}
 
 .compare-bar[hidden], .results-more[hidden] { display: none; }

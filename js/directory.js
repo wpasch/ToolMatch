@@ -123,6 +123,16 @@ export function writeHistory(href, mode = "push") {
   history[mode === "replace" ? "replaceState" : "pushState"](null, "", href);
 }
 
+// A shared ?tool= link wins over filters that would hide the card, which
+// left the address bar describing a state the page was no longer in —
+// category=career&price=paid while the chips read "Everything (107)". The
+// filters go from the URL too. The tool stays: it is what was shared.
+export function linkedToolUrl(href, id) {
+  const url = new URL(directoryUrl(href, { category: "all", price: "any", query: "" }));
+  url.searchParams.set("tool", id);
+  return url.toString();
+}
+
 export function allMatchesUrl(href, query) {
   const url = new URL(href);
   url.search = "";
@@ -248,6 +258,9 @@ export function initDirectory(data, labels) {
         state = { category: "all", price: "any", query: "" };
         input.value = "";
         apply({ sync: false });
+        // Replace rather than push: this corrects the entry the visitor is
+        // standing on, it is not somewhere they navigated to.
+        writeHistory(linkedToolUrl(window.location.href, wanted), "replace");
       }
       const card = document.getElementById(`tool-${wanted}`);
       card.querySelector(".tool-card__toggle")?.click();
