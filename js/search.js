@@ -41,9 +41,13 @@ const CONCEPTS = [
     also: ["spreadsheet", "excel", "formula", "data"],
   },
   {
+    // "review" is not here on purpose. It only ever reaches these tools as
+    // the second half of "literature review", and "literature" carries that
+    // phrase on its own — while a bare "review" is far more often an essay
+    // being looked over or a midterm being revised for.
     when: ["cite", "citation", "source", "reference", "bibliography",
-      "research", "study", "reading", "literature", "review", "journal",
-      "academic"],
+      "research", "study", "reading", "literature", "journal",
+      "academic", "systematic", "peer", "scholarly"],
     categories: ["research"],
     also: ["source", "citation", "research", "paper"],
   },
@@ -80,10 +84,17 @@ const CONCEPTS = [
     categories: ["productivity", "research"],
     also: ["note", "summarize", "organize", "document"],
   },
+  // "study" and "review" are deliberately shared with the research concept
+  // above rather than moved out of it: a study is a paper and studying is a
+  // thing you do the night before an exam, and the catalog serves both. The
+  // exam vocabulary here is what settles which one was meant — support is
+  // counted per concept, so "study for finals" backs learning twice and
+  // research once, while "review the literature" reverses it.
   {
     when: ["math", "maths", "homework", "solve", "equation", "calculus",
       "algebra", "statistics", "learn", "tutor", "practice", "quiz",
-      "flashcard", "revise", "exam", "explain", "concept"],
+      "flashcard", "revise", "exam", "explain", "concept",
+      "study", "review", "final", "midterm", "semester", "cram", "memorize"],
     categories: ["learning"],
     also: ["solve", "explain", "practice", "step"],
   },
@@ -104,6 +115,18 @@ const CONCEPTS = [
       "chatbot", "conversation"],
     categories: ["chat-assistant"],
     also: ["brainstorm", "explain", "draft"],
+  },
+  // No category is *about* translation, so this points at the one that
+  // actually answers the request for text — a chat assistant is what a
+  // student translating a reading should be sent to, and the four listings
+  // that name translation outright (Qwen Chat, Notta, HeyGen, VEED) still
+  // win it on their own words. Left unrouted, "translate a document"
+  // returned a presentation builder, because "document" happened to land in
+  // two of its fields while "translate" landed in one of Notta's.
+  {
+    when: ["translate", "translation", "multilingual", "bilingual"],
+    categories: ["chat-assistant"],
+    also: ["translate", "language"],
   },
 ];
 

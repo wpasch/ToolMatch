@@ -178,3 +178,39 @@ test("free matching respects known feature restrictions without excluding the fr
   assert.ok(search(index, "free resume tools", 107).some((tool) => tool.id === "teal"));
 });
 
+// Two words carry a student meaning and an academic one, and the catalog
+// serves both. These pin each direction, because the fix for one is exactly
+// the thing that could break the other.
+test("study and review route by context rather than to one fixed category", () => {
+  const learning = (query) => {
+    const top = search(index, query).slice(0, 3).map(({ id }) => id);
+    const categories = top.map((id) => data.tools.find((t) => t.id === id).category);
+    return { top, categories };
+  };
+  for (const query of ["study for finals", "study for a test", "review before midterms"]) {
+    assert.ok(learning(query).categories.includes("learning"),
+      `"${query}" returned no study tool: ${learning(query).top.join(", ")}`);
+  }
+  // The same two words, used academically, must still reach the papers.
+  for (const query of ["literature review", "review the literature", "do a systematic review"]) {
+    assert.equal(learning(query).categories[0], "research",
+      `"${query}" left the research tools: ${learning(query).top.join(", ")}`);
+  }
+  // And "review my essay" is neither: it is someone asking for an editor.
+  assert.ok(!learning("review my essay").categories.includes("research"));
+});
+
+test("translate reaches the tools that translate, not a passing noun", () => {
+  const translators = new Set(["qwen-chat", "notta", "heygen", "veed"]);
+  for (const query of ["translate a document", "translate text", "translate to spanish", "translate a video"]) {
+    const top = ids(query).slice(0, 3);
+    const category = (id) => data.tools.find((t) => t.id === id).category;
+    assert.ok(top.some((id) => translators.has(id) || category(id) === "chat-assistant"),
+      `"${query}" returned nothing that translates: ${top.join(", ")}`);
+    assert.ok(!top.includes("presentations-ai"),
+      `"${query}" still returns a presentation builder`);
+  }
+  // A translate query must not drag the whole chat category over a listing
+  // that names the job outright.
+  assert.ok(ids("translate a video").slice(0, 2).every((id) => translators.has(id)));
+});
